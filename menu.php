@@ -4,7 +4,7 @@ $pageClass = 'menu';
 include 'includes/meta.php';
 ?>
 
-<script type="text/javascript" src="<?php echo $siteRoot; ?>/js/menuLoad.js"></script>
+<script type="text/javascript" src="js/menuLoad.js"></script>
 
 <!-- ************************************************************************************* -->
 	<div id="appContent">
