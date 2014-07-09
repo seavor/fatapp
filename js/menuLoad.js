@@ -1,0 +1,1 @@
+var rid = window.location.url;
