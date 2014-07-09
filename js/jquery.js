@@ -160,7 +160,7 @@ $("document").ready(function() {
 		// Restraunt Listing Select & Redirect
 		$('.viewRestrauntClick').on('click', function(){
 			var rid = $(this).data('rid');
-			window.location.assign("http://jay.craftinc.co/cardiello/menu.php?rid=" + rid);
+			window.location.assign("http://localhost:8888/menu.php?rid=" + rid);
 			// Redirect to Restaurant Menu Screen
 			// @TODO Take API data and filter into new API call for redirect
 		});
