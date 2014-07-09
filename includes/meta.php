@@ -1,5 +1,12 @@
 <!-- ******************************************* -->
-	<?php $siteRoot = "http://jay.craftinc.co/cardiello/"; ?>
+	<?php $siteRoot = "http://localhost:8888/"; ?>
+	<script type="text/javascript">var siteRoot = "<?php echo $siteRoot; ?>";</script>
+
+	<!-- Simulate LoggedIn Status -->
+	<?php
+		$userLoggedIn = true;
+		$logStatus = 'off';
+	?>
 <!-- ******************************************* -->
 <html>
 
@@ -30,12 +37,6 @@
 	</head>
 			
 	<body class="<?php echo $pageClass; ?>">
-
-	<!-- Simulate LoggedIn Status -->
-	<?php
-		$userLoggedIn = true;
-		$logStatus = 'off';
-	?>
 
 	<div id="user" class="hidden"><?php echo $logStatus ?></div>
 	<div id="pageClass" class="hidden"><?php echo $pageClass ?></div>
