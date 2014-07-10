@@ -53,7 +53,7 @@ echo '</pre>';
 
 			<h6>Open &amp; Delivering</h6>
 
-			<?php $i = 0; while ($data[$i] && $data[$i]['is_delivering'] == 1) { ?>
+			<?php $i = 0; while ($data[$i] ) { if ( $data[$i]['is_delivering'] == 1 ) { ?>
 
 				<div class="restaurantListingItem" data-rid="<?php echo $data[$i]['id']; ?>">
 					<div class="topBox clearfix">
@@ -84,7 +84,8 @@ echo '</pre>';
 					</div>
 				</div>
 
-			<?php $i++; } ?>
+			<?php } $i++; } ?>
+
 
 		</div>
 
