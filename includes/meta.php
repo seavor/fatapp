@@ -5,7 +5,7 @@
 
 		session_start();
 		$_SESSION['previous'] = basename($_SERVER['HTTP_REFERER']);
-		$_SESSION['userLoggedIn'] = false;
+		$_SESSION['userLoggedIn'] = true;
 
 		$userLoggedIn = $_SESSION['userLoggedIn'];
 	?>
