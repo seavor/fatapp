@@ -176,13 +176,13 @@ $("document").ready(function() {
 				$(this).addClass('activeHead').parent('.catPanel').addClass('activePanel');
 				$('#menuTip').slideUp();
 				$('.catPanel.activePanel .catItems').slideDown();
-			// If Active Accordian is Clicked Again
+			// If Active Accordion is Clicked Again
 			} else if ($(this).hasClass('activeHead')) {
 				$('h3.activeHead').removeClass('activeHead'); 
 				$('#menuTip').slideDown();
 				$('.catPanel.activePanel .catItems').slideUp();
 				$('.catPanel.activePanel').removeClass('activePanel');
-			// If One Accordian Panel is Open and a new one is Clicked
+			// If One Accordion Panel is Open and a new one is Clicked
 			} else {
 				$('.catPanel.activePanel .catItems').slideUp();
 				$('.catPanel.activePanel').removeClass('activePanel');

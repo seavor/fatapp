@@ -191,6 +191,8 @@ include 'includes/meta.php';
 					</div>
 				</div>
 
+				<p class="hidden" id="tray"></p>
+
 
 
 				<!-- Show only once item has been added to order -->
