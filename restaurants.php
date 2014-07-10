@@ -8,7 +8,7 @@ include 'includes/meta.php';
 
 $data = json_decode(file_get_contents('http://eric-song.com:8000/delivery_list?datetime=ASAP&addr=378%20Greenwich%20St&city=New%20York&zip=10013'), true);
 echo '<pre>';
-print_r();
+print_r($data);
 echo '</pre>';
 ?>
 
@@ -53,7 +53,7 @@ echo '</pre>';
 
 			<h6>Open &amp; Delivering</h6>
 
-			<?php $i = 0; while ($data[$i] && $data['is_delivering'] == 1) { ?>
+			<?php $i = 0; while ($data[$i] && $data[$i]['is_delivering'] == 1) { ?>
 
 				<div class="restaurantListingItem" data-rid="<?php echo $data[$i]['id']; ?>">
 					<div class="topBox clearfix">
@@ -91,7 +91,7 @@ echo '</pre>';
 		<div id="closedRestaurants" class="restListing">
 			<h6>Closed</h6>
 
-			<?php $i = 0; while ($data[$i] && $data['is_delivering'] == 0) { ?>
+			<?php $i = 0; while ($data[$i] && $data[$i]['is_delivering'] == 0) { ?>
 
 				<div class="restaurantListingItem" data-rid="<?php echo $data[$i]['id']; ?>">
 					<div class="topBox clearfix">
