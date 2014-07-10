@@ -10,8 +10,8 @@ $.get('http://eric-song.com:8000/restaurant_details?rid=23938', function( data )
 
 	// create menu
 	$('#menuCategories').html(''); // empty contents
-	var categoryElem, itemElem, catItems;
-	var itemShort;
+	var categoryElem, itemElem, catItems, itemOpt, optHead, optCatElem, optElem;
+	var itemShort, optCatShort, optionShort;
 	var itemRating;
 	for( var category in data.menu ) {
 		categoryElem = $( '<div>' );
@@ -40,7 +40,42 @@ $.get('http://eric-song.com:8000/restaurant_details?rid=23938', function( data )
 			itemElem.append( '<p class="itemPrice">$' + itemShort.price + '</p>' );
 			itemElem.append( '<p class="itemDescription">' + itemShort.descrip + '</p>' );
 
-			// forloop for (hidden) options
+			//(hidden) options dialog
+			itemOpt = $('<div>');
+			itemOpt.addClass('hidden ' + 'options' );
+
+			optHead = $('<div>');
+			optHead.addClass('menuItem menuHead');
+			optHead.append( '<h6>' + itemShort.name + '</h6>' );
+			optHead.append( '<p class="itemPrice">$' + itemShort.price + '</p>' );
+			optHead.append( '<p class="itemDescription">' + itemShort.descrip + '</p>' );
+
+			itemElem.append( optHead );
+
+			for( var optionCat in itemShort.children ) {
+				optCatShort = itemShort.children[optionCat];
+				optCatElem = $('<div>');
+				optCatElem.addClass('optionCat');
+				optCatElem.data('min', optCatShort.min_child_select );
+				optCatElem.data('max', optCatShort.max_child_select );
+
+				optCatElem.append('<p class="optionCatName">' + optCatShort.name + '</p>');
+				optCatElem.append('<p class="optionCatDesc">' + optCatShort.descrip + '</p>');
+				// option forloop
+				for ( var opt in optCatShort.children ) {
+					optionShort = optCatShort.children[opt];
+					optElem = $('<div>');
+					optElem.addClass('option');
+					optElem.data('optId', optionShort.id );
+					optElem.data('optPrice', optionShort.price );
+					optElem.append('<p class="optionName">' + optionShort.name + '</p>');
+					optElem.append('<p class="optionPrice">' + optionShort.price + '</p>');
+
+					optCatElem.append( optElem );
+				}
+
+				itemElem.append(optCatElem);
+			}
 
 			catItems.append( itemElem );
 		}
@@ -60,13 +95,13 @@ $.get('http://eric-song.com:8000/restaurant_details?rid=23938', function( data )
 				$(this).addClass('activeHead').parent('.catPanel').addClass('activePanel');
 				$('#menuTip').slideUp();
 				$('.catPanel.activePanel .catItems').slideDown();
-			// If Active Accordian is Clicked Again
+			// If Active Accordion is Clicked Again
 			} else if ($(this).hasClass('activeHead')) {
 				$('h3.activeHead').removeClass('activeHead'); 
 				$('#menuTip').slideDown();
 				$('.catPanel.activePanel .catItems').slideUp();
 				$('.catPanel.activePanel').removeClass('activePanel');
-			// If One Accordian Panel is Open and a new one is Clicked
+			// If One Accordion Panel is Open and a new one is Clicked
 			} else {
 				$('.catPanel.activePanel .catItems').slideUp();
 				$('.catPanel.activePanel').removeClass('activePanel');
