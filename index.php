@@ -1,7 +1,9 @@
 <?php
+session_start();
 $pageTitle = 'Fat App';
 $pageClass = 'home';
 include 'includes/meta.php';
+
 ?>
 
 <!-- ************************************************************************************* -->
@@ -15,7 +17,6 @@ include 'includes/meta.php';
 				<div id="addressField" class="inputBox popupButton" data-button="chooseAddress">
 					<input id="addressSearch" name="addressSearch" type="text" class="inputField" placeholder="enter address" required readonly>
 				</div>
-				<button id="gpsButton" class="" type="button"></button>
 			</div>
 
 			<button id="restFilterButton" class="bigButton popupButton" type="button" data-button="restFilter">Filter: All Menus</button>
@@ -27,7 +28,6 @@ include 'includes/meta.php';
 
 			<div id="restFilters" class="popupMenu" data-display="restFilter">
 				<div class="popupBox clearfix">
-					<h5>Menu Filter:</h5>
 					<ul class="popupItems">
 					<li>
 						<label for="restFilterAll">All Menus
@@ -113,52 +113,13 @@ include 'includes/meta.php';
 				</div>
 			</div>
 
-			<div id="loginPopup" class="popupMenu">
-				<div class="popupBox clearfix">
-					<h5>Login:</h5>
-					<ul class="inputItems">
-						<li class="inputBox">
-							<input id="emailLogin" name="emailLogin" type="text" class="inputField" placeholder="Email">
-						</li>
-						<li class="inputBox">
-							<input id="passwordLogin" name="passwordLogin" type="password" class="inputField" placeholder="Password">
-						</li>
-						<li class="reverseLeftCheckbox">
-							<label id="autoLogin" for="autoLoginInput">Automatically Log Me In
-								<input id="autoLoginInput" name="autoLogin" type="checkbox">
-							</label>
-						</li>
-					</ul>
-
-					<p id="forgotPasswordButton" class="afterLink popupButton">Forgot Password?</p>
-
-					<button class="popupCancel smallButton cancelButton" type="button">Cancel</button>
-					<button class="popupOk smallButton okButton" type="button">Ok</button>
-					<button id="signupButton" class="bigButton buttonCenter" type="button">Sign Up</button>
-
-				</div>
-			</div>
-
-			<div id="forgotPassword" class="popupMenu">
-				<div class="popupBox clearfix">
-					<h5>Request Reset Email:</h5>
-					<ul class="inputItems">
-						<li class="inputBox">
-							<input id="emailRetrieval" name="emailRetrieval" type="email" class="inputField" placeholder="Email">
-						</li>
-					</ul>
-					<button class="popupCancel smallButton cancelButton" type="button">Cancel</button>
-					<button class="popupOk smallButton okButton" type="button">Ok</button>
-				</div>
-			</div>
-
 			<!-- Hold Previous Form Field Values Inbetween Ok or Cancel Actions -->
 			<input id="nicknameHold" name="nicknameHold" type="hidden">
-			<input id="addressLineHold" name="addressLineHold" type="hidden">
-			<input id="cityHold" name="cityHold" type="hidden">
-			<input id="zipcodeHold" name="zipcodeHold" type="hidden">
+			<input id="addressLineHold" name="addressLineHold" type="hidden" value="392 Broadway">
+			<input id="cityHold" name="cityHold" type="hidden" value="New York">
+			<input id="zipcodeHold" name="zipcodeHold" type="hidden" value="10013">
 
-			<button id="loginButton" class="existingUser actionButton" type="button">Login</button>
+			<!-- <button id="loginButton" class="existingUser actionButton" type="button">Login</button> -->
 			<button id="searchRestaurants" class="actionButton actionRequired" type="submit">Find Restraunts</button>
 		
         </form>

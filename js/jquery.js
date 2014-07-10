@@ -124,11 +124,11 @@ $("document").ready(function() {
 		});
 
 		// Populate Search field with GPS Data
-		$('#gpsButton').on('click', function(){
-			// Get phone GPS location
-			var gpsData = '40.735537, -73.990729';
-			$('#addressSearch').val('GPS: '+gpsData);
-		});
+		// $('#gpsButton').on('click', function(){
+		// 	// Get phone GPS location
+		// 	var gpsData = '40.735537, -73.990729';
+		// 	$('#addressSearch').val('GPS: '+gpsData);
+		// });
 
 		// Control Filter Menu Selection Checkboxes
 		$('#restFilters input').on('click', function(){
@@ -163,15 +163,16 @@ $("document").ready(function() {
 		});
 
 		// Hide Action Button until Address Entered
-		$('#restSearch button, #chooseAddress label').on('click', function(){
-			if ($('#addressSearch').prop('value').length > 0) {
-				$('.actionButton').removeClass('actionRequired');
-				$('#loginButton').addClass('actionRequired');
-			} else {
-				$('.actionButton').addClass('actionRequired');
-				$('#loginButton').removeClass('actionRequired');
-			};
-		});
+		// $('#restSearch button, #chooseAddress label').on('click', function(){
+
+		if ($('#addressLineHold').length && $('#addressLineHold').prop('value').length > 0) {
+			$('.actionButton').removeClass('actionRequired');
+			$('#loginButton').addClass('actionRequired');
+		} else {
+			$('.actionButton').addClass('actionRequired');
+			$('#loginButton').removeClass('actionRequired');
+		}
+		// });
 
 		// @TODO Ajax Login Action, Update Data Fields
 		$('#loginPopup button.okButton').on('click', function(){
@@ -186,6 +187,7 @@ $("document").ready(function() {
 		// @TODO
 
 		$('.restaurantListingItem[data-rid]').on('click', function(){
+			console.log('clicked');
 			pageRedirect('menu.php?rid=' + $(this).data('rid'));
 		});
 
@@ -216,12 +218,12 @@ $("document").ready(function() {
 			}
 		});
 
-		// // Menu Item Click Action
-		// $('.menuItem').on('click', function(){
-		// 	pageRedirect("item.php");
-		// 	// Redirect to Restaurant Menu Screen
-		// 	// @TODO Take API data and filter into new API call for redirect
-		// });
+		// Menu Item Click Action
+		$('.menuItem').on('click', function(){
+			pageRedirect("item.php?cid="+$(this).data('cid')+"&iid="+$(this).data('iid'));
+			// Redirect to Restaurant Menu Screen
+			// @TODO Take API data and filter into new API call for redirect
+		});
 
 	// Menu Item Screen
 	////////////////////////////////////////////////////////////////////////

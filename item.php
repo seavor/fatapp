@@ -1,7 +1,15 @@
 <?php
+session_start();
 $pageTitle = 'Add to Order';
 $pageClass = 'item';
 include 'includes/meta.php';
+?>
+
+<?php
+
+$data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_SESSION['rid']), true);
+// $item = $data['menu'][$_GET['iid']];
+
 ?>
 
 <!-- ************************************************************************************* -->

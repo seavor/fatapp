@@ -1,4 +1,5 @@
 <?php
+session_start();
 $pageTitle = 'Restaurant Menu';
 $pageClass = 'menu';
 include 'includes/meta.php';
@@ -6,16 +7,14 @@ include 'includes/meta.php';
 
 <?php
 
-$data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_GET['rid']), true);
+// @TODO Escape GET Str
+$_SESSION['rid'] = $_GET['rid'];
 
+$data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_SESSION['rid']), true);
 ?>
 
-
-
-<!-- @TODO Escape GET Str -->
-<?php $_SESSION['rid'] = $_GET['rid']; ?>
-
-<script type="text/javascript" src="js/menuLoad.js"></script>
+<!-- Load Active Restaurant ID into Javascript -->
+<script type="text/javascript">var rid = "<?php echo $_SESSION['rid']; ?>";</script>
 
 <!-- ************************************************************************************* -->
 	<div id="appContent">
@@ -31,7 +30,7 @@ $data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_GET[
 					</div>
 					<div class="bottomBox clearfix">
 						<div class="feeWrapper">
-							<p>Minimum Order: $1x.00</p>
+							<p>Minimum Order: $<?php echo $_SESSION['activeRestMino']; ?></p>
 							<p>Delivery Fee: $x.00</p>
 						</div>
 						<div class="appleRating">
@@ -59,7 +58,7 @@ $data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_GET[
 				</div>
 
 				<!-- Display each Category -->
-				<?php foreach ($data['menu'] as $value) { ?>
+				<?php foreach ($data['menu'] as $catID => $value) { ?>
 					<div id="menuCategories">
 						<div class="catPanel">
 							<h3><?php echo $value['name'] ?></h3>
@@ -70,7 +69,7 @@ $data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_GET[
 
 								<!-- Display each Category's Menu Item -->
 								<?php foreach ($value['children'] as $items) { ?>
-									<div class="menuItem itemBest" data-iid='<?php echo $items['id']; ?>'>
+									<div class="menuItem itemBest" data-cid="<?php echo $catID; ?>" data-iid='<?php echo $items['id']; ?>'>
 										<h6><?php echo $items['name']; ?></h6>
 										<p class="itemPrice">$<?php echo $items['price']; ?></p>
 										<p class="itemDescription"><?php echo $items['descrip']; ?></p>

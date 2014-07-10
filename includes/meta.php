@@ -1,14 +1,14 @@
 <!-- ******************************************* -->
 	<?php
 
+		include 'includes/functions.php';
+
+		$_SESSION['previous'] = basename($_SERVER['HTTP_REFERER']);
+		$userLoggedIn = $_SESSION['userLoggedIn'] = false; # No Users for this Version
+
 		$siteRoot = "http://localhost:8888/";
 		$dbRoot = 'http://162.243.27.144:8000/';
 
-		session_start();
-		$_SESSION['previous'] = basename($_SERVER['HTTP_REFERER']);
-		$_SESSION['userLoggedIn'] = false;
-
-		$userLoggedIn = $_SESSION['userLoggedIn'];
 	?>
 
 	<script type="text/javascript">
