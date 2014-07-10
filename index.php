@@ -18,14 +18,14 @@ include 'includes/meta.php';
 				<button id="gpsButton" class="" type="button"></button>
 			</div>
 
-			<button id="restFilterButton" class="bigButton popupButton popupButton" type="button" data-popupbutton="restFilter">Filter: All Menus</button>
+			<button id="restFilterButton" class="bigButton popupButton" type="button" data-popupbutton="restFilter">Filter: All Menus</button>
 
 			<div id="dailyFitTip">
 				<h3>Cardiello Fit Tip:</h3>
 				<p>An apple a day is a played out cliche.</p>
             </div>
 
-			<div id="restFilters" class="menuPopup" data-popup="restFilter">
+			<div id="restFilters" class="menuPopup">
 				<div class="popupBox clearfix">
 					<h5>Menu Filter:</h5>
 					<ul class="popupItems">
@@ -96,8 +96,6 @@ include 'includes/meta.php';
 							<li class="inputBox">
 								<input id="nicknameInput" name="nickname" type="text" class="inputField" placeholder="Nickname (optional)">
 							</li>
-						<?php } ?>
-						<?php $userLoggedIn = true; if ($userLoggedIn) { ?>
 							<li class="saveField disabledText">
 								<label for="saveAddress">Save this Address
 									<input id="saveAddress" name="saveAddress" type="checkbox" disabled>

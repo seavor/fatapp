@@ -173,6 +173,13 @@
 			font-size: 12px;
 		}
 
+
+
+	[data-redirect]:hover, [data-redirect]:active {
+		background: lightgrey;
+		cursor: pointer;
+	}
+
 /******************************************************
 /* Header
 /*****************************************************/
@@ -238,8 +245,9 @@
 
 	#navItems {
 		width: 50%;
+		height: auto;
 		position: absolute;
-		top: 50px; right: 0;
+		top: 50px; left: 50%; /*<== @TODO shouldnt be necessary*/
 		display: none;
 	}
 
@@ -373,11 +381,6 @@ h2.subHeader {
 				background: #76A84D;
 				color: white;
 			}
-
-		.viewRestrauntClick:hover, .viewRestrauntClick:active {
-			background: lightgrey;
-			cursor: pointer;
-		}
 
 		.restaurantListingItem .topBox {
 			margin-bottom: 10px;
@@ -826,6 +829,31 @@ h5.headerDivide  {
 /******************************************************
 /* Support Styles
 /*****************************************************/
+
+#errorMsg {
+	width: 70%;
+	padding: 20px;
+	border: 2px solid rgba(255, 0, 0, 1);
+	border-radius: 10px;
+	background: rgba(200, 0, 0, 1);
+	position: absolute;
+	top: 30%; right: 15%;
+	display: none;
+	font-size: 12px;
+}
+
+#loading {
+	min-width: 100%;
+	min-height: 100%;
+	position: absolute;
+	top: 0; left: 0;
+	background: rgba(0, 0, 0, .8);
+	background-image: url('../images/loading.gif');
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: 75px 75px;
+	display: none;
+}
 
 .clearfix:after {
    content: " ";

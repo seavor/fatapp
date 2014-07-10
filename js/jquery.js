@@ -14,16 +14,54 @@ $("document").ready(function() {
 		        vars[hash[0]] = hash[1];
 		    }
 		    return vars;
+		    // Set GET variables to javaScript variable
+		}   var getRequest = getRequest();
+
+		function displayError(errorMsg) {
+		  $('#errorMsg').text(errorMsg).fadeIn(1000, function () {
+		    $(this).delay(1000).fadeOut(1000);
+		  });
 		}
+    
+		// Configure Data-Attribute Triggered Popup Display
+		$('[data-popupbutton]').on('click', function(){
+			$('.menuPopup[data-popup='+$(this).data('popupbutton')+']').show('400');
+		});
+
+		// Configure Data-Attribute Triggered Slide Display
+		$('[data-menubutton]').on('click', function(){
+			$('.menuPopup[data-popup='+$(this).data('menubutton')+']').slideToggle('400');
+		});
+
+		// Configure Popup Display w/ User Status Dependency
+		$('[data-userPopup]').on('click', function(){
+			if (userLoggedIn == true) {
+				// Show User View
+			} else {
+				// Show Guest View
+			};
+		});
 
 	// MenuBar
 	////////////////////////////////////////////////////////////////////////
-		$('#homeButton').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/");
-		});
 
-		$('#navButton').on("click", function(){
-			$('#navItems').toggle("fast");
+		// Page Redirect
+		function pageRedirect( dest ) {
+			window.location.assign(siteRoot + dest);
+			$('#loading').show();
+		}
+
+		// Abstract Redirect Function
+		$("[data-redirect]").on('click', function(){
+			// Restaurant Selection
+			if ($(this).data('rid')) {
+				pageRedirect( $(this).data('redirect') + '?rid=' + $(this).data('rid'));
+			}
+			// else if {
+
+			// }
+			// Static Redirect
+			else { pageRedirect( $(this).data('redirect') )} 
 		});
     
 	// Home Screen
@@ -31,8 +69,7 @@ $("document").ready(function() {
 
 		// Show Enter Address Popup on Search field Focus
 		$('#addressSearch').on('click', function(){
-			var user = 1;
-            if (user == 1) { // If User is Logged In, Show Saved Addresses
+            if (userLoggedIn == true) { // If User is Logged In, Show Saved Addresses
             	$('#chooseAddress').toggle('400');
             } else {
                 $('#addressInputFields').toggle('400');
@@ -157,14 +194,6 @@ $("document").ready(function() {
 		// Reload Menu Screen upon Filter Change
 		// @TODO
 
-		// Restraunt Listing Select & Redirect
-		$('.viewRestrauntClick').on('click', function(){
-			var rid = $(this).data('rid');
-			window.location.assign("http://jay.craftinc.co/cardiello/menu.php?rid=" + rid);
-			// Redirect to Restaurant Menu Screen
-			// @TODO Take API data and filter into new API call for redirect
-		});
-
 	// Restraunt Menu Screen
 	////////////////////////////////////////////////////////////////////////
 
@@ -194,14 +223,14 @@ $("document").ready(function() {
 
 		// Menu Item Click Action
 		$('.menuItem').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/item.php");
+			window.location.assign("item.php");
 			// Redirect to Restaurant Menu Screen
 			// @TODO Take API data and filter into new API call for redirect
 		});
 
 		// Review Your Order Click Action
 		$('#reviewOrder').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/review.php");
+			window.location.assign("review.php");
 			// Redirect to Restaurant Menu Screen
 			// @TODO Take API data and filter into new API call for redirect
 		});
@@ -229,7 +258,7 @@ $("document").ready(function() {
 		});
 
 		// Change Action Button per Add/Edit step
-		if (getRequest()["item"] == 'edit') {
+		if (getRequest["item"] == 'edit') {
 			$('#addToOrder').text('Edit Order');
 			$('#itemOptions').prop('action', 'review.php?item=edited');
 		} else {
@@ -239,7 +268,7 @@ $("document").ready(function() {
 		// Change Redirection per Add/Edit step
 		$('#itemQuantity .popupOk').on('click', function(){
 			// Redirect Back to Menu Screen
-			if (getRequest()["item"] == 'edit') {
+			if (getRequest["item"] == 'edit') {
 			} else {
 				$('#itemOptions').prop('action', 'menu.php?order=add');
 			};
@@ -261,7 +290,7 @@ $("document").ready(function() {
 			var action = $(this).prop('title');
 			// Redirect to Edit Item screen
 			if (action == 'edit') {
-				window.location.assign("http://jay.craftinc.co/cardiello/item.php?item=edit&test=here");
+				window.location.assign("item.php?item=edit&test=here");
 			};
 
 			// Remove Item from Order
@@ -272,19 +301,19 @@ $("document").ready(function() {
 
 			// Send Back to Menu Screen if Last Option is removes
 			if ($('.itemReview').length == 0) {
-				window.location.assign("http://jay.craftinc.co/cardiello/menu.php");
+				window.location.assign("menu.php");
 			};
 		});
 
 		// Edit Item and Redirect back to Review Order screen
 		$('#editOrderItem').on('click', function(){	
-			window.location.assign("http://jay.craftinc.co/cardiello/review.php");
+			window.location.assign("review.php");
 		});
 
 		
 		// Proceed to Checkout
 		$('#checkout').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/checkout.php");
+			window.location.assign("checkout.php");
 		});
 
 	// Checkout Screen
@@ -330,14 +359,15 @@ $("document").ready(function() {
 
 		// Continue to Receipt Screen
 		$('#skipCreate, #newAccount .popupOk, body.prompt #loginPopup .popupOk').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/receipt.php");
+			window.location.assign("receipt.php");
 		});
 
 		// Simulate Logged In Users Skipping Prompt
-		if ( $('#pageClass').text() == 'prompt' && $('#user').text() == 'on') {
-			window.location.assign("http://jay.craftinc.co/cardiello/receipt.php");
-			console.log('logged');
+		if ( pageClass == 'prompt' && userLoggedIn == true) {
+			window.location.assign("receipt.php");
 		};
+			console.log(userLoggedIn);
+			console.log(pageClass);
 
 		$('.existingUser').on('click', function(){
 			$('#loginPopup').show('400');
@@ -348,15 +378,15 @@ $("document").ready(function() {
 		});
 
 		$('#forgotPassword button.popupOk').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/reset.php");
+			window.location.assign("reset.php");
 		});
 
 		$('#resetConfirm').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/");
+			window.location.assign("index.php");
 		});
 
 		$('#backToHome').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/");
+			window.location.assign("index.php");
 		});
 
 	// Button Actions
@@ -416,12 +446,6 @@ $("document").ready(function() {
 			$(this).css('cursor', 'pointer');
 			$(this).filter('input[type=text], input[type=number]').css('cursor', 'text');
 		}); // @TODO this seems like an unnecessary hack (css solution???)
-    
-		// Configure Data-Attribute Triggered Popup Display
-		$('[data-popupbutton]').on('click', function(){
-			$('.menuPopup[data-popup='+$(this).data('popupbutton')+']').show('400');
-			console.log($(this).data('popupbutton'));
-		});
 
     // Menu Actions
 	////////////////////////////////////////////////////////////////////////

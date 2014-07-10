@@ -1,6 +1,4 @@
 <?php
-$pageTitle = 'Landing Page';
-$pageClass = 'landing';
 include 'includes/meta.php';
 ?>
 

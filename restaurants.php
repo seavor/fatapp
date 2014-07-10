@@ -44,7 +44,7 @@ include 'includes/meta.php';
 
 			<h6>Open &amp; Delivering</h6>
 
-				<div class="viewRestrauntClick restaurantListingItem" data-rid="23865">
+				<div class="restaurantListingItem" data-rid="23865" data-redirect="menu.php">
 					<div class="topBox clearfix">
 						<h5>Salaam Bombay</h5>
 						<p class="distanceAway">0.3m</p>
@@ -72,7 +72,7 @@ include 'includes/meta.php';
 						</div>
 					</div>
 				</div>
-				<div class="viewRestrauntClick restaurantListingItem">
+				<div class="restaurantListingItem">
 					<div class="topBox clearfix">
 						<h5>Restaurant Name</h5>
 						<p class="distanceAway">0.3m</p>
@@ -101,7 +101,7 @@ include 'includes/meta.php';
 					</div>
 				</div>
 
-				<div class="viewRestrauntClick restaurantListingItem">
+				<div class="restaurantListingItem">
 					<div class="topBox clearfix">
 						<h5>Restaurant Name</h5>
 						<p class="distanceAway">0.3m</p>
@@ -135,7 +135,7 @@ include 'includes/meta.php';
 			<div id="closedRestaurants" class="restListing">
 				<h6>Closed</h6>
 
-				<div class="viewRestrauntClick restaurantListingItem">
+				<div class="restaurantListingItem">
 					<div class="topBox clearfix">
 						<h5>Restaurant Name</h5>
 						<p class="distanceAway">0.3m</p>
@@ -164,7 +164,7 @@ include 'includes/meta.php';
 					</div>
 				</div>
 
-				<div class="viewRestrauntClick restaurantListingItem">
+				<div class="restaurantListingItem">
 					<div class="topBox clearfix">
 						<h5>Restaurant Name</h5>
 						<p class="distanceAway">0.3m</p>
@@ -193,7 +193,7 @@ include 'includes/meta.php';
 					</div>
 				</div>
 
-				<div class="viewRestrauntClick restaurantListingItem">
+				<div class="restaurantListingItem">
 					<div class="topBox clearfix">
 						<h5>Restaurant Name</h5>
 						<p class="distanceAway">0.3m</p>
