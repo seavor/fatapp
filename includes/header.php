@@ -7,11 +7,11 @@
 	</div>
 
 
-	<div id="navButton">
+	<div id="navButton" data-button="navBar">
 		<img src="images/menu.png">
 	</div>
 
-	<div id="navItems">
+	<div id="navItems" class="slideMenu" data-display="navBar">
 		<ul>
 			<li>
 				<a href="account.php">My Account</a>

@@ -14,25 +14,53 @@ $("document").ready(function() {
 		        vars[hash[0]] = hash[1];
 		    }
 		    return vars;
+		    // Set GET variables to javaScript variable
+		}   var getRequest = getRequest();
+
+		function displayError(errorMsg) {
+		  $('#errorMsg').text(errorMsg).fadeIn(1000, function () {
+		    $(this).delay(1000).fadeOut(1000);
+		  });
 		}
+
+		// Page Redirect
+		function pageRedirect( dest ) {
+			// @TODO Escape String Security Protection
+			window.location.assign(siteRoot + dest);
+			$('#loading').show();
+		}
+
+	// Popup and Hidden Menu Display Controls
+	////////////////////////////////////////////////////////////////////////
+
+		// Configure Data-Attribute Triggered Popup Display
+		$('[data-button]').on('click', function(){
+			$('.popupMenu[data-display='+$(this).data('button')+']').show('400');
+		});
+
+		// Configure Data-Attribute Triggered Menu Display
+		$('[data-button]').on('click', function(){
+			$('.slideMenu[data-display='+$(this).data('button')+']').slideToggle('400');
+		});
+
+		$('button[type="submit"]').on('click', function(){
+			$('#loading').show();
+		})
 
 	// MenuBar
 	////////////////////////////////////////////////////////////////////////
-		$('#homeButton').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/");
-		});
 
-		$('#navButton').on("click", function(){
-			$('#navItems').toggle("fast");
-		});
-    
+		// Home Nav Button
+    	$('#homeButton').on('click', function(){
+    		pageRedirect('index.php');
+    	});
+
 	// Home Screen
 	////////////////////////////////////////////////////////////////////////
 
 		// Show Enter Address Popup on Search field Focus
 		$('#addressSearch').on('click', function(){
-			var user = 1;
-            if (user == 1) { // If User is Logged In, Show Saved Addresses
+            if (userLoggedIn == true) { // If User is Logged In, Show Saved Addresses
             	$('#chooseAddress').toggle('400');
             } else {
                 $('#addressInputFields').toggle('400');
@@ -157,12 +185,8 @@ $("document").ready(function() {
 		// Reload Menu Screen upon Filter Change
 		// @TODO
 
-		// Restraunt Listing Select & Redirect
-		$('.viewRestrauntClick').on('click', function(){
-			var rid = $(this).data('rid');
-			window.location.assign("http://localhost:8888/menu.php?rid=" + rid);
-			// Redirect to Restaurant Menu Screen
-			// @TODO Take API data and filter into new API call for redirect
+		$('.restaurantListingItem[data-rid]').on('click', function(){
+			pageRedirect('menu.php?rid=' + $(this).data('rid'));
 		});
 
 	// Restraunt Menu Screen
@@ -192,25 +216,18 @@ $("document").ready(function() {
 			}
 		});
 
-		// Menu Item Click Action
-		$('.menuItem').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/item.php");
-			// Redirect to Restaurant Menu Screen
-			// @TODO Take API data and filter into new API call for redirect
-		});
-
-		// Review Your Order Click Action
-		$('#reviewOrder').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/review.php");
-			// Redirect to Restaurant Menu Screen
-			// @TODO Take API data and filter into new API call for redirect
-		});
+		// // Menu Item Click Action
+		// $('.menuItem').on('click', function(){
+		// 	pageRedirect("item.php");
+		// 	// Redirect to Restaurant Menu Screen
+		// 	// @TODO Take API data and filter into new API call for redirect
+		// });
 
 	// Menu Item Screen
 	////////////////////////////////////////////////////////////////////////
 
 		// Check Jay's Choices
-		$('#jaysChoices .itemOptions	').on('click', function(){
+		$('#jaysChoices .itemOptions').on('click', function(){
 			$(this).children('.optionChosen').css('background-position', '0 28px');
 			// @TODO On Click, reselect form fields w/ Jay's Choices
 		});
@@ -218,7 +235,7 @@ $("document").ready(function() {
 		// Display Popup on User Choice Selection
 		$('#userChoices .itemOptions').on('click', function(){
 			var selectedChoice = $(this).data('option');
-			$('.menuPopup').filter('[data-popup='+selectedChoice+']').toggle('400');
+			$('.popupMenu').filter('[data-popup='+selectedChoice+']').toggle('400');
 		});
 
 		// @TODO Tie Option Selection Functionailty between Jay's and User's Choices
@@ -228,22 +245,13 @@ $("document").ready(function() {
 			$('#itemQuantity').show('400');
 		});
 
-		// Change Action Button per Add/Edit step
-		if (getRequest()["item"] == 'edit') {
-			$('#addToOrder').text('Edit Order');
-			$('#itemOptions').prop('action', 'review.php?item=edited');
-		} else {
-			$('#itemOptions').prop('action', 'menu.php?order=add');
-		};;
-
-		// Change Redirection per Add/Edit step
-		$('#itemQuantity .popupOk').on('click', function(){
-			// Redirect Back to Menu Screen
-			if (getRequest()["item"] == 'edit') {
-			} else {
-				$('#itemOptions').prop('action', 'menu.php?order=add');
-			};
-		});
+		// // Change Action Button per Add/Edit step
+		// if (getRequest["item"] == 'edit') {
+		// 	$('#addToOrder').text('Edit Order');
+		// 	$('#itemOptions').prop('action', 'review.php?item=edited');
+		// } else {
+		// 	$('#itemOptions').prop('action', 'menu.php?order=add');
+		// };;
 
 	// Review Order Screen
 	////////////////////////////////////////////////////////////////////////
@@ -261,7 +269,7 @@ $("document").ready(function() {
 			var action = $(this).prop('title');
 			// Redirect to Edit Item screen
 			if (action == 'edit') {
-				window.location.assign("http://jay.craftinc.co/cardiello/item.php?item=edit&test=here");
+    			pageRedirect('item.php?item=edit&test=here');
 			};
 
 			// Remove Item from Order
@@ -272,19 +280,19 @@ $("document").ready(function() {
 
 			// Send Back to Menu Screen if Last Option is removes
 			if ($('.itemReview').length == 0) {
-				window.location.assign("http://jay.craftinc.co/cardiello/menu.php");
+    			pageRedirect('menu.php');
 			};
 		});
 
 		// Edit Item and Redirect back to Review Order screen
 		$('#editOrderItem').on('click', function(){	
-			window.location.assign("http://jay.craftinc.co/cardiello/review.php");
+			pageRedirect("review.php");
 		});
 
 		
 		// Proceed to Checkout
 		$('#checkout').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/checkout.php");
+			pageRedirect("checkout.php");
 		});
 
 	// Checkout Screen
@@ -330,14 +338,15 @@ $("document").ready(function() {
 
 		// Continue to Receipt Screen
 		$('#skipCreate, #newAccount .popupOk, body.prompt #loginPopup .popupOk').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/receipt.php");
+			pageRedirect("receipt.php");
 		});
 
 		// Simulate Logged In Users Skipping Prompt
-		if ( $('#pageClass').text() == 'prompt' && $('#user').text() == 'on') {
-			window.location.assign("http://jay.craftinc.co/cardiello/receipt.php");
-			console.log('logged');
+		if ( pageClass == 'prompt' && userLoggedIn == true) {
+			pageRedirect("receipt.php");
 		};
+			console.log(userLoggedIn);
+			console.log(pageClass);
 
 		$('.existingUser').on('click', function(){
 			$('#loginPopup').show('400');
@@ -348,15 +357,15 @@ $("document").ready(function() {
 		});
 
 		$('#forgotPassword button.popupOk').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/reset.php");
+			pageRedirect("reset.php");
 		});
 
 		$('#resetConfirm').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/");
+			pageRedirect("index.php");
 		});
 
 		$('#backToHome').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/");
+			pageRedirect("index.php");
 		});
 
 	// Button Actions
@@ -416,12 +425,6 @@ $("document").ready(function() {
 			$(this).css('cursor', 'pointer');
 			$(this).filter('input[type=text], input[type=number]').css('cursor', 'text');
 		}); // @TODO this seems like an unnecessary hack (css solution???)
-    
-		// Configure Data-Attribute Triggered Popup Display
-		$('[data-popupbutton]').on('click', function(){
-			$('.menuPopup[data-popup='+$(this).data('popupbutton')+']').show('400');
-			console.log($(this).data('popupbutton'));
-		});
 
     // Menu Actions
 	////////////////////////////////////////////////////////////////////////

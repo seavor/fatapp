@@ -1,12 +1,20 @@
 <!-- ******************************************* -->
-	<?php $siteRoot = "http://localhost:8888/"; ?>
-	<script type="text/javascript">var siteRoot = "<?php echo $siteRoot; ?>";</script>
-
-	<!-- Simulate LoggedIn Status -->
 	<?php
-		$userLoggedIn = true;
-		$logStatus = 'off';
+
+		$siteRoot = "http://localhost:8888/";
+
+		session_start();
+		$_SESSION['previous'] = basename($_SERVER['HTTP_REFERER']);
+		$_SESSION['userLoggedIn'] = true;
+
+		$userLoggedIn = $_SESSION['userLoggedIn'];
 	?>
+
+	<script type="text/javascript">
+		var siteRoot = "<?php echo $siteRoot; ?>";
+		var userLoggedIn = "<?php echo $userLoggedIn; ?>";
+		var pageClass = "<?php echo $pageClass; ?>";
+	</script>
 <!-- ******************************************* -->
 <html>
 
@@ -14,8 +22,7 @@
 
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<meta name="description" content="">
-		<meta name="author" content="Jeremy Letto">
+		<meta name="description" content="Eat Healthy, Be Healthy">
 		<title>Fat App | <?php echo $pageTitle; ?></title>
 		<link rel="icon" href="<?php echo $siteRoot; ?>/images/header/favicon.png" sizes="16x16" type="image/png">
 		<link rel="stylesheet" type="text/css" href="<?php echo $siteRoot; ?>/css/normalize.min.css" />
@@ -37,6 +44,3 @@
 	</head>
 			
 	<body class="<?php echo $pageClass; ?>">
-
-	<div id="user" class="hidden"><?php echo $logStatus ?></div>
-	<div id="pageClass" class="hidden"><?php echo $pageClass ?></div>

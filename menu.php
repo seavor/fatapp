@@ -4,6 +4,9 @@ $pageClass = 'menu';
 include 'includes/meta.php';
 ?>
 
+<!-- @TODO Escape GET Str -->
+<?php $_SESSION['rid'] = $_GET['rid']; ?>
+
 <script type="text/javascript" src="js/menuLoad.js"></script>
 
 <!-- ************************************************************************************* -->
@@ -198,7 +201,7 @@ include 'includes/meta.php';
 				<!-- Show only once item has been added to order -->
 				<?php
 					if ($_GET['order']=='add') { ?>
-					<button id="reviewOrder" class="actionButton" type="button">Review Your Order</button>
+					<button id="reviewOrder" class="actionButton" type="button" data-redirect="review.php">Review Your Order</button>
 				<?php } ?>
 
 		</div>
