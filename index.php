@@ -12,20 +12,20 @@ include 'includes/meta.php';
 		<form id="restSearch" name="restSearch" action="restaurants.php" method="post">
 
 			<div class="clearfix">
-				<div id="addressField" class="inputBox popupButton">
+				<div id="addressField" class="inputBox popupButton" data-button="chooseAddress">
 					<input id="addressSearch" name="addressSearch" type="text" class="inputField" placeholder="enter address" required readonly>
 				</div>
 				<button id="gpsButton" class="" type="button"></button>
 			</div>
 
-			<button id="restFilterButton" class="bigButton popupButton" type="button" data-popupbutton="restFilter">Filter: All Menus</button>
+			<button id="restFilterButton" class="bigButton popupButton" type="button" data-button="restFilter">Filter: All Menus</button>
 
 			<div id="dailyFitTip">
 				<h3>Cardiello Fit Tip:</h3>
 				<p>An apple a day is a played out cliche.</p>
             </div>
 
-			<div id="restFilters" class="menuPopup">
+			<div id="restFilters" class="popupMenu" data-display="restFilter">
 				<div class="popupBox clearfix">
 					<h5>Menu Filter:</h5>
 					<ul class="popupItems">
@@ -55,31 +55,35 @@ include 'includes/meta.php';
 			</div>
 
 			<!-- This Element for Logged In Users Only -->
-			<div id="chooseAddress" class="menuPopup radioMenu">
-				<div class="popupBox clearfix">
-					<h5>Choose Address:</h5>
-					<ul class="dataItems">
-						<li>
-							<label for="_homeAddress">Home
-								<input id="_homeAddress" name="chooseAddressOption" value="home" type="radio" class="">
-							</label>
-						</li>
-						<li>
-							<label for="_workAddress">Work
-								<input id="_workAddress" name="chooseAddressOption" value="work" type="radio" class="">
-							</label>
-						</li>
-						<li>
-							<label for="_friendAddress">Friend
-								<input id="_friendAddress" name="chooseAddressOption" value="friend" type="radio" class="">
-							</label>
-						</li>
-						<button id="addNewAddress" class="bigButton buttonCenter popupButton" type="button">New Address</button>
-					</ul>
-				</div>
-			</div>
+			<?php if ($_SESSION['userLoggedIn'] == true) { ?>
 
-			<div id="addressInputFields" class="menuPopup">
+				<div id="chooseAddress" class="popupMenu radioMenu" data-popup="restFilter">
+					<div class="popupBox clearfix">
+						<h5>Choose Address:</h5>
+						<ul class="dataItems">
+							<li>
+								<label for="_homeAddress">Home
+									<input id="_homeAddress" name="chooseAddressOption" value="home" type="radio" class="">
+								</label>
+							</li>
+							<li>
+								<label for="_workAddress">Work
+									<input id="_workAddress" name="chooseAddressOption" value="work" type="radio" class="">
+								</label>
+							</li>
+							<li>
+								<label for="_friendAddress">Friend
+									<input id="_friendAddress" name="chooseAddressOption" value="friend" type="radio" class="">
+								</label>
+							</li>
+							<button id="addNewAddress" class="bigButton buttonCenter popupButton" type="button">New Address</button>
+						</ul>
+					</div>
+				</div>
+
+			<?php } ?>
+															<!-- Activate this as chooseAddress popup for Guest users -->
+			<div id="addressInputFields" class="popupMenu" <?php if ($_SESSION['userLoggedIn'] == false) { echo 'data-popup="restFilter"'; } ?>>
 				<div class="popupBox clearfix">
 					<h5>Enter Address:</h5>
 					<ul class="inputItems">
@@ -92,7 +96,8 @@ include 'includes/meta.php';
 						<li class="inputBox">
 							<input id="zipcodeInput" name="zipcode" type="number" class="inputField" placeholder="Zip Code">
 						</li>
-						<?php $userLoggedIn = true; if ($userLoggedIn) { ?>
+						<!-- Show Save fields for logged in users -->
+						<?php if ($_SESSION['userLoggedIn'] == true) { ?>
 							<li class="inputBox">
 								<input id="nicknameInput" name="nickname" type="text" class="inputField" placeholder="Nickname (optional)">
 							</li>
@@ -108,7 +113,7 @@ include 'includes/meta.php';
 				</div>
 			</div>
 
-			<div id="loginPopup" class="menuPopup">
+			<div id="loginPopup" class="popupMenu">
 				<div class="popupBox clearfix">
 					<h5>Login:</h5>
 					<ul class="inputItems">
@@ -134,7 +139,7 @@ include 'includes/meta.php';
 				</div>
 			</div>
 
-			<div id="forgotPassword" class="menuPopup">
+			<div id="forgotPassword" class="popupMenu">
 				<div class="popupBox clearfix">
 					<h5>Request Reset Email:</h5>
 					<ul class="inputItems">

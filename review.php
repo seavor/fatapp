@@ -36,7 +36,7 @@ include 'includes/meta.php';
 			</div>
 		</div>
 
-		<div id="editItemMenu" class="menuPopup">
+		<div id="editItemMenu" class="popupMenu">
 			<div class="popupBox clearfix">
 				<h5></h5>
 				<ul class="lineItems">

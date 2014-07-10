@@ -1,8 +1,13 @@
 <!-- ******************************************* -->
 	<?php
+
 		$siteRoot = "http://localhost:8888/";
-		$userLoggedIn = true;
-		$logStatus = 'off';
+
+		session_start();
+		$_SESSION['previous'] = basename($_SERVER['HTTP_REFERER']);
+		$_SESSION['userLoggedIn'] = false;
+
+		$userLoggedIn = $_SESSION['userLoggedIn'];
 	?>
 
 	<script type="text/javascript">

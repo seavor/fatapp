@@ -23,7 +23,7 @@ include 'includes/meta.php';
 			<h6>Name: Jay Cardiello</h6>
 		</div>
 
-			<div class="menuPopup" data-popup="editName">
+			<div class="popupMenu" data-popup="editName">
 				<div class="popupBox clearfix">
 					<h5>Edit Name:</h5>
 					<div class="inputBox singleItem">
@@ -38,7 +38,7 @@ include 'includes/meta.php';
 			<h6>Email: jay@cardiello.com</h6>
 		</div>
 
-			<div class="menuPopup" data-popup="editEmail">
+			<div class="popupMenu" data-popup="editEmail">
 				<div class="popupBox clearfix">
 					<h5>Edit Email:</h5>
 					<div class="inputBox singleItem">
@@ -53,7 +53,7 @@ include 'includes/meta.php';
 			<h6>Phone: (347) 555-1234</h6>
 		</div>
 
-			<div class="menuPopup" data-popup="editPhone">
+			<div class="popupMenu" data-popup="editPhone">
 				<div class="popupBox clearfix">
 					<h5>Edit Phone:</h5>
 					<div class="inputBox singleItem">

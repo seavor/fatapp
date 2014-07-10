@@ -20,7 +20,7 @@ include 'includes/meta.php';
 
 		<p class="existingUser bottomLink popupButton">Already a member? Sign In</p>
 		
-		<div id="newAccount" class="menuPopup">
+		<div id="newAccount" class="popupMenu">
 			<div class="popupBox clearfix">
 				<h5>Create Account:</h5>
 				<ul class="inputItems">
@@ -42,7 +42,7 @@ include 'includes/meta.php';
 			</div>
 		</div>
 
-		<div id="loginPopup" class="menuPopup">
+		<div id="loginPopup" class="popupMenu">
 			<div class="popupBox clearfix">
 				<h5>Login:</h5>
 				<ul class="inputItems">
@@ -66,7 +66,7 @@ include 'includes/meta.php';
 			</div>
 		</div>
 
-		<div id="forgotPassword" class="menuPopup">
+		<div id="forgotPassword" class="popupMenu">
 			<div class="popupBox clearfix">
 				<h5>Request Reset Email:</h5>
 				<ul class="inputItems">

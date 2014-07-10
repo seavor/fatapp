@@ -38,7 +38,7 @@ include 'includes/meta.php';
 					<h4>Eggs</h4>
 					<p class="itemOptionSelections">Scrambled</p>
 				</div>
-				<div data-popup="optEggs" class="menuPopup radioMenu">
+				<div data-popup="optEggs" class="popupMenu radioMenu">
 					<div class="popupBox clearfix">
 						<h5>Eggs Options:</h5>
 						<ul class="dataItems">
@@ -58,7 +58,7 @@ include 'includes/meta.php';
 				<div data-option="optPancakes" class="itemOptions popupButton">
 					<h4>Pancakes</h4>
 				</div>
-				<div data-popup="optPancakes" class="menuPopup">
+				<div data-popup="optPancakes" class="popupMenu">
 					<div class="popupBox clearfix">
 						<h5>Pancakes Options:</h5>
 						<ul class="popupItems">
@@ -86,7 +86,7 @@ include 'includes/meta.php';
 				</div>
 			</div>
 
-			<div id="itemQuantity" class="menuPopup">
+			<div id="itemQuantity" class="popupMenu">
 				<div class="popupBox clearfix">
 					<h5>Enter Quantity:</h5>
 					<div class="inputBox">

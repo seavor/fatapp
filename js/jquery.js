@@ -22,48 +22,39 @@ $("document").ready(function() {
 		    $(this).delay(1000).fadeOut(1000);
 		  });
 		}
-    
-		// Configure Data-Attribute Triggered Popup Display
-		$('[data-popupbutton]').on('click', function(){
-			$('.menuPopup[data-popup='+$(this).data('popupbutton')+']').show('400');
-		});
-
-		// Configure Data-Attribute Triggered Slide Display
-		$('[data-menubutton]').on('click', function(){
-			$('.menuPopup[data-popup='+$(this).data('menubutton')+']').slideToggle('400');
-		});
-
-		// Configure Popup Display w/ User Status Dependency
-		$('[data-userPopup]').on('click', function(){
-			if (userLoggedIn == true) {
-				// Show User View
-			} else {
-				// Show Guest View
-			};
-		});
-
-	// MenuBar
-	////////////////////////////////////////////////////////////////////////
 
 		// Page Redirect
 		function pageRedirect( dest ) {
+			// @TODO Escape String Security Protection
 			window.location.assign(siteRoot + dest);
 			$('#loading').show();
 		}
 
-		// Abstract Redirect Function
-		$("[data-redirect]").on('click', function(){
-			// Restaurant Selection
-			if ($(this).data('rid')) {
-				pageRedirect( $(this).data('redirect') + '?rid=' + $(this).data('rid'));
-			}
-			// else if {
+	// Popup and Hidden Menu Display Controls
+	////////////////////////////////////////////////////////////////////////
 
-			// }
-			// Static Redirect
-			else { pageRedirect( $(this).data('redirect') )} 
+		// Configure Data-Attribute Triggered Popup Display
+		$('[data-button]').on('click', function(){
+			$('.popupMenu[data-display='+$(this).data('button')+']').show('400');
 		});
-    
+
+		// Configure Data-Attribute Triggered Menu Display
+		$('[data-button]').on('click', function(){
+			$('.slideMenu[data-display='+$(this).data('button')+']').slideToggle('400');
+		});
+
+		$('button[type="submit"]').on('click', function(){
+			$('#loading').show();
+		})
+
+	// MenuBar
+	////////////////////////////////////////////////////////////////////////
+
+		// Home Nav Button
+    	$('#homeButton').on('click', function(){
+    		pageRedirect('index.php');
+    	});
+
 	// Home Screen
 	////////////////////////////////////////////////////////////////////////
 
@@ -194,6 +185,10 @@ $("document").ready(function() {
 		// Reload Menu Screen upon Filter Change
 		// @TODO
 
+		$('.restaurantListingItem[data-rid]').on('click', function(){
+			pageRedirect('menu.php?rid=' + $(this).data('rid'));
+		});
+
 	// Restraunt Menu Screen
 	////////////////////////////////////////////////////////////////////////
 
@@ -221,25 +216,18 @@ $("document").ready(function() {
 			}
 		});
 
-		// Menu Item Click Action
-		$('.menuItem').on('click', function(){
-			window.location.assign("item.php");
-			// Redirect to Restaurant Menu Screen
-			// @TODO Take API data and filter into new API call for redirect
-		});
-
-		// Review Your Order Click Action
-		$('#reviewOrder').on('click', function(){
-			window.location.assign("review.php");
-			// Redirect to Restaurant Menu Screen
-			// @TODO Take API data and filter into new API call for redirect
-		});
+		// // Menu Item Click Action
+		// $('.menuItem').on('click', function(){
+		// 	pageRedirect("item.php");
+		// 	// Redirect to Restaurant Menu Screen
+		// 	// @TODO Take API data and filter into new API call for redirect
+		// });
 
 	// Menu Item Screen
 	////////////////////////////////////////////////////////////////////////
 
 		// Check Jay's Choices
-		$('#jaysChoices .itemOptions	').on('click', function(){
+		$('#jaysChoices .itemOptions').on('click', function(){
 			$(this).children('.optionChosen').css('background-position', '0 28px');
 			// @TODO On Click, reselect form fields w/ Jay's Choices
 		});
@@ -247,7 +235,7 @@ $("document").ready(function() {
 		// Display Popup on User Choice Selection
 		$('#userChoices .itemOptions').on('click', function(){
 			var selectedChoice = $(this).data('option');
-			$('.menuPopup').filter('[data-popup='+selectedChoice+']').toggle('400');
+			$('.popupMenu').filter('[data-popup='+selectedChoice+']').toggle('400');
 		});
 
 		// @TODO Tie Option Selection Functionailty between Jay's and User's Choices
@@ -257,22 +245,13 @@ $("document").ready(function() {
 			$('#itemQuantity').show('400');
 		});
 
-		// Change Action Button per Add/Edit step
-		if (getRequest["item"] == 'edit') {
-			$('#addToOrder').text('Edit Order');
-			$('#itemOptions').prop('action', 'review.php?item=edited');
-		} else {
-			$('#itemOptions').prop('action', 'menu.php?order=add');
-		};;
-
-		// Change Redirection per Add/Edit step
-		$('#itemQuantity .popupOk').on('click', function(){
-			// Redirect Back to Menu Screen
-			if (getRequest["item"] == 'edit') {
-			} else {
-				$('#itemOptions').prop('action', 'menu.php?order=add');
-			};
-		});
+		// // Change Action Button per Add/Edit step
+		// if (getRequest["item"] == 'edit') {
+		// 	$('#addToOrder').text('Edit Order');
+		// 	$('#itemOptions').prop('action', 'review.php?item=edited');
+		// } else {
+		// 	$('#itemOptions').prop('action', 'menu.php?order=add');
+		// };;
 
 	// Review Order Screen
 	////////////////////////////////////////////////////////////////////////
@@ -290,7 +269,7 @@ $("document").ready(function() {
 			var action = $(this).prop('title');
 			// Redirect to Edit Item screen
 			if (action == 'edit') {
-				window.location.assign("item.php?item=edit&test=here");
+    			pageRedirect('item.php?item=edit&test=here');
 			};
 
 			// Remove Item from Order
@@ -301,19 +280,19 @@ $("document").ready(function() {
 
 			// Send Back to Menu Screen if Last Option is removes
 			if ($('.itemReview').length == 0) {
-				window.location.assign("menu.php");
+    			pageRedirect('menu.php');
 			};
 		});
 
 		// Edit Item and Redirect back to Review Order screen
 		$('#editOrderItem').on('click', function(){	
-			window.location.assign("review.php");
+			pageRedirect("review.php");
 		});
 
 		
 		// Proceed to Checkout
 		$('#checkout').on('click', function(){
-			window.location.assign("checkout.php");
+			pageRedirect("checkout.php");
 		});
 
 	// Checkout Screen
@@ -359,12 +338,12 @@ $("document").ready(function() {
 
 		// Continue to Receipt Screen
 		$('#skipCreate, #newAccount .popupOk, body.prompt #loginPopup .popupOk').on('click', function(){
-			window.location.assign("receipt.php");
+			pageRedirect("receipt.php");
 		});
 
 		// Simulate Logged In Users Skipping Prompt
 		if ( pageClass == 'prompt' && userLoggedIn == true) {
-			window.location.assign("receipt.php");
+			pageRedirect("receipt.php");
 		};
 			console.log(userLoggedIn);
 			console.log(pageClass);
@@ -378,15 +357,15 @@ $("document").ready(function() {
 		});
 
 		$('#forgotPassword button.popupOk').on('click', function(){
-			window.location.assign("reset.php");
+			pageRedirect("reset.php");
 		});
 
 		$('#resetConfirm').on('click', function(){
-			window.location.assign("index.php");
+			pageRedirect("index.php");
 		});
 
 		$('#backToHome').on('click', function(){
-			window.location.assign("index.php");
+			pageRedirect("index.php");
 		});
 
 	// Button Actions

@@ -25,7 +25,7 @@ include 'includes/meta.php';
 				</div>
 			</div>
 			
-			<div id="deliveryAddresses" class="menuPopup radioMenu">
+			<div id="deliveryAddresses" class="popupMenu radioMenu">
 				<div class="popupBox clearfix">
 					<h5>Choose Address:</h5>
 					<ul class="dataItems">
@@ -61,7 +61,7 @@ include 'includes/meta.php';
 
 		<?php } ?>
 
-			<div id="enterNewAddress" class="menuPopup">
+			<div id="enterNewAddress" class="popupMenu">
 				<div class="popupBox clearfix">
 					<h5>Enter Address:</h5>
 					<ul class="inputItems">
@@ -250,7 +250,7 @@ include 'includes/meta.php';
 				</div>
 			</div>
 
-			<div id="tipMenu" class="menuPopup">
+			<div id="tipMenu" class="popupMenu">
 				<div class="popupBox clearfix">
 					<h5>Give a Tip:</h5>
 					<div class="inputBox">

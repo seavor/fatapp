@@ -662,7 +662,7 @@ h5.headerDivide  {
 /* Popup Styles
 /*****************************************************/
 
-.menuPopup {
+.popupMenu {
 	display: none;
 	position: absolute;
 	top: 0; left: 0;
@@ -847,7 +847,7 @@ h5.headerDivide  {
 	min-height: 100%;
 	position: absolute;
 	top: 0; left: 0;
-	background: rgba(0, 0, 0, .8);
+	background: rgba(0, 0, 0, .7);
 	background-image: url('../images/loading.gif');
 	background-repeat: no-repeat;
 	background-position: center center;
