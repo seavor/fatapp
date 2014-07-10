@@ -6,7 +6,7 @@ include 'includes/meta.php';
 
 <?php
 
-$data = json_decode(file_get_contents('http://eric-song.com:8000/delivery_list?datetime=ASAP&addr=378%20Greenwich%20St&city=New%20York&zip=10013'), true);
+$data = json_decode(file_get_contents($dbRoot.'delivery_list?datetime=ASAP&addr=378%20Greenwich%20St&city=New%20York&zip=10013'), true);
 echo '<pre>';
 print_r();
 echo '</pre>';

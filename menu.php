@@ -6,7 +6,7 @@ include 'includes/meta.php';
 
 <?php
 
-$data = json_decode(file_get_contents('http://eric-song.com:8000/restaurant_details?rid=' . $_GET['rid']), true);
+$data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_GET['rid']), true);
 
 ?>
 

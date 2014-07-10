@@ -2,6 +2,7 @@
 	<?php
 
 		$siteRoot = "http://localhost:8888/";
+		$dbRoot = 'http://eric-song.com:8000/';
 
 		session_start();
 		$_SESSION['previous'] = basename($_SERVER['HTTP_REFERER']);
