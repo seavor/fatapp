@@ -473,6 +473,20 @@ h2.subHeader {
 			background: lightgrey;
 		}
 
+
+/******************************************************
+/* Menu Item Screen (jQuery temp.)
+/*****************************************************/
+
+.options {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background: white;
+	display: none;
+}
+
 /******************************************************
 /* Menu Item Screen
 /*****************************************************/
