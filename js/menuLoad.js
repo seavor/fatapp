@@ -10,7 +10,7 @@ $.get('http://eric-song.com:8000/restaurant_details?rid=23938', function( data )
 
 	// create menu
 	$('#menuCategories').html(''); // empty contents
-	var categoryElem, itemElem, catItems, itemOpt, optHead, optCatElem, optElem;
+	var categoryElem, itemElem, catItems, itemOpt, optHead, optCatElem, optElem, optPopupElem, optPopupBoxElem;
 	var itemShort, optCatShort, optionShort;
 	var itemRating;
 	for( var category in data.menu ) {
@@ -23,6 +23,8 @@ $.get('http://eric-song.com:8000/restaurant_details?rid=23938', function( data )
 		catItems.addClass('catItems');
 
 		catItems.append( '<p class="healthTips">' + data.menu[category].tip + '</p>' );
+
+		$('.healthTips').text('put it here')
 
 		// forloop for menu items
 		for( var item in data.menu[category].children ) {
@@ -42,7 +44,7 @@ $.get('http://eric-song.com:8000/restaurant_details?rid=23938', function( data )
 
 			//(hidden) options dialog
 			itemOpt = $('<div>');
-			itemOpt.addClass('hidden ' + 'options' );
+			itemOpt.addClass( /*'hidden ' +*/ 'options' );
 
 			optHead = $('<div>');
 			optHead.addClass('menuItem menuHead');
@@ -50,32 +52,61 @@ $.get('http://eric-song.com:8000/restaurant_details?rid=23938', function( data )
 			optHead.append( '<p class="itemPrice">$' + itemShort.price + '</p>' );
 			optHead.append( '<p class="itemDescription">' + itemShort.descrip + '</p>' );
 
-			itemElem.append( optHead );
+			itemOpt.append( optHead );
 
 			for( var optionCat in itemShort.children ) {
 				optCatShort = itemShort.children[optionCat];
 				optCatElem = $('<div>');
-				optCatElem.addClass('optionCat');
+				optCatElem.addClass('optionCat itemOptions popupButton');
 				optCatElem.data('min', optCatShort.min_child_select );
 				optCatElem.data('max', optCatShort.max_child_select );
+				optCatElem.data('option', optCatShort.id );
 
 				optCatElem.append('<p class="optionCatName">' + optCatShort.name + '</p>');
 				optCatElem.append('<p class="optionCatDesc">' + optCatShort.descrip + '</p>');
-				// option forloop
+				optCatElem.append('<p class="itemOptionSelections">' + '</p>'); // load in from existing tray
+				
+				optPopupElem = $('<div>');
+				optPopupElem.addClass('menuPopup');
+				optPopupElem.data('popup', optCatShort.id );
+
+				optPopupBoxElem = $('<div>');
+				optPopupBoxElem.addClass('popupBox clearfix');
+				optPopupBoxElem.append('<h5>'+optCatShort.name + '</h5>');
+				optPopupBoxElem.append('<ul class="dataItems">');
+
 				for ( var opt in optCatShort.children ) {
-					optionShort = optCatShort.children[opt];
-					optElem = $('<div>');
-					optElem.addClass('option');
-					optElem.data('optId', optionShort.id );
-					optElem.data('optPrice', optionShort.price );
-					optElem.append('<p class="optionName">' + optionShort.name + '</p>');
-					optElem.append('<p class="optionPrice">' + optionShort.price + '</p>');
+				 	optionShort = optCatShort.children[opt];
+				 	optElem = $('<li>');
+				 	optElem.append('<label>'+optionShort.name+'</label>');
+				 	optElem.find('label').append('<input type="checkbox" value="'+optionShort.id+'">');
+				 	optElem.find('label').append('<p class="popupItemPrice">$' + optionShort.price+'</p>');
 
-					optCatElem.append( optElem );
-				}
+				 	optPopupBoxElem.find('ul').append(optElem);
+				 }
 
-				itemElem.append(optCatElem);
+				optPopupElem.append(optPopupBoxElem);
+
+
+				optCatElem.append(optPopupElem);
+				// option forloop
+
+				// for ( var opt in optCatShort.children ) {
+				// 	optionShort = optCatShort.children[opt];
+				// 	optElem = $('<div>');
+				// 	optElem.addClass('option');
+				// 	optElem.data('optId', optionShort.id );
+				// 	optElem.data('optPrice', optionShort.price );
+				// 	optElem.append('<p class="optionName">' + optionShort.name + '</p>');
+				// 	optElem.append('<p class="optionPrice">' + optionShort.price + '</p>');
+
+				// 	optCatElem.append( optElem );
+				// }
+
+				itemOpt.append(optCatElem);
 			}
+
+			itemElem.append(itemOpt);
 
 			catItems.append( itemElem );
 		}
@@ -113,9 +144,15 @@ $.get('http://eric-song.com:8000/restaurant_details?rid=23938', function( data )
 
 		// Menu Item Click Action
 		$('.menuItem').on('click', function(){
-			window.location.assign("http://jay.craftinc.co/cardiello/item.php");
+			$(this).find('.options').show()
+			//window.location.assign("http://jay.craftinc.co/cardiello/item.php");
 			// Redirect to Restaurant Menu Screen
 			// @TODO Take API data and filter into new API call for redirect
+		});
+
+		$('.itemOptions').on('click', function(){
+			var selectedChoice = $(this).data('option');
+			$('.menuPopup').filter('[data-popup='+selectedChoice+']').toggle('400');
 		});
 
 }, 'jsonp');
