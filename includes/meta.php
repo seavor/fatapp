@@ -2,10 +2,11 @@
 	<?php
 
 		$siteRoot = "http://localhost:8888/";
+		$dbRoot = 'http://162.243.27.144:8000/';
 
 		session_start();
 		$_SESSION['previous'] = basename($_SERVER['HTTP_REFERER']);
-		$_SESSION['userLoggedIn'] = true;
+		$_SESSION['userLoggedIn'] = false;
 
 		$userLoggedIn = $_SESSION['userLoggedIn'];
 	?>
