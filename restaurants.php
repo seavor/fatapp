@@ -4,6 +4,14 @@ $pageClass = 'restSearchPage';
 include 'includes/meta.php';
 ?>
 
+<?php
+
+$data = json_decode(file_get_contents('http://eric-song.com:8000/delivery_list?datetime=ASAP&addr=378%20Greenwich%20St&city=New%20York&zip=10013'), true);
+echo '<pre>';
+print_r();
+echo '</pre>';
+?>
+
 <!-- ************************************************************************************* -->
 	<div id="appContent">
         
@@ -40,199 +48,83 @@ include 'includes/meta.php';
 			</div>
 		</div>
 
+
 		<div id="openRestaurants" class="restListing">
 
 			<h6>Open &amp; Delivering</h6>
 
-				<div class="restaurantListingItem" data-rid="23865">
+			<?php $i = 0; while ($data[$i] && $data['is_delivering'] == 1) { ?>
+
+				<div class="restaurantListingItem" data-rid="<?php echo $data[$i]['id']; ?>">
 					<div class="topBox clearfix">
-						<h5>Salaam Bombay</h5>
+						<h5><?php echo $data[$i]['na']; ?></h5>
 						<p class="distanceAway">0.3m</p>
 					</div>
 					<div class="bottomBox clearfix">
 						<div class="feeWrapper">
-							<p>Minimum Order: $10.00</p>
-							<p>Delivery Fee: $0.00</p>
+							<p>Minimum Order: $<?php echo $data[$i]['mino']; ?></p>
+							<p>Delivery Fee: $x.00</p>
 						</div>
 						<div class="appleRating">
 							<?php
-								$apple = 2;
+								$apple = $data[$i]['rating'];
 								switch ($apple) {
-									case 1: $applex = 0; $appley = 0; $applez = 1; break;
-									case 2: $applex = 0; $appley = 1; $applez = 1; break;
-									case 3: $applex = 1; $appley = 1; $applez = 1; break;
-									default: $applex = 0; $appley = 0; $applez = 0; break;
+									case 1: $ratingx = 0; $ratingy = 0; $ratingz = 1; break;
+									case 2: $ratingx = 0; $ratingy = 1; $ratingz = 1; break;
+									case 3: $ratingx = 1; $ratingy = 1; $ratingz = 1; break;
+									default: $ratingx = 0; $ratingy = 0; $ratingz = 0; break;
 								}
 							?>
 							<div class="appleWrapper">
-								<img src="images/apple<?php echo $applex; ?>.png">
-								<img src="images/apple<?php echo $appley; ?>.png">
-								<img src="images/apple<?php echo $applez; ?>.png">
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="restaurantListingItem">
-					<div class="topBox clearfix">
-						<h5>Restaurant Name</h5>
-						<p class="distanceAway">0.3m</p>
-					</div>
-					<div class="bottomBox clearfix">
-						<div class="feeWrapper">
-							<p>Minimum Order: $10.00</p>
-							<p>Delivery Fee: $0.00</p>
-						</div>
-						<div class="appleRating">
-							<?php
-								$apple = 1;
-								switch ($apple) {
-									case 1: $applex = 0; $appley = 0; $applez = 1; break;
-									case 2: $applex = 0; $appley = 1; $applez = 1; break;
-									case 3: $applex = 1; $appley = 1; $applez = 1; break;
-									default: $applex = 0; $appley = 0; $applez = 0; break;
-								}
-							?>
-							<div class="appleWrapper">
-								<img src="images/apple<?php echo $applex; ?>.png">
-								<img src="images/apple<?php echo $appley; ?>.png">
-								<img src="images/apple<?php echo $applez; ?>.png">
+								<img src="images/apple<?php echo $ratingx; ?>.png">
+								<img src="images/apple<?php echo $ratingy; ?>.png">
+								<img src="images/apple<?php echo $ratingz; ?>.png">
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="restaurantListingItem">
-					<div class="topBox clearfix">
-						<h5>Restaurant Name</h5>
-						<p class="distanceAway">0.3m</p>
-					</div>
-					<div class="bottomBox clearfix">
-						<div class="feeWrapper">
-							<p>Minimum Order: $10.00</p>
-							<p>Delivery Fee: $0.00</p>
-						</div>
-						<div class="appleRating">
-							<?php
-								$apple = 3;
-								switch ($apple) {
-									case 1: $applex = 0; $appley = 0; $applez = 1; break;
-									case 2: $applex = 0; $appley = 1; $applez = 1; break;
-									case 3: $applex = 1; $appley = 1; $applez = 1; break;
-									default: $applex = 0; $appley = 0; $applez = 0; break;
-								}
-							?>
-							<div class="appleWrapper">
-								<img src="images/apple<?php echo $applex; ?>.png">
-								<img src="images/apple<?php echo $appley; ?>.png">
-								<img src="images/apple<?php echo $applez; ?>.png">
-							</div>
-						</div>
-					</div>
-				</div>
-
-			</div>
-
-			<div id="closedRestaurants" class="restListing">
-				<h6>Closed</h6>
-
-				<div class="restaurantListingItem">
-					<div class="topBox clearfix">
-						<h5>Restaurant Name</h5>
-						<p class="distanceAway">0.3m</p>
-					</div>
-					<div class="bottomBox clearfix">
-						<div class="feeWrapper">
-							<p>Minimum Order: $10.00</p>
-							<p>Delivery Fee: $0.00</p>
-						</div>
-						<div class="appleRating">
-							<?php
-								$apple = 1;
-								switch ($apple) {
-									case 1: $applex = 0; $appley = 0; $applez = 1; break;
-									case 2: $applex = 0; $appley = 1; $applez = 1; break;
-									case 3: $applex = 1; $appley = 1; $applez = 1; break;
-									default: $applex = 0; $appley = 0; $applez = 0; break;
-								}
-							?>
-							<div class="appleWrapper">
-								<img src="images/apple<?php echo $applex; ?>.png">
-								<img src="images/apple<?php echo $appley; ?>.png">
-								<img src="images/apple<?php echo $applez; ?>.png">
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="restaurantListingItem">
-					<div class="topBox clearfix">
-						<h5>Restaurant Name</h5>
-						<p class="distanceAway">0.3m</p>
-					</div>
-					<div class="bottomBox clearfix">
-						<div class="feeWrapper">
-							<p>Minimum Order: $10.00</p>
-							<p>Delivery Fee: $0.00</p>
-						</div>
-						<div class="appleRating">
-							<?php
-								$apple = 2;
-								switch ($apple) {
-									case 1: $applex = 0; $appley = 0; $applez = 1; break;
-									case 2: $applex = 0; $appley = 1; $applez = 1; break;
-									case 3: $applex = 1; $appley = 1; $applez = 1; break;
-									default: $applex = 0; $appley = 0; $applez = 0; break;
-								}
-							?>
-							<div class="appleWrapper">
-								<img src="images/apple<?php echo $applex; ?>.png">
-								<img src="images/apple<?php echo $appley; ?>.png">
-								<img src="images/apple<?php echo $applez; ?>.png">
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="restaurantListingItem">
-					<div class="topBox clearfix">
-						<h5>Restaurant Name</h5>
-						<p class="distanceAway">0.3m</p>
-					</div>
-					<div class="bottomBox clearfix">
-						<div class="feeWrapper">
-							<p>Minimum Order: $10.00</p>
-							<p>Delivery Fee: $0.00</p>
-						</div>
-						<div class="appleRating">
-							<?php
-								$apple = 3;
-								switch ($apple) {
-									case 1: $applex = 0; $appley = 0; $applez = 1; break;
-									case 2: $applex = 0; $appley = 1; $applez = 1; break;
-									case 3: $applex = 1; $appley = 1; $applez = 1; break;
-									default: $applex = 0; $appley = 0; $applez = 0; break;
-								}
-							?>
-							<div class="appleWrapper">
-								<img src="images/apple<?php echo $applex; ?>.png">
-								<img src="images/apple<?php echo $appley; ?>.png">
-								<img src="images/apple<?php echo $applez; ?>.png">
-							</div>
-						</div>
-					</div>
-				</div>
-
-
-
-
-
-
-
-
+			<?php $i++; } ?>
 
 		</div>
 
+		<div id="closedRestaurants" class="restListing">
+			<h6>Closed</h6>
 
+			<?php $i = 0; while ($data[$i] && $data['is_delivering'] == 0) { ?>
+
+				<div class="restaurantListingItem" data-rid="<?php echo $data[$i]['id']; ?>">
+					<div class="topBox clearfix">
+						<h5><?php echo $data[$i]['na']; ?></h5>
+						<p class="distanceAway">0.3m</p>
+					</div>
+					<div class="bottomBox clearfix">
+						<div class="feeWrapper">
+							<p>Minimum Order: $<?php echo $data[$i]['mino']; ?></p>
+							<p>Delivery Fee: $x.00</p>
+						</div>
+						<div class="appleRating">
+							<?php
+								$apple = $data[$i]['rating'];
+								switch ($apple) {
+									case 1: $ratingx = 0; $ratingy = 0; $ratingz = 1; break;
+									case 2: $ratingx = 0; $ratingy = 1; $ratingz = 1; break;
+									case 3: $ratingx = 1; $ratingy = 1; $ratingz = 1; break;
+									default: $ratingx = 0; $ratingy = 0; $ratingz = 0; break;
+								}
+							?>
+							<div class="appleWrapper">
+								<img src="images/apple<?php echo $ratingx; ?>.png">
+								<img src="images/apple<?php echo $ratingy; ?>.png">
+								<img src="images/apple<?php echo $ratingz; ?>.png">
+							</div>
+						</div>
+					</div>
+				</div>
+
+			<?php $i++; } ?>
+
+		</div>
 
 
 
