@@ -56,7 +56,7 @@ $data = json_decode(file_get_contents($dbRoot.'delivery_list?datetime=ASAP&addr=
 
 			<h6>Open &amp; Delivering</h6>
 
-			<?php $i = 0; while ($data[$i] ) { if ( $data[$i]['is_delivering'] == 1 ) { ?>
+			<?php $i = 0; while ($data[$i]) { if ( $data[$i]['is_delivering'] == 1 ) { ?>
 
 				<div class="restaurantListingItem" data-rid="<?php echo $data[$i]['id']; ?>">
 					<div class="topBox clearfix">
@@ -94,7 +94,7 @@ $data = json_decode(file_get_contents($dbRoot.'delivery_list?datetime=ASAP&addr=
 		<div id="closedRestaurants" class="restListing">
 			<h6>Closed</h6>
 
-			<?php $i = 0; while ($data[$i] && $data[$i]['is_delivering'] == 0) { ?>
+			<?php $i = 0; while ($data[$i]) { if ( $data[$i]['is_delivering'] == 0 ) { ?>
 
 				<div class="restaurantListingItem" data-rid="<?php echo $data[$i]['id']; ?>">
 					<div class="topBox clearfix">
@@ -125,7 +125,7 @@ $data = json_decode(file_get_contents($dbRoot.'delivery_list?datetime=ASAP&addr=
 					</div>
 				</div>
 
-			<?php $i++; } ?>
+			<?php } $i++; } ?>
 
 		</div>
 

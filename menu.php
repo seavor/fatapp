@@ -11,6 +11,37 @@ include 'includes/meta.php';
 $_SESSION['rid'] = $_GET['rid'];
 
 $data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_SESSION['rid']), true);
+// printR($_POST);
+
+// Identify Item Added to Tray
+if ($_POST['itemAdded']) {
+	$_SESSION['tray'] .= '+' . $_POST['itemAdded'] . '/' . $_POST['itemQuantity'];
+}
+
+// Remove Leading '+' from tray object
+if (strpos($_SESSION['tray'], '+') == 0) {
+	$_SESSION['tray'] = substr($_SESSION['tray'], 1);
+}
+
+// Add Options for new Item
+foreach ($_POST as $key => $value) {
+	// Filter for Numeric values (option IDs)
+	if(ctype_digit($key)) {
+		if (is_array($value)) {
+			// Loop thru Array and Add options
+			foreach ($value as $option) {
+				$_SESSION['tray'] .= ',' . $option;
+			}
+			// Add nan-array/single-variable options
+		} else {
+			$_SESSION['tray'] .= ',' . $value;
+		}
+	}
+}
+
+echo $_SESSION['tray'];
+
+
 ?>
 
 <!-- Load Active Restaurant ID into Javascript -->
@@ -68,8 +99,8 @@ $data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_SESS
 								</div>
 
 								<!-- Display each Category's Menu Item -->
-								<?php foreach ($value['children'] as $items) { ?>
-									<div class="menuItem itemBest" data-cid="<?php echo $catID; ?>" data-iid='<?php echo $items['id']; ?>'>
+								<?php foreach ($value['children'] as $itemID => $items) { ?>
+									<div class="menuItem itemBest" data-cidx="<?php echo $catID; ?>"  data-iidx="<?php echo $itemID; ?>">
 										<h6><?php echo $items['name']; ?></h6>
 										<p class="itemPrice">$<?php echo $items['price']; ?></p>
 										<p class="itemDescription"><?php echo $items['descrip']; ?></p>

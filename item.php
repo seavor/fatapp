@@ -8,7 +8,9 @@ include 'includes/meta.php';
 <?php
 
 $data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_SESSION['rid']), true);
-// $item = $data['menu'][$_GET['iid']];
+$item = $data['menu'][$_GET['cidx']]['children'][$_GET['iidx']];
+
+printR();
 
 ?>
 
@@ -17,14 +19,12 @@ $data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_SESS
         
 		<?php include 'includes/header.php'; ?>
 
-		<form id="itemOptions" name="itemOptions" action="menu.php" method="post">
+		<form id="itemOptions" name="itemOptions" action="menu.php?rid=<?php echo $_SESSION['rid']; ?>" method="post">
 
 			<div class="menuItem menuHead">
-				<h6>Farmer's Breakfast</h6>
-				<p class="itemPrice">$6.99</p>
-				<p class="itemDescription">
-					2 eggs (sunny-side up or scrambled), hash browns, whole-wheat biscuit and orange juice
-				</p>
+				<h6><?php echo $item['name']; ?></h6>
+				<p class="itemPrice">$<?php echo $item['price']; ?></p>
+				<p class="itemDescription"><?php echo $item['descrip']; ?></p>
 			</div>
 
 			<div id="jaysChoices" class="itemOptionsBox">
@@ -42,56 +42,67 @@ $data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_SESS
 
 			<div id="userChoices" class="itemOptionsBox">
 				<h3>Been good lately? Treat yourself:</h3>
-				<div data-option="optEggs" class="itemOptions popupButton">
-					<h4>Eggs</h4>
-					<p class="itemOptionSelections">Scrambled</p>
-				</div>
-				<div data-popup="optEggs" class="popupMenu radioMenu">
-					<div class="popupBox clearfix">
-						<h5>Eggs Options:</h5>
-						<ul class="dataItems">
-							<li>
-								<label for="_scrambled">Scrambled
-									<input id="_scrambled" name="eggOption" value="scrambled" type="radio" class="">
-								</label>
-							</li>
-							<li>
-								<label for="_sunnySideUp">Sunny-Side Up
-									<input id="_sunnySideUp" name="eggOption" value="sunnySideUp" type="radio" class="">
-								</label>
-							</li>
-		                </ul>
-					</div>
-				</div>
-				<div data-option="optPancakes" class="itemOptions popupButton">
-					<h4>Pancakes</h4>
-				</div>
-				<div data-popup="optPancakes" class="popupMenu">
-					<div class="popupBox clearfix">
-						<h5>Pancakes Options:</h5>
-						<ul class="popupItems">
-							<li>
-								<label for="restFilterAll">Strawberries
-									<input id="restFilterAll" name="all" value="All Menus" type="checkbox" class="">
-									<p class="popupItemPrice">($2.00)</p>
-								</label>
-							</li>
-							<li>
-								<label for="restFilterBrunch">Blueberries
-									<input id="restFilterBrunch" name="brunch" value="Brunch" type="checkbox" class="">
-									<p class="popupItemPrice">($2.00)</p>
-								</label>
-							</li>
-							<li>
-								<label for="restFilterLunch">Chocolate Syrup
-									<input id="restFilterLunch" name="lunch" value="Lunch" type="checkbox" class="">
-									<p class="popupItemPrice">($3.00)</p>
-								</label>
-							</li>
-						</ul>
-						<button class="popupOk smallButton okButton" type="button">Ok</button>
-					</div>
-				</div>
+
+
+<!--   *************************************************************************************************** -->
+
+			<?php
+				$i = 0;
+				while ($item['children'][$i]) {
+					if ( $item['children'][$i]['min_child_select'] == 1 &&  $item['children'][$i]['min_child_select'] == 1) { ?>
+
+						<div data-option="opt<?php echo $item['children'][$i]['id']; ?>" class="itemOptions popupButton">
+							<h4>
+								<?php echo $item['children'][$i]['name']; ?>
+								<?php if($item['children'][$i]['min_child_select'] > 0) { echo '<span class="required">*</span>'; } ?>
+							</h4>
+							<p class="itemOptionSelections"><!-- @TODO insert selected choices --></p>
+						</div>
+						<div data-popup="opt<?php echo $item['children'][$i]['id']; ?>" class="popupMenu radioMenu">
+							<div class="popupBox clearfix">
+								<h5><?php echo $item['children'][$i]['name']; ?></h5>
+								<ul class="dataItems">
+									<?php foreach ($item['children'][$i]['children'] as $option) { ?>
+										<li>
+											<label for="_<?php echo $option['id']; ?>"><?php echo $option['name']; ?>
+												<input id="_<?php echo $option['id']; ?>" name="<?php echo $item['children'][$i]['id']; ?>" value="<?php echo $option['id']; ?>" type="radio" class="">
+												<p class="popupItemPrice">($<?php echo $option['price']; ?>)</p>
+											</label>
+										</li>
+			              			<?php } ?>
+				               </ul>
+							</div>
+						</div>
+
+			<?php } else { ?>
+
+						<div data-option="opt<?php echo $item['children'][$i]['id']; ?>" class="itemOptions popupButton">
+							<h4>
+								<?php echo $item['children'][$i]['name']; ?>
+								<?php if($item['children'][$i]['min_child_select'] > 0) { echo '<span class="required">*</span>'; } ?>
+							</h4>
+						</div>
+						<div data-popup="opt<?php echo $item['children'][$i]['id']; ?>" class="popupMenu">
+							<div class="popupBox clearfix">
+								<h5><?php echo $item['children'][$i]['name']; ?></h5>
+								<p class="itemOptionSelections"><!-- @TODO insert selected choices --></p>
+								<ul class="popupItems">
+									<?php foreach ($item['children'][$i]['children'] as $option) { ?>
+										<li>
+											<label for="_<?php echo $option['id']; ?>"><?php echo $option['name']; ?>
+												<input id="_<?php echo $option['id']; ?>" name="<?php echo $item['children'][$i]['id']; ?>[]" value="<?php echo $option['id']; ?>" type="checkbox" class="">
+												<p class="popupItemPrice">($<?php echo $option['price']; ?>)</p>
+											</label>
+										</li>
+									<?php } ?>
+								</ul>
+								<button class="popupOk smallButton okButton" type="button">Ok</button>
+							</div>
+						</div>
+
+			<?php } $i++; } ?>
+
+<!--   *************************************************************************************************** -->
 			</div>
 
 			<div id="itemQuantity" class="popupMenu">
@@ -113,19 +124,20 @@ $data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_SESS
 			<div id="orderItemTotal" class="actionInfo">
 				<div class="itemPriceInfo">
 					<h6>Item Price</h6>
-					<p>$6.99</p>
+					<p>$<?php echo $item['price']; ?></p>
 				</div>
 				<div class="itemPriceInfo">
 					<h6>Extras</h6>
-					<p>$0.00</p>
+					<p>$x</p> <!-- @TODO: update via jquery when option modal closes -->
 				</div>
 				<div class="itemPriceInfo">
 					<h6>Total</h6>
-					<p>$6.99</p>
+					<p>$x</p><!-- @TODO: update via jquery when option modal closes -->
 				</div>
 			</div>
 
 			<!-- @TODO Hidden Item Option Form Fields -->
+			<input id="itemAdded" name="itemAdded" type="hidden" value="<?php echo $item['id']; ?>">
 
 			<button id="addToOrder" class="actionButton popupButton" type="button">Add to Order</button>
 

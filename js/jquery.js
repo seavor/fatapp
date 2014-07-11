@@ -166,11 +166,11 @@ $("document").ready(function() {
 		// $('#restSearch button, #chooseAddress label').on('click', function(){
 
 		if ($('#addressLineHold').length && $('#addressLineHold').prop('value').length > 0) {
-			$('.actionButton').removeClass('actionRequired');
-			$('#loginButton').addClass('actionRequired');
+			$('#searchRestaurants').removeClass('actionRequired');
+			// $('#loginButton').addClass('actionRequired');
 		} else {
-			$('.actionButton').addClass('actionRequired');
-			$('#loginButton').removeClass('actionRequired');
+			$('#searchRestaurants').addClass('actionRequired');
+			// $('#loginButton').removeClass('actionRequired');
 		}
 		// });
 
@@ -219,8 +219,8 @@ $("document").ready(function() {
 		});
 
 		// Menu Item Click Action
-		$('.menuItem').on('click', function(){
-			pageRedirect("item.php?cid="+$(this).data('cid')+"&iid="+$(this).data('iid'));
+		$('.catItems .menuItem').on('click', function(){
+			pageRedirect("item.php?cidx="+$(this).data('cidx')+"&iidx="+$(this).data('iidx'));
 			// Redirect to Restaurant Menu Screen
 			// @TODO Take API data and filter into new API call for redirect
 		});
