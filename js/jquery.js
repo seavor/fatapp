@@ -30,6 +30,10 @@ $("document").ready(function() {
 			$('#loading').show();
 		}
 
+		$('[data-redirect]').on('click', function(){
+			pageRedirect($(this).data('redirect'));
+		});
+
 	// Popup and Hidden Menu Display Controls
 	////////////////////////////////////////////////////////////////////////
 
@@ -247,7 +251,7 @@ $("document").ready(function() {
 			$('#itemQuantity').show('400');
 		});
 
-		// // Change Action Button per Add/Edit step
+		// Change Action Button per Add/Edit step
 		// if (getRequest["item"] == 'edit') {
 		// 	$('#addToOrder').text('Edit Order');
 		// 	$('#itemOptions').prop('action', 'review.php?item=edited');
@@ -319,15 +323,6 @@ $("document").ready(function() {
 		// Show Delivery Addresses Popup
 		$('#tipButton').on('click', function(){
 			$('#tipMenu').toggle('400');
-		});
-
-		// Collapse Credit Card Fields if Pay w/ Cash option is Checked
-		$('#cashOption').on('change', function(){
-			if ($('#cashOption').prop('checked')) {
-				$('#payWithCredit').hide('400');
-			} else {
-				$('#payWithCredit').show('400');
-			};
 		});
 
 	// Create Account Prompt Screen	

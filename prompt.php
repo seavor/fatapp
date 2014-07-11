@@ -1,4 +1,5 @@
 <?php
+session_start();
 $pageTitle = 'Create Account';
 $pageClass = 'prompt';
 include 'includes/meta.php';

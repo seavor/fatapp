@@ -1,7 +1,52 @@
 <?php
+session_start();
 $pageTitle = 'Receipt';
 $pageClass = 'receipt';
 include 'includes/meta.php';
+
+// ORDER PROCESSING
+// *************************************************************************************
+include "ordrin/api.php";
+
+// $ordrin_api = new Ordrin\APIs('vwXYUSj_Bxl3UT-8xM7NAoHnEcVKM-OcrbPIvCzj5e4', Ordrin\APIs::TEST);
+
+$orderArray = array(
+	'rid'			  => $_SESSION['rid'],
+	'em' 			  => $_POST['email'],
+	'tray'			  => $_SESSION['tray'],
+	'tip' 			  => '0',
+	'first_name'      => $_POST['cardNameInput'],
+	'last_name'       => '',
+	'phone' 		  => $_POST['phonenumber'],
+	'addr' 			  => $_POST['addressLine'],
+	'addr2' 		  => $_POST['addressLine'],
+	'city' 			  => $_POST['city'],
+	'state' 		  => $_POST['state'],
+	'zip' 			  => $_POST['zip'],
+	'card_name'       => $_POST['cardNameInput'],
+	'card_number'     => $_POST['cardNumberInput'],
+	'card_cvv'        => $_POST['cvv'],
+	'card_expry'      => $_POST['expmonth'] . '/' . $_POST['expyear'],
+	'card_bill_addr'  => $_POST['billingLine1'],
+	'card_bill_addr2' => $_POST['billingLine2'],
+	'card_bill_city'  => $_POST['billingCity'],
+	'card_bill_state' => $_POST['billingState'],
+	'card_bill_zip'   => $_POST['billingZipcode'],
+	'card_bill_phone' => $_POST['phonenumber']
+);
+
+printR($orderArray);
+
+// $test = $ordrin_api->order_guest($orderArray);
+
+// SEND ORDER
+// *************************************************************************************
+$data = json_decode(file_get_contents($dbRoot.'delivery_list?datetime=ASAP&addr='.$_SESSION['addressLine'].'&city='.$_SESSION['city'].'&zip='.$_SESSION['zipcode']), true);
+
+
+
+
+
 ?>
 
 <!-- ************************************************************************************* -->

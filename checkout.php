@@ -1,4 +1,5 @@
 <?php
+session_start();
 $pageTitle = 'Checkout';
 $pageClass = 'checkout';
 include 'includes/meta.php';
@@ -9,7 +10,7 @@ include 'includes/meta.php';
         
 		<?php include 'includes/header.php'; ?>
 
-		<form id="checkoutForm" name="checkoutForm" action="prompt.php" method="post">
+		<form id="checkoutForm" name="checkoutForm" action="receipt.php" method="post">
 
 		<?php
 			// Simulate Logged In View w/ Saved Addresses
@@ -66,16 +67,16 @@ include 'includes/meta.php';
 					<h5>Enter Address:</h5>
 					<ul class="inputItems">
 						<li class="inputBox">
-							<input id="addressLineInput" name="addressLine" type="text" class="inputField" placeholder="Address Line" value="<?php echo $_SESSION['addressLine']; ?>">
+							<input id="addressLineInput" name="addressLine" type="text" class="inputField" placeholder="Address Line" value="<?php echo urldecode($_SESSION['addressLine']); ?>">
 						</li>
 						<li class="inputBox">
-							<input id="cityInput" name="city" type="text" class="inputField" placeholder="City" value="<?php echo $_SESSION['city']; ?>">
+							<input id="cityInput" name="city" type="text" class="inputField" placeholder="City" value="<?php echo urldecode($_SESSION['city']); ?>">
 						</li>
 						<li class="inputBox">
 							<input id="stateInput" name="state" type="text" class="inputField" placeholder="State" value="">
 						</li>
 						<li class="inputBox">
-							<input id="zipcodeInput" name="zipcode" type="number" class="inputField" placeholder="Zip Code" value="<?php echo $_SESSION['zipcode']; ?>">
+							<input id="zipcodeInput" name="zipcode" type="number" class="inputField" placeholder="Zip Code" value="<?php echo urldecode($_SESSION['zipcode']); ?>">
 						</li>
 						<?php if ($userLoggedIn) { ?>
 							<li class="inputBox">
@@ -97,15 +98,6 @@ include 'includes/meta.php';
 
 			<div class="inputArea">
 				<ul class="inputItems">
-					<li class="leftCheckbox">
-						<label id="payWithCash" for="cashOption">Pay with Cash
-							<input id="cashOption" name="payWithCash" type="checkbox">
-						</label>
-					</li>
-					<h5>Phone Number:</h5>
-					<li class="inputBox">
-						<input id="phoneNumberInput" name="phonenumber" type="number" class="inputField" placeholder="Phone Number">
-					</li>
 					<div id="payWithCredit">
 
 						<h5>Credit Card Info:</h5>
@@ -229,12 +221,19 @@ include 'includes/meta.php';
 						<li class="inputBox halfBox lastItem">
 							<input id="billZipcodeInput" name="billZipcode" type="number" class="inputField" placeholder="Zip Code">
 						</li>
-						<li class="saveField">
+						<!-- <li class="saveField">
 							<label for="saveCreditCard">Save this Card
 								<input id="saveCreditCard" name="saveCreditCard" type="checkbox">
 							</label>
-						</li>
+						</li> -->
 					</div>
+					<h5>Contact Info:</h5>
+					<li class="inputBox">
+						<input id="phoneNumberInput" name="phonenumber" type="number" class="inputField" placeholder="Phone Number">
+					</li>
+					<li class="inputBox">
+						<input id="emailInput" name="email" type="email" class="inputField" placeholder="Email">
+					</li>
 				</ul>
 			</div>
 

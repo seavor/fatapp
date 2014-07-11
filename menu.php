@@ -39,9 +39,6 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-echo $_SESSION['tray'];
-
-
 ?>
 
 <!-- Load Active Restaurant ID into Javascript -->
@@ -116,7 +113,7 @@ echo $_SESSION['tray'];
 
 				<!-- Show only once item has been added to order -->
 				<?php
-					if ($_GET['order']=='add') { ?>
+					if (!empty($_SESSION['tray'])) { ?>
 					<button id="reviewOrder" class="actionButton" type="button" data-redirect="review.php">Review Your Order</button>
 				<?php } ?>
 

@@ -1,4 +1,5 @@
 <?php
+session_start();
 $pageTitle = 'Review Order';
 $pageClass = 'review';
 include 'includes/meta.php';
