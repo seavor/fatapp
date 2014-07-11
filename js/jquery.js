@@ -30,6 +30,10 @@ $("document").ready(function() {
 			$('#loading').show();
 		}
 
+		$('[data-redirect]').on('click', function(){
+			pageRedirect($(this).data('redirect'));
+		});
+
 	// Popup and Hidden Menu Display Controls
 	////////////////////////////////////////////////////////////////////////
 
@@ -124,11 +128,11 @@ $("document").ready(function() {
 		});
 
 		// Populate Search field with GPS Data
-		$('#gpsButton').on('click', function(){
-			// Get phone GPS location
-			var gpsData = '40.735537, -73.990729';
-			$('#addressSearch').val('GPS: '+gpsData);
-		});
+		// $('#gpsButton').on('click', function(){
+		// 	// Get phone GPS location
+		// 	var gpsData = '40.735537, -73.990729';
+		// 	$('#addressSearch').val('GPS: '+gpsData);
+		// });
 
 		// Control Filter Menu Selection Checkboxes
 		$('#restFilters input').on('click', function(){
@@ -163,15 +167,16 @@ $("document").ready(function() {
 		});
 
 		// Hide Action Button until Address Entered
-		$('#restSearch button, #chooseAddress label').on('click', function(){
-			if ($('#addressSearch').prop('value').length > 0) {
-				$('.actionButton').removeClass('actionRequired');
-				$('#loginButton').addClass('actionRequired');
-			} else {
-				$('.actionButton').addClass('actionRequired');
-				$('#loginButton').removeClass('actionRequired');
-			};
-		});
+		// $('#restSearch button, #chooseAddress label').on('click', function(){
+
+		if ($('#addressLineHold').length && $('#addressLineHold').prop('value').length > 0) {
+			$('#searchRestaurants').removeClass('actionRequired');
+			// $('#loginButton').addClass('actionRequired');
+		} else {
+			$('#searchRestaurants').addClass('actionRequired');
+			// $('#loginButton').removeClass('actionRequired');
+		}
+		// });
 
 		// @TODO Ajax Login Action, Update Data Fields
 		$('#loginPopup button.okButton').on('click', function(){
@@ -186,6 +191,7 @@ $("document").ready(function() {
 		// @TODO
 
 		$('.restaurantListingItem[data-rid]').on('click', function(){
+			console.log('clicked');
 			pageRedirect('menu.php?rid=' + $(this).data('rid'));
 		});
 
@@ -216,12 +222,12 @@ $("document").ready(function() {
 			}
 		});
 
-		// // Menu Item Click Action
-		// $('.menuItem').on('click', function(){
-		// 	pageRedirect("item.php");
-		// 	// Redirect to Restaurant Menu Screen
-		// 	// @TODO Take API data and filter into new API call for redirect
-		// });
+		// Menu Item Click Action
+		$('.catItems .menuItem').on('click', function(){
+			pageRedirect("item.php?cidx="+$(this).data('cidx')+"&iidx="+$(this).data('iidx'));
+			// Redirect to Restaurant Menu Screen
+			// @TODO Take API data and filter into new API call for redirect
+		});
 
 	// Menu Item Screen
 	////////////////////////////////////////////////////////////////////////
@@ -245,7 +251,7 @@ $("document").ready(function() {
 			$('#itemQuantity').show('400');
 		});
 
-		// // Change Action Button per Add/Edit step
+		// Change Action Button per Add/Edit step
 		// if (getRequest["item"] == 'edit') {
 		// 	$('#addToOrder').text('Edit Order');
 		// 	$('#itemOptions').prop('action', 'review.php?item=edited');
@@ -291,9 +297,9 @@ $("document").ready(function() {
 
 		
 		// Proceed to Checkout
-		$('#checkout').on('click', function(){
-			pageRedirect("checkout.php");
-		});
+		// $('#checkout').on('click', function(){
+		// 	pageRedirect("checkout.php");
+		// });
 
 	// Checkout Screen
 	////////////////////////////////////////////////////////////////////////
@@ -317,15 +323,6 @@ $("document").ready(function() {
 		// Show Delivery Addresses Popup
 		$('#tipButton').on('click', function(){
 			$('#tipMenu').toggle('400');
-		});
-
-		// Collapse Credit Card Fields if Pay w/ Cash option is Checked
-		$('#cashOption').on('change', function(){
-			if ($('#cashOption').prop('checked')) {
-				$('#payWithCredit').hide('400');
-			} else {
-				$('#payWithCredit').show('400');
-			};
 		});
 
 	// Create Account Prompt Screen	

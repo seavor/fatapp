@@ -1,13 +1,22 @@
 <?php
+session_start();
 $pageTitle = 'Review Order';
 $pageClass = 'review';
 include 'includes/meta.php';
+?>
+
+<?php
+// get the restaurant menu for item extraction
+$data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_SESSION['rid']), true);
+
 ?>
 
 <!-- ************************************************************************************* -->
 	<div id="appContent">
         
 		<?php include 'includes/header.php'; ?>
+
+		<!-- @TODO: loop over tray string + match it to data to get back items -->
 
 		<div data-itemnumber='1' class="itemReview popupButton clearfix">
 			<h6>Farmer's Breakfast</h6>
@@ -28,7 +37,7 @@ include 'includes/meta.php';
 			</div>
 			<div class="itemPriceInfo">
 				<h6>Delivery Fee</h6>
-				<p>$2.00</p>
+				<p>$2.00</p> <!-- @TODO: make fee call -->
 			</div>
 			<div class="itemPriceInfo">
 				<h6>TOTAL</h6>
@@ -52,7 +61,7 @@ include 'includes/meta.php';
 		</div>
 
 
-		<button id="checkout" class="actionButton" type="submit">Procede to Checkout</button>
+		<button id="checkout" class="actionButton" data-redirect="checkout.php" type="submit">Proceed to Checkout</button>
 
 
 

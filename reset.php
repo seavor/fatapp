@@ -1,4 +1,5 @@
 <?php
+session_start();
 $pageTitle = 'Reset Password';
 $pageClass = 'reset';
 include 'includes/meta.php';

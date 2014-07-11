@@ -288,11 +288,6 @@ body.home #appContent {
 		margin: 50px 30px;
 	}
 
-		#addressField {
-			float: left;
-			width: 75%;
-		}
-
             #addressSearch {
                 text-transform: capitalize;
             }

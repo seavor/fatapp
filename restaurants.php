@@ -1,4 +1,5 @@
 <?php
+session_start();
 $pageTitle = 'Restaurants';
 $pageClass = 'restSearchPage';
 include 'includes/meta.php';
@@ -6,10 +7,12 @@ include 'includes/meta.php';
 
 <?php
 
-$data = json_decode(file_get_contents($dbRoot.'delivery_list?datetime=ASAP&addr=378%20Greenwich%20St&city=New%20York&zip=10013'), true);
-echo '<pre>';
-print_r($data);
-echo '</pre>';
+$_SESSION['addressLine'] = urlencode($_POST['addressLineHold']);
+$_SESSION['city'] = urlencode($_POST['cityHold']);
+$_SESSION['zipcode'] = trim($_POST['zipcodeHold']);
+
+$data = json_decode(file_get_contents($dbRoot.'delivery_list?datetime=ASAP&addr='.$_SESSION['addressLine'].'&city='.$_SESSION['city'].'&zip='.$_SESSION['zipcode']), true);
+
 ?>
 
 <!-- ************************************************************************************* -->
@@ -17,11 +20,11 @@ echo '</pre>';
         
 		<?php include 'includes/header.php'; ?>
 
-		<h2 id="restFilterButton" class="subHeader popupButton" data-button="restFilterButton">Menu Filter: All Menus</h2>
+		<h2 id="restFilterButton" class="subHeader popupButton" data-button="restFilter">Menu Filter: All Menus</h2>
 		
-		<div id="restFilters" class="popupMenu" data-popup="restFilterButton">
+		<div id="restFilters" class="popupMenu" data-popup="restFilter">
 			<div class="popupBox clearfix">
-				<h5>Menu Filter:</h5>
+				<h5>Menu Filter:</h5> <!-- @TODO Configure display filter -->
 				<ul class="popupItems">
 				<li>
 					<label for="restFilterAll">All Menus
@@ -48,12 +51,12 @@ echo '</pre>';
 			</div>
 		</div>
 
-
+		<!-- @TODO prompt for confirmation of last-order abandonment -->
 		<div id="openRestaurants" class="restListing">
 
 			<h6>Open &amp; Delivering</h6>
 
-			<?php $i = 0; while ($data[$i] ) { if ( $data[$i]['is_delivering'] == 1 ) { ?>
+			<?php $i = 0; while ($data[$i]) { if ( $data[$i]['is_delivering'] == 1 ) { ?>
 
 				<div class="restaurantListingItem" data-rid="<?php echo $data[$i]['id']; ?>">
 					<div class="topBox clearfix">
@@ -86,13 +89,12 @@ echo '</pre>';
 
 			<?php } $i++; } ?>
 
-
 		</div>
 
 		<div id="closedRestaurants" class="restListing">
 			<h6>Closed</h6>
 
-			<?php $i = 0; while ($data[$i] && $data[$i]['is_delivering'] == 0) { ?>
+			<?php $i = 0; while ($data[$i]) { if ( $data[$i]['is_delivering'] == 0 ) { ?>
 
 				<div class="restaurantListingItem" data-rid="<?php echo $data[$i]['id']; ?>">
 					<div class="topBox clearfix">
@@ -123,14 +125,9 @@ echo '</pre>';
 					</div>
 				</div>
 
-			<?php $i++; } ?>
+			<?php } $i++; } ?>
 
 		</div>
-
-
-
-
-
 
 	</div>
 <!-- ************************************************************************************* -->

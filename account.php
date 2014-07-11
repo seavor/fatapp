@@ -1,4 +1,5 @@
 <?php
+session_start();
 $pageTitle = 'My Account';
 $pageClass = 'account';
 include 'includes/meta.php';
