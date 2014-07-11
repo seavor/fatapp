@@ -293,9 +293,9 @@ $("document").ready(function() {
 
 		
 		// Proceed to Checkout
-		$('#checkout').on('click', function(){
-			pageRedirect("checkout.php");
-		});
+		// $('#checkout').on('click', function(){
+		// 	pageRedirect("checkout.php");
+		// });
 
 	// Checkout Screen
 	////////////////////////////////////////////////////////////////////////

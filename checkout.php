@@ -13,7 +13,7 @@ include 'includes/meta.php';
 
 		<?php
 			// Simulate Logged In View w/ Saved Addresses
-			$userLoggedIn = true;
+			$userLoggedIn = false;
 			if ($userLoggedIn == true) {
 		?>
 
@@ -66,13 +66,16 @@ include 'includes/meta.php';
 					<h5>Enter Address:</h5>
 					<ul class="inputItems">
 						<li class="inputBox">
-							<input id="addressLineInput" name="addressLine" type="text" class="inputField" placeholder="Address Line">
+							<input id="addressLineInput" name="addressLine" type="text" class="inputField" placeholder="Address Line" value="<?php echo $_SESSION['addressLine']; ?>">
 						</li>
 						<li class="inputBox">
-							<input id="cityInput" name="city" type="text" class="inputField" placeholder="City">
+							<input id="cityInput" name="city" type="text" class="inputField" placeholder="City" value="<?php echo $_SESSION['city']; ?>">
 						</li>
 						<li class="inputBox">
-							<input id="zipcodeInput" name="zipcode" type="number" class="inputField" placeholder="Zip Code">
+							<input id="stateInput" name="state" type="text" class="inputField" placeholder="State" value="">
+						</li>
+						<li class="inputBox">
+							<input id="zipcodeInput" name="zipcode" type="number" class="inputField" placeholder="Zip Code" value="<?php echo $_SESSION['zipcode']; ?>">
 						</li>
 						<?php if ($userLoggedIn) { ?>
 							<li class="inputBox">
