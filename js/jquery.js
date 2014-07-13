@@ -267,6 +267,24 @@ $("document").ready(function() {
 		// 	$('#itemOptions').prop('action', 'menu.php?order=add');
 		// };;
 
+		//$('#userChoices input:checked')
+
+		// On clicking OK for non-radio selector (validation)
+		$('.itemButton').on('click', function() {
+			var min = $(this).data('min');
+			var max = $(this).data('max');
+			var selected = $(this).parent().find(':checked').length;
+			if( min > selected) {
+				$(this).parent().find('.error').text('Must select at least '+min+' options');
+			} else if ( max < selected ) {
+				$(this).parent().find('.error').text('Must select at most '+max+' options');
+			} else {
+				$(this).parent().parent().toggle('400');
+				$('.actionButton').show('400');
+				$('.actionInfo').show('400');
+			}
+		})
+
 	// Review Order Screen
 	////////////////////////////////////////////////////////////////////////
 
@@ -389,7 +407,7 @@ $("document").ready(function() {
 		// Ok/Cancel Menu Popup Window Close Action & Action Button Toggle
 		$('.popupOk, .popupCancel').on('click', function(){
 			// If Button requires a User Action, Disregard and Keep Hidden
-			if (!$('actionButton').hasClass('actionRequired')) {
+			if (!$('actionButton').hasClass('actionRequired') && !$(this).hasClass('itemButton') ) {
 				$(this).parent().parent().toggle('400');
 				$('.actionButton').show('400');
 				$('.actionInfo').show('400');

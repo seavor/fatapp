@@ -489,6 +489,10 @@ h2.subHeader {
 /* Menu Item Screen
 /*****************************************************/
 
+.required {
+	color: red;
+}
+
 .menuItem.menuHead {
 	border-left: 0px;
 	background: lightgrey;

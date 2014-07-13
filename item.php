@@ -49,7 +49,7 @@ printR();
 			<?php
 				$i = 0;
 				while ($item['children'][$i]) {
-					$isRadio = ( $item['children'][$i]['min_child_select'] == 1 &&  $item['children'][$i]['min_child_select'] == 1); ?>
+					$isRadio = ( $item['children'][$i]['min_child_select'] == 1 &&  $item['children'][$i]['max_child_select'] == 1); ?>
 
 					<div data-option="opt<?php echo $item['children'][$i]['id']; ?>" class="itemOptions popupButton">
 						<h4>
@@ -61,6 +61,7 @@ printR();
 					<div data-popup="opt<?php echo $item['children'][$i]['id']; ?>" class="popupMenu <?php if($isRadio) { echo 'radioMenu'; }?>">
 						<div class="popupBox clearfix">
 							<h5><?php echo $item['children'][$i]['name']; ?></h5>
+							<p class="required error"></p>
 							<ul class="<?php if($isRadio) { echo 'dataItems'; } else { echo 'popupItems'; } ?>">
 								<?php foreach ($item['children'][$i]['children'] as $option) { ?>
 									<li>
@@ -76,8 +77,12 @@ printR();
 										</label>
 									</li>
 								<?php } ?>
-			               </ul>
-			               <?php if(!$isRadio) { echo '<button class="popupOk smallButton okButton" type="button">Ok</button>'; }?>
+							</ul>
+							<?php if(!$isRadio) {
+								echo '<button class="popupOk smallButton okButton itemButton" type="button" data-min="'.
+								$item['children'][$i]['min_child_select'].'" data-max="'.$item['children'][$i]['max_child_select'].
+								'">Ok</button>';
+							}?>
 						</div>
 					</div>
 
