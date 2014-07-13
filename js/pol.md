@@ -15,15 +15,6 @@ menu.php
 * show review order button only when at least one item has been added to the tray
 * remove the "confirm form resubmission" which happens on hitting back button on items page
 
-items.php
----------
-* don't show option header if there are no options for an item
-* either remove "Jay's Choices" completely, or put them into the DB
-* calculate price of selected item extras + total
-* allow for scroll on option categories with many options
-* add validation to option selection
-* show already selected choices
-
 review.php
 ----------
 * populate page, from the tray string:
