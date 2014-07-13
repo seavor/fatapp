@@ -49,58 +49,39 @@ printR();
 			<?php
 				$i = 0;
 				while ($item['children'][$i]) {
-					if ( $item['children'][$i]['min_child_select'] == 1 &&  $item['children'][$i]['min_child_select'] == 1) { ?>
+					$isRadio = ( $item['children'][$i]['min_child_select'] == 1 &&  $item['children'][$i]['min_child_select'] == 1); ?>
 
-						<div data-option="opt<?php echo $item['children'][$i]['id']; ?>" class="itemOptions popupButton">
-							<h4>
-								<?php echo $item['children'][$i]['name']; ?>
-								<?php if($item['children'][$i]['min_child_select'] > 0) { echo '<span class="required">*</span>'; } ?>
-							</h4>
-							<p class="itemOptionSelections"><!-- @TODO insert selected choices --></p>
+					<div data-option="opt<?php echo $item['children'][$i]['id']; ?>" class="itemOptions popupButton">
+						<h4>
+							<?php echo $item['children'][$i]['name']; ?>
+							<?php if($item['children'][$i]['min_child_select'] > 0) { echo '<span class="required">*</span>'; } ?>
+						</h4>
+						<p class="itemOptionSelections"><!-- @TODO insert selected choices --></p>
+					</div>
+					<div data-popup="opt<?php echo $item['children'][$i]['id']; ?>" class="popupMenu <?php if($isRadio) { echo 'radioMenu'; }?>">
+						<div class="popupBox clearfix">
+							<h5><?php echo $item['children'][$i]['name']; ?></h5>
+							<ul class="<?php if($isRadio) { echo 'dataItems'; } else { echo 'popupItems'; } ?>">
+								<?php foreach ($item['children'][$i]['children'] as $option) { ?>
+									<li>
+										<label for="_<?php echo $option['id']; ?>"><?php echo $option['name']; ?>
+											<input
+												id="_<?php echo $option['id']; ?>"
+												name="<?php echo $item['children'][$i]['id']; ?>"
+												value="<?php echo $option['id']; ?>"
+												type="<?php if($isRadio) { echo 'radio'; } else { echo 'checkbox'; }?>"
+												class=""
+											>
+											<p class="popupItemPrice">($<?php echo $option['price']; ?>)</p>
+										</label>
+									</li>
+								<?php } ?>
+			               </ul>
+			               <?php if(!$isRadio) { echo '<button class="popupOk smallButton okButton" type="button">Ok</button>'; }?>
 						</div>
-						<div data-popup="opt<?php echo $item['children'][$i]['id']; ?>" class="popupMenu radioMenu">
-							<div class="popupBox clearfix">
-								<h5><?php echo $item['children'][$i]['name']; ?></h5>
-								<ul class="dataItems">
-									<?php foreach ($item['children'][$i]['children'] as $option) { ?>
-										<li>
-											<label for="_<?php echo $option['id']; ?>"><?php echo $option['name']; ?>
-												<input id="_<?php echo $option['id']; ?>" name="<?php echo $item['children'][$i]['id']; ?>" value="<?php echo $option['id']; ?>" type="radio" class="">
-												<p class="popupItemPrice">($<?php echo $option['price']; ?>)</p>
-											</label>
-										</li>
-			              			<?php } ?>
-				               </ul>
-							</div>
-						</div>
+					</div>
 
-			<?php } else { ?>
-
-						<div data-option="opt<?php echo $item['children'][$i]['id']; ?>" class="itemOptions popupButton">
-							<h4>
-								<?php echo $item['children'][$i]['name']; ?>
-								<?php if($item['children'][$i]['min_child_select'] > 0) { echo '<span class="required">*</span>'; } ?>
-							</h4>
-						</div>
-						<div data-popup="opt<?php echo $item['children'][$i]['id']; ?>" class="popupMenu">
-							<div class="popupBox clearfix">
-								<h5><?php echo $item['children'][$i]['name']; ?></h5>
-								<p class="itemOptionSelections"><!-- @TODO insert selected choices --></p>
-								<ul class="popupItems">
-									<?php foreach ($item['children'][$i]['children'] as $option) { ?>
-										<li>
-											<label for="_<?php echo $option['id']; ?>"><?php echo $option['name']; ?>
-												<input id="_<?php echo $option['id']; ?>" name="<?php echo $item['children'][$i]['id']; ?>[]" value="<?php echo $option['id']; ?>" type="checkbox" class="">
-												<p class="popupItemPrice">($<?php echo $option['price']; ?>)</p>
-											</label>
-										</li>
-									<?php } ?>
-								</ul>
-								<button class="popupOk smallButton okButton" type="button">Ok</button>
-							</div>
-						</div>
-
-			<?php } $i++; } ?>
+			<?php $i++; } ?>
 
 <!--   *************************************************************************************************** -->
 			</div>

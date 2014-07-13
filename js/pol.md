@@ -19,10 +19,10 @@ items.php
 ---------
 * don't show option header if there are no options for an item
 * either remove "Jay's Choices" completely, or put them into the DB
-* have 1 instead of 2 foreach loops when showing the category options
 * calculate price of selected item extras + total
 * allow for scroll on option categories with many options
 * add validation to option selection
+* show already selected choices
 
 review.php
 ----------
