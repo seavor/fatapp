@@ -66,7 +66,15 @@ $data = json_decode(file_get_contents($dbRoot.'delivery_list?datetime=ASAP&addr=
 					<div class="bottomBox clearfix">
 						<div class="feeWrapper">
 							<p>Minimum Order: $<?php echo $data[$i]['mino']; ?></p>
-							<p>Delivery Fee: $x.00</p>
+							<p>
+								<?php
+									$cuisines = '';
+									foreach ($data[$i]['cu'] as $cuisine ) {
+										$cuisines .= $cuisine .', ';
+									}
+									echo trim($cuisines, ', ');
+								 ?>
+							</p>
 						</div>
 						<div class="appleRating">
 							<?php
@@ -104,7 +112,15 @@ $data = json_decode(file_get_contents($dbRoot.'delivery_list?datetime=ASAP&addr=
 					<div class="bottomBox clearfix">
 						<div class="feeWrapper">
 							<p>Minimum Order: $<?php echo $data[$i]['mino']; ?></p>
-							<p>Delivery Fee: $x.00</p>
+							<p>
+								<?php
+									$cuisines = '';
+									foreach ($data[$i]['cu'] as $cuisine ) {
+										$cuisines .= $cuisine .', ';
+									}
+									echo trim($cuisines, ', ');
+								 ?>
+							</p>
 						</div>
 						<div class="appleRating">
 							<?php
