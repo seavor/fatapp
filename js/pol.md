@@ -22,16 +22,17 @@ items.php
 * have 1 instead of 2 foreach loops when showing the category options
 * calculate price of selected item extras + total
 * allow for scroll on option categories with many options
+* add validation to option selection
 
 review.php
 ----------
 * populate page, from the tray string:
-** items
-** options
-** cost
-** amount
-** subtotal
-** fee
+	* items
+	* options
+	* cost
+	* amount
+	* subtotal
+	* fee
 * allow for tip input on this page?
 
 checkout.php
