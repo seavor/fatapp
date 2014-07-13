@@ -101,11 +101,15 @@ $("document").ready(function() {
 		// Update Address Input Data
 		$('#addressInputFields button.popupOk').on('click', function(){
 			// Assign Data to Hidden Hold Fields
-			$('#addressSearch').val($('#addressLineInput').val());
 			$('#nicknameHold').val($('#nicknameInput').val());
 			$('#addressLineHold').val($('#addressLineInput').val());
 			$('#cityHold').val($('#cityInput').val());
 			$('#zipcodeHold').val($('#zipcodeInput').val());
+			$('#addressSearch').val(
+				$('#addressLineHold').val() + ', ' +
+				$('#cityHold').val() + ', ' +
+				$('#zipcodeHold').val()
+			);
             
 			// If Save Address is Checked, AJAX Save Request on 'OK'
 			if ($('#saveAddress:checked').length == 1) {
@@ -120,7 +124,11 @@ $("document").ready(function() {
 		// Revert Address Field Data on 'Cancel'
 		$('#addressInputFields button.popupCancel').on('click', function(){
 			// Assign Data From Hidden Hold Fields
-			$('#addressSearch').val($('#addressLineHold').val());
+			$('#addressSearch').val(
+				$('#addressLineHold').val() + ', ' +
+				$('#cityHold').val() + ', ' +
+				$('#zipcodeHold').val()
+			);
 			$('#nicknameInput').val($('#nicknameHold').val());
 			$('#addressLineInput').val($('#addressLineHold').val());
 			$('#cityInput').val($('#cityHold').val());
