@@ -7,7 +7,7 @@
 	</div>
 
 
-	<div id="navButton" data-button="navBar">
+	<!-- <div id="navButton" data-button="navBar">
 		<img src="images/menu.png">
 	</div>
 
@@ -17,6 +17,6 @@
 				<a href="account.php">My Account</a>
 			</li>
 		</ul>
-	</div>
+	</div> -->
 
 </div>

@@ -10,38 +10,61 @@ include "ordrin/api.php";
 
 // $ordrin_api = new Ordrin\APIs('vwXYUSj_Bxl3UT-8xM7NAoHnEcVKM-OcrbPIvCzj5e4', Ordrin\APIs::TEST);
 
-$orderArray = array(
+$fields = array(
 	'rid'			  => $_SESSION['rid'],
 	'em' 			  => $_POST['email'],
 	'tray'			  => $_SESSION['tray'],
 	'tip' 			  => '0',
-	'first_name'      => $_POST['cardNameInput'],
-	'last_name'       => '',
+	'first_name'      => 'Jeremy',
+	'last_name'       => 'Letto',
+	'delivery_date'   => 'ASAP',
 	'phone' 		  => $_POST['phonenumber'],
 	'addr' 			  => $_POST['addressLine'],
 	'addr2' 		  => $_POST['addressLine'],
 	'city' 			  => $_POST['city'],
-	'state' 		  => $_POST['state'],
-	'zip' 			  => $_POST['zip'],
+	'state' 		  => 'NY',
+	'zip' 			  => '10013',
 	'card_name'       => $_POST['cardNameInput'],
-	'card_number'     => $_POST['cardNumberInput'],
-	'card_cvv'        => $_POST['cvv'],
-	'card_expry'      => $_POST['expmonth'] . '/' . $_POST['expyear'],
+	'card_number'     => '4111111111111111',
+	'card_cvc'        => $_POST['cvv'],
+	'card_expiry'      => $_POST['expmonth'] . '/' . $_POST['expyear'],
 	'card_bill_addr'  => $_POST['billingLine1'],
 	'card_bill_addr2' => $_POST['billingLine2'],
 	'card_bill_city'  => $_POST['billingCity'],
 	'card_bill_state' => $_POST['billingState'],
-	'card_bill_zip'   => $_POST['billingZipcode'],
+	'card_bill_zip'   => '10013',
 	'card_bill_phone' => $_POST['phonenumber']
 );
 
-printR($orderArray);
+$url = "https://o-test.ordr.in/o/".$_SESSION['rid']."?_auth=1,vwXYUSj_Bxl3UT-8xM7NAoHnEcVKM-OcrbPIvCzj5e4";
+
+// //url-ify the data for the POST
+foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+rtrim($fields_string, '&');
+
+//open connection
+$ch = curl_init();
+
+//set the url, number of POST vars, POST data
+curl_setopt($ch,CURLOPT_URL, $url);
+curl_setopt($ch,CURLOPT_POST, count($fields));
+curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+
+//execute post
+$result = curl_exec($ch);
+
+//close connection
+curl_close($ch);
+
+
+
+
 
 // $test = $ordrin_api->order_guest($orderArray);
 
 // SEND ORDER
 // *************************************************************************************
-$data = json_decode(file_get_contents($dbRoot.'delivery_list?datetime=ASAP&addr='.$_SESSION['addressLine'].'&city='.$_SESSION['city'].'&zip='.$_SESSION['zipcode']), true);
+// $data = json_decode(file_get_contents($dbRoot.'delivery_list?datetime=ASAP&addr='.$_SESSION['addressLine'].'&city='.$_SESSION['city'].'&zip='.$_SESSION['zipcode']), true);
 
 
 

@@ -30,7 +30,6 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo $siteRoot; ?>css/style.css" />
 		<script type="text/javascript" src="<?php echo $siteRoot; ?>js/jquery-1.8.3.min.js"></script>
 		<script type="text/javascript" src="<?php echo $siteRoot; ?>js/jquery.js"></script>
-		<script type="text/javascript" src="<?php echo $siteRoot; ?>js/pol.js"></script>
 
 			<!--[if lt IE 9]>
 				<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
