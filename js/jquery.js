@@ -232,7 +232,7 @@ $("document").ready(function() {
 
 		// Menu Item Click Action
 		$('.catItems .menuItem').on('click', function(){
-			pageRedirect("item.php?cidx="+$(this).data('cidx')+"&iidx="+$(this).data('iidx'));
+			pageRedirect("item.php?iid="+$(this).data('iid'));
 			// Redirect to Restaurant Menu Screen
 			// @TODO Take API data and filter into new API call for redirect
 		});

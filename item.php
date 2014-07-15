@@ -8,9 +8,15 @@ include 'includes/meta.php';
 <?php
 
 $data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_SESSION['rid']), true);
-$item = $data['menu'][$_GET['cidx']]['children'][$_GET['iidx']];
 
-printR();
+foreach ($data['menu'] as $categoryIter) {
+	foreach ($categoryIter['children'] as $itemIter) {
+		if($itemIter['id'] == $_GET['iid']) {
+			$item = $itemIter;
+			break 2;
+		}
+	}
+}
 
 ?>
 

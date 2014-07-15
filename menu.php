@@ -97,7 +97,7 @@ foreach ($_POST as $key => $value) {
 
 								<!-- Display each Category's Menu Item -->
 								<?php foreach ($value['children'] as $itemID => $items) { ?>
-									<div class="menuItem itemBest" data-cidx="<?php echo $catID; ?>"  data-iidx="<?php echo $itemID; ?>">
+									<div class="menuItem itemBest" data-iid="<?php echo $items['id']; ?>">
 										<h6><?php echo $items['name']; ?></h6>
 										<p class="itemPrice">$<?php echo $items['price']; ?></p>
 										<p class="itemDescription"><?php echo $items['descrip']; ?></p>
