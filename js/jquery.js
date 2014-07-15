@@ -200,7 +200,7 @@ $("document").ready(function() {
 
 		$('.restaurantListingItem[data-rid]').on('click', function(){
 			console.log('clicked');
-			pageRedirect('menu.php?rid=' + $(this).data('rid'));
+			pageRedirect('menu.php?rid=' + $(this).data('rid') + '&clearTray=true');
 		});
 
 	// Restraunt Menu Screen
@@ -232,7 +232,7 @@ $("document").ready(function() {
 
 		// Menu Item Click Action
 		$('.catItems .menuItem').on('click', function(){
-			pageRedirect("item.php?cidx="+$(this).data('cidx')+"&iidx="+$(this).data('iidx'));
+			pageRedirect("item.php?iid="+$(this).data('iid'));
 			// Redirect to Restaurant Menu Screen
 			// @TODO Take API data and filter into new API call for redirect
 		});

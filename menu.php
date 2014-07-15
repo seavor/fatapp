@@ -13,6 +13,10 @@ $_SESSION['rid'] = $_GET['rid'];
 $data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_SESSION['rid']), true);
 // printR($_POST);
 
+if ($_GET['clearTray']) {
+	$_SESSION['tray'] = '';
+}
+
 // Identify Item Added to Tray
 if ($_POST['itemAdded']) {
 	$_SESSION['tray'] .= '+' . $_POST['itemAdded'] . '/' . $_POST['itemQuantity'];
@@ -38,6 +42,10 @@ foreach ($_POST as $key => $value) {
 		}
 	}
 }
+
+echo $_SESSION['tray'];
+
+printR($_POST);
 
 ?>
 
@@ -97,7 +105,7 @@ foreach ($_POST as $key => $value) {
 
 								<!-- Display each Category's Menu Item -->
 								<?php foreach ($value['children'] as $itemID => $items) { ?>
-									<div class="menuItem itemBest" data-cidx="<?php echo $catID; ?>"  data-iidx="<?php echo $itemID; ?>">
+									<div class="menuItem itemBest" data-iid="<?php echo $items['id']; ?>">
 										<h6><?php echo $items['name']; ?></h6>
 										<p class="itemPrice">$<?php echo $items['price']; ?></p>
 										<p class="itemDescription"><?php echo $items['descrip']; ?></p>
