@@ -13,6 +13,10 @@ $_SESSION['rid'] = $_GET['rid'];
 $data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_SESSION['rid']), true);
 // printR($_POST);
 
+if ($_GET['clearTray']) {
+	$_SESSION['tray'] = '';
+}
+
 // Identify Item Added to Tray
 if ($_POST['itemAdded']) {
 	$_SESSION['tray'] .= '+' . $_POST['itemAdded'] . '/' . $_POST['itemQuantity'];
@@ -38,6 +42,10 @@ foreach ($_POST as $key => $value) {
 		}
 	}
 }
+
+echo $_SESSION['tray'];
+
+printR($_POST);
 
 ?>
 

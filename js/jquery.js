@@ -200,7 +200,7 @@ $("document").ready(function() {
 
 		$('.restaurantListingItem[data-rid]').on('click', function(){
 			console.log('clicked');
-			pageRedirect('menu.php?rid=' + $(this).data('rid'));
+			pageRedirect('menu.php?rid=' + $(this).data('rid') + '&clearTray=true');
 		});
 
 	// Restraunt Menu Screen

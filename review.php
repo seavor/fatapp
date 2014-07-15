@@ -9,6 +9,10 @@ include 'includes/meta.php';
 // get the restaurant menu for item extraction
 $data = json_decode(file_get_contents($dbRoot.'restaurant_details?rid=' . $_SESSION['rid']), true);
 
+$tray = $_SESSION['tray'];
+
+echo $tray;
+
 ?>
 
 <!-- ************************************************************************************* -->
