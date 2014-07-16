@@ -39,21 +39,3 @@ Login
 		<button class="popupOk smallButton okButton" type="button">Ok</button>
 	</div>
 </div> -->
-
-
-ITEM PAGE
-
-Jay's Choices
-
-<div id="jaysChoices" class="itemOptionsBox">
-	<h3>Jay's Choices:</h3>
-	<div data-option="optEggs" class="itemOptions">
-		<h4>Eggs</h4>
-		<p class="itemOptionSelections">Scrambled</p>
-		<div class="optionChosen"><!-- bg img --></div>
-	</div>
-	<div data-option="optPancakes" class="itemOptions">
-		<h4>Pancakes</h4>
-		<div class="optionChosen"><!-- bg img --></div>
-	</div>
-</div>

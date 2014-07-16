@@ -489,10 +489,6 @@ h2.subHeader {
 /* Menu Item Screen
 /*****************************************************/
 
-.required, .error {
-	color: red;
-}
-
 .menuItem.menuHead {
 	border-left: 0px;
 	background: lightgrey;
@@ -559,7 +555,6 @@ h2.subHeader {
 
 				p.itemOptionSelections {
 					font-size: 12px;
-					font-style: italic;
 				}
 
 #itemQuantity .inputBox {
@@ -696,10 +691,6 @@ h5.headerDivide  {
 		margin: 75px auto 0;
 		background: white;
 		border-radius: 5px;
-
-		/* To ensure popupBox never overflows below screen*/
-		max-height: 75%;
-		overflow: scroll;
 	}
 
 		.popupBox h5 {
