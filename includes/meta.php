@@ -1,4 +1,6 @@
 <!-- ******************************************* -->
+<!--      Prototype Version (made in a week)     -->
+<!-- ******************************************* -->
 	<?php
 
 		include 'includes/functions.php';
