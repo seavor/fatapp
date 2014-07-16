@@ -1,0 +1,98 @@
+<form id="restSearch" name="restSearch">
+
+	<div class="clearfix">
+		<div id="addressField" class="inputBox popupButton">
+			<input id="addressSearch" name="addressSearch" type="text" class="inputField" placeholder="enter address" required readonly ng-click="pickAddress()">
+		</div>
+	</div>
+
+	<button id="restFilterButton" class="bigButton popupButton" type="button">Filter: All Menus</button>
+
+	<div id="dailyFitTip">
+		<h3>Cardiello Fit Tip:</h3>
+		<p>An apple a day is a played out cliche.</p>
+    </div>
+
+	<div id="chooseAddress" class="popupMenu radioMenu">
+		<div class="popupBox clearfix">
+			<h5>Choose Address:</h5>
+			<ul class="dataItems">
+				<li>
+					<label for="_homeAddress" ng-click="chooseAddress()">Home
+						<input id="_homeAddress" name="chooseAddressOption" value="home" type="radio" class="">
+					</label>
+				</li>
+				<li>
+					<label for="_workAddress">Work
+						<input id="_workAddress" name="chooseAddressOption" value="work" type="radio" class="">
+					</label>
+				</li>
+				<li>
+					<label for="_friendAddress">Friend
+						<input id="_friendAddress" name="chooseAddressOption" value="friend" type="radio" class="">
+					</label>
+				</li>
+				<button id="addNewAddress" class="bigButton buttonCenter popupButton" type="button" ng-click="enterAddress()">New Address</button>
+			</ul>
+		</div>
+	</div>
+
+	<div id="addressInputFields" class="popupMenu">
+		<div class="popupBox clearfix">
+			<h5>Enter Address:</h5>
+			<ul class="inputItems">
+				<li class="inputBox">
+					<input id="addressLineInput" name="addressLine" type="text" class="inputField" placeholder="Address Line">
+				</li>
+				<li class="inputBox">
+					<input id="cityInput" name="city" type="text" class="inputField" placeholder="City">
+				</li>
+				<li class="inputBox">
+					<input id="zipcodeInput" name="zipcode" type="number" class="inputField" placeholder="Zip Code">
+				</li>
+				<li class="inputBox">
+					<input id="nicknameInput" name="nickname" type="text" class="inputField" placeholder="Nickname (optional)">
+				</li>
+				<li class="saveField disabledText">
+					<label for="saveAddress">Save this Address
+						<input id="saveAddress" name="saveAddress" type="checkbox" disabled>
+					</label>
+				</li>
+			</ul>
+			<button class="popupCancel smallButton cancelButton" type="button">Cancel</button>
+			<button class="popupOk smallButton okButton" type="button">Ok</button>
+		</div>
+	</div>
+
+	<div id="restFilters" class="popupMenu">
+		<div class="popupBox clearfix">
+			<ul class="popupItems">
+			<li>
+				<label for="restFilterAll">All Menus
+					<input id="restFilterAll" name="all" value="All Menus" type="checkbox" class="" checked>
+				</label>
+			</li>
+				<li>
+					<label for="restFilterBrunch">Brunch
+						<input id="restFilterBrunch" name="brunch" value="Brunch" type="checkbox" class="">
+					</label>
+				</li>
+				<li>
+					<label for="restFilterLunch">Lunch
+						<input id="restFilterLunch" name="lunch" value="Lunch" type="checkbox" class="">
+					</label>
+				</li>
+				<li>
+					<label for="restFilterDinner">Dinner
+						<input id="restFilterDinner" name="dinner" value="Dinner" type="checkbox" class="">
+					</label>
+				</li>
+			</ul>
+			<button class="popupOk smallButton okButton" type="button">Ok</button>
+		</div>
+	</div>
+
+	<!-- <button id="loginButton" class="existingUser actionButton" type="button">Login</button> -->
+	<button id="searchRestaurants" class="actionButton actionRequired" type="submit">Find Restraunts</button>
+
+</form>
