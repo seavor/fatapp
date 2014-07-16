@@ -101,15 +101,11 @@ $("document").ready(function() {
 		// Update Address Input Data
 		$('#addressInputFields button.popupOk').on('click', function(){
 			// Assign Data to Hidden Hold Fields
+			$('#addressSearch').val($('#addressLineInput').val());
 			$('#nicknameHold').val($('#nicknameInput').val());
 			$('#addressLineHold').val($('#addressLineInput').val());
 			$('#cityHold').val($('#cityInput').val());
 			$('#zipcodeHold').val($('#zipcodeInput').val());
-			$('#addressSearch').val(
-				$('#addressLineHold').val() + ', ' +
-				$('#cityHold').val() + ', ' +
-				$('#zipcodeHold').val()
-			);
             
 			// If Save Address is Checked, AJAX Save Request on 'OK'
 			if ($('#saveAddress:checked').length == 1) {
@@ -124,11 +120,7 @@ $("document").ready(function() {
 		// Revert Address Field Data on 'Cancel'
 		$('#addressInputFields button.popupCancel').on('click', function(){
 			// Assign Data From Hidden Hold Fields
-			$('#addressSearch').val(
-				$('#addressLineHold').val() + ', ' +
-				$('#cityHold').val() + ', ' +
-				$('#zipcodeHold').val()
-			);
+			$('#addressSearch').val($('#addressLineHold').val());
 			$('#nicknameInput').val($('#nicknameHold').val());
 			$('#addressLineInput').val($('#addressLineHold').val());
 			$('#cityInput').val($('#cityHold').val());
@@ -200,7 +192,7 @@ $("document").ready(function() {
 
 		$('.restaurantListingItem[data-rid]').on('click', function(){
 			console.log('clicked');
-			pageRedirect('menu.php?rid=' + $(this).data('rid') + '&clearTray=true');
+			pageRedirect('menu.php?rid=' + $(this).data('rid'));
 		});
 
 	// Restraunt Menu Screen
@@ -232,7 +224,7 @@ $("document").ready(function() {
 
 		// Menu Item Click Action
 		$('.catItems .menuItem').on('click', function(){
-			pageRedirect("item.php?iid="+$(this).data('iid'));
+			pageRedirect("item.php?cidx="+$(this).data('cidx')+"&iidx="+$(this).data('iidx'));
 			// Redirect to Restaurant Menu Screen
 			// @TODO Take API data and filter into new API call for redirect
 		});
@@ -256,19 +248,7 @@ $("document").ready(function() {
 
 		// Item Order Quantity Prompt and Add
 		$('#addToOrder').on('click', function(){
-			if( $('.mustChoose').length === 0 ) {
-				$('#itemQuantity').show('400');
-				$('html, body').animate({
-			        scrollTop: $("#appContent").offset().top
-			    }, 400);
-				$('button.actionButton').hide('400');
-				$('.actionInfo').hide('400');
-			console.log('popup');
-			} else {
-				$('.itemError').text('Not all required choices have been made!');
-				$('.actionButton').show('400');
-				$('.actionInfo').show('400');
-			}
+			$('#itemQuantity').show('400');
 		});
 
 		// Change Action Button per Add/Edit step
@@ -278,58 +258,6 @@ $("document").ready(function() {
 		// } else {
 		// 	$('#itemOptions').prop('action', 'menu.php?order=add');
 		// };;
-
-		//$('#userChoices input:checked')
-
-		function extraItemPrice() {
-			var extraAmt = 0;
-			var base = parseFloat($('#itemBasePrice').text());
-			$('#userChoices input:checked').each(function(i) {
-				extraAmt += parseFloat($(this).data('price'));
-			});
-			$('#itemExtraPrice').text('$' + extraAmt.toFixed(2));
-			$('#itemTotalPrice').text('$' + (extraAmt + parseFloat($('#itemBasePrice').text().slice(1))).toFixed(2));
-		}
-
-		// On clicking OK for non-radio selector (validation)
-		$('.itemButton').on('click', function() {
-			var min = $(this).data('min');
-			var max = $(this).data('max');
-			var selected = $(this).parent().find(':checked');
-			if( min > selected.length ) {
-				$(this).parent().find('.error').text('Must select at least '+min+' options');
-			} else if ( max < selected.length ) {
-				$(this).parent().find('.error').text('Must select at most '+max+' options');
-			} else {
-				// show selected options' name
-				var optionNames = '';
-				selected.each( function(i) {
-					optionNames += $(selected[i]).parent().find('.name').text() + ', ';
-				});
-				optionNames = optionNames.slice(0,-2);
-				var optId = $(this).parent().parent().data('popup');
-				$('div').filter('[data-option='+optId+']').find('.itemOptionSelections').text(optionNames);
-				$(this).parent().parent().toggle('400');
-				$('.actionButton').show('400');
-				$('.actionInfo').show('400');
-
-				// unmark requirement
-				$(this).parent().removeClass('mustChoose');
-
-				extraItemPrice();
-			}
-		});
-
-		// similar deal for ratio button
-		$('.radioMenu input[type=radio]').on('click', function(){
-			// display selected next to category
-			var optionName = $(this).parent().find('.name').text();
-			var optId = $(this).parent().parent().parent().parent().parent().data('popup'); // ugh.
-			$('div').filter('[data-option='+optId+']').find('.itemOptionSelections').text(optionName);
-			// unmark the requirement, if any
-			$(this).parent().parent().parent().parent().removeClass('mustChoose');
-			extraItemPrice();
-        });
 
 	// Review Order Screen
 	////////////////////////////////////////////////////////////////////////
@@ -453,7 +381,7 @@ $("document").ready(function() {
 		// Ok/Cancel Menu Popup Window Close Action & Action Button Toggle
 		$('.popupOk, .popupCancel').on('click', function(){
 			// If Button requires a User Action, Disregard and Keep Hidden
-			if (!$('actionButton').hasClass('actionRequired') && !$(this).hasClass('itemButton') ) {
+			if (!$('actionButton').hasClass('actionRequired')) {
 				$(this).parent().parent().toggle('400');
 				$('.actionButton').show('400');
 				$('.actionInfo').show('400');
