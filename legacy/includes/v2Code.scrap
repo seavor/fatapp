@@ -1,0 +1,59 @@
+HOME PAGE
+Login 
+
+<!-- <div id="loginPopup" class="popupMenu">
+	<div class="popupBox clearfix">
+		<h5>Login:</h5>
+		<ul class="inputItems">
+			<li class="inputBox">
+				<input id="emailLogin" name="emailLogin" type="text" class="inputField" placeholder="Email">
+			</li>
+			<li class="inputBox">
+				<input id="passwordLogin" name="passwordLogin" type="password" class="inputField" placeholder="Password">
+			</li>
+			<li class="reverseLeftCheckbox">
+				<label id="autoLogin" for="autoLoginInput">Automatically Log Me In
+					<input id="autoLoginInput" name="autoLogin" type="checkbox">
+				</label>
+			</li>
+		</ul>
+
+		<p id="forgotPasswordButton" class="afterLink popupButton">Forgot Password?</p>
+
+		<button class="popupCancel smallButton cancelButton" type="button">Cancel</button>
+		<button class="popupOk smallButton okButton" type="button">Ok</button>
+		<button id="signupButton" class="bigButton buttonCenter" type="button">Sign Up</button>
+
+	</div>
+</div> -->
+
+<!-- <div id="forgotPassword" class="popupMenu">
+	<div class="popupBox clearfix">
+		<h5>Request Reset Email:</h5>
+		<ul class="inputItems">
+			<li class="inputBox">
+				<input id="emailRetrieval" name="emailRetrieval" type="email" class="inputField" placeholder="Email">
+			</li>
+		</ul>
+		<button class="popupCancel smallButton cancelButton" type="button">Cancel</button>
+		<button class="popupOk smallButton okButton" type="button">Ok</button>
+	</div>
+</div> -->
+
+
+ITEM PAGE
+
+Jay's Choices
+
+<div id="jaysChoices" class="itemOptionsBox">
+	<h3>Jay's Choices:</h3>
+	<div data-option="optEggs" class="itemOptions">
+		<h4>Eggs</h4>
+		<p class="itemOptionSelections">Scrambled</p>
+		<div class="optionChosen"><!-- bg img --></div>
+	</div>
+	<div data-option="optPancakes" class="itemOptions">
+		<h4>Pancakes</h4>
+		<div class="optionChosen"><!-- bg img --></div>
+	</div>
+</div>

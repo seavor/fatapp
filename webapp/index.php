@@ -9,8 +9,10 @@
 		<link rel="icon" href="images/header/favicon.png" sizes="16x16" type="image/png">
 		<link rel="stylesheet" type="text/css" href="css/normalize.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
+		<script type="text/javascript" src="js/angular.min.js"></script>
+		<script type="text/javascript" src="js/angular-route.min.js"></script>
 		<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
-		<script type="text/javascript" src="js/jquery.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>
 
 			<!--[if lt IE 9]>
 				<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
