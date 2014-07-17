@@ -1,4 +1,4 @@
-<h2 id="restFilterButton" class="subHeader popupButton" data-button="restFilter">Menu Filter: All Menus</h2>
+<h2 id="restFilterButton" class="subHeader popupButton">Menu Filter: All Menus</h2>
 
 <!-- insert restFilters modal -->
 
@@ -10,8 +10,8 @@
 	<!-- ng-repeat -->
 	<div class="restaurantListingItem" data-rid="{{rid}}">
 		<div class="topBox clearfix">
-			<h5>{{na}}</h5>
-			<p class="distanceAway">0.3m</p>
+			<h5>{{name}}</h5>
+			<p class="distanceAway">{{distance}}</p>
 		</div>
 		<div class="bottomBox clearfix">
 			<div class="feeWrapper">
@@ -36,8 +36,8 @@
 	<!-- ng-repeat -->
 	<div class="restaurantListingItem" data-rid="{{rid}}">
 		<div class="topBox clearfix">
-			<h5>{{na}}</h5>
-			<p class="distanceAway">0.3m</p>
+			<h5>{{name}}</h5>
+			<p class="distanceAway">{{distance}}</p>
 		</div>
 		<div class="bottomBox clearfix">
 			<div class="feeWrapper">
@@ -55,3 +55,9 @@
 	</div>
 
 </div>
+
+<!-- 
+@TODO
+
+convert double-loop into single
+ -->
