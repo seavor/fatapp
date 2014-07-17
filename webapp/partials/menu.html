@@ -1,0 +1,51 @@
+<div id="menuContent">
+
+	<div id="menuHeader" class="restaurantListingItem" data-rid="{{rid}}">
+		<div class="topBox clearfix">
+			<h5>{{na}}</h5>
+			<p class="distanceAway">0.3m</p>
+		</div>
+		<div class="bottomBox clearfix">
+			<div class="feeWrapper">
+				<p>Minimum Order: ${{mino}}}</p>
+				<p>{{cuisines}}</p>
+			</div>
+			<div class="appleRating">
+				<div class="appleWrapper">
+					<img src="images/apple{{ratingx}}.png">
+					<img src="images/apple{{ratingy}}.png">
+					<img src="images/apple{{ratingz}}.png">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id='menuTip' class="healthTips">
+		<h4>Jay's Tips</h4>
+		<p>{{restTip}}</p>
+	</div>
+
+	<!-- Display each Category -->
+	<div id="menuCategories">
+		<div class="catPanel">
+			<h3>{{catName}}</h3>
+			<div class="catItems">
+				<div class="healthTips">
+					<p>{{catTip}}</p>
+				</div>
+
+				<!-- Display each Category's Menu Item -->
+				<div class="menuItem itemBest" data-iid="{{iid}}">
+					<h6>{{itemName}}</h6>
+					<p class="itemPrice">${{itemPrice}}</p>
+					<p class="itemDescription">{{itemDescription}}</p>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- Show only once item has been added to order -->
+	<button id="reviewOrder" class="actionButton" type="button" data-redirect="review.php">Review Your Order</button>
+
+</div>

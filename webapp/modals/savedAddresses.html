@@ -1,0 +1,23 @@
+<div id="chooseAddress" class="popupMenu radioMenu">
+	<div class="popupBox clearfix">
+		<h5>Choose Address:</h5>
+		<ul class="dataItems">
+			<li>
+				<label for="_homeAddress" ng-click="chooseAddress()">Home
+					<input id="_homeAddress" name="chooseAddressOption" value="home" type="radio" class="">
+				</label>
+			</li>
+			<li>
+				<label for="_workAddress">Work
+					<input id="_workAddress" name="chooseAddressOption" value="work" type="radio" class="">
+				</label>
+			</li>
+			<li>
+				<label for="_friendAddress">Friend
+					<input id="_friendAddress" name="chooseAddressOption" value="friend" type="radio" class="">
+				</label>
+			</li>
+			<button id="addNewAddress" class="bigButton buttonCenter popupButton" type="button" ng-click="enterAddress()">New Address</button>
+		</ul>
+	</div>
+</div>

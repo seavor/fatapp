@@ -1,0 +1,51 @@
+<form id="itemOptions" name="itemOptions" action="menu.php?rid={{rid}}" method="post">
+
+	<div class="menuItem itemBest" data-iid="{{iid}}">
+		<h6>{{itemName}}</h6>
+		<p class="itemPrice">${{itemPrice}}</p>
+		<p class="itemDescription">{{itemDescription}}</p>
+		<p class="error itemError"></p>
+	</div>
+
+	<div id="userChoices" class="itemOptionsBox">
+
+		<h3>Been good lately? Treat yourself:</h3>
+
+		<div data-option="opt{{oid}}" class="itemOptions popupButton">
+			<h4>{{optionName}}</h4>
+			<p class="itemOptionSelections"><!-- @TODO insert selected choices --></p>
+		</div>
+		
+		<div data-popup="opt{{oid}}" class="popupMenu {{isRadio}}">
+			<div class="popupBox clearfix {{mustChoose}} ?>">
+				<h5>{{optionName}}</h5>
+				<p class="error"></p>
+				<ul class="{{itemType}}"> <!-- dataItems or popupItems -->
+					<li>
+						<label for="_{{cid}}"> <!-- choice id ($option['id'] from legacy) -->
+							<span class="name">{{choiceName}}</span>
+							<input
+								id="_{{sid}}"
+								name="{{?????}}"
+								value="{{sid}}"
+								type="{{isType}}"
+								class=""
+								data-price="{{selectionPrice}}"
+							>
+							<p class="popupItemPrice">(${{selectionPrice}})</p>
+						</label>
+					</li>
+				</ul>
+				<button class="popupOk smallButton okButton itemButton" type="button" data-min="{{minSelect}}" data-max="{{maxSelect}}">Ok</button>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- insert quantity modal -->
+
+	<!-- insert actionInfo partial -->
+
+	<button id="addToOrder" class="actionButton" type="button">Add to Order</button>
+
+</form>
