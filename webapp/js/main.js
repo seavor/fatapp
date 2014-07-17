@@ -3,58 +3,6 @@
 	// Helper Functions
 	////////////////////////////////////////////////////////////////////////
 
-		
-
-
-	// Popup and Hidden Menu Display Controls
-	////////////////////////////////////////////////////////////////////////
-
-
-
-
-	// MenuBar
-	////////////////////////////////////////////////////////////////////////
-
-
-
-	// Home Screen
-	////////////////////////////////////////////////////////////////////////
-
-		
-
-
-	// Restaurant Search Screen
-	////////////////////////////////////////////////////////////////////////
-
-		
-
-	// Restraunt Menu Screen
-	////////////////////////////////////////////////////////////////////////
-
-		
-
-	// Menu Item Screen
-	////////////////////////////////////////////////////////////////////////
-
-		
-
-	// Review Order Screen
-	////////////////////////////////////////////////////////////////////////
-
-		
-
-	// Checkout Screen
-	////////////////////////////////////////////////////////////////////////
-
-
-
-	// Create Account Prompt Screen	
-	////////////////////////////////////////////////////////////////////////
-
-
-	// Button Actions
-	////////////////////////////////////////////////////////////////////////
-
 
 
     // jQuery Helpers (to be replaced as much as possible)
@@ -74,7 +22,12 @@
 	////////////////////////////////////////////////////////////////////////
 
 	// Declare App Module
-	var app = angular.module('app', ['ngRoute']);
+	var app = angular.module('app', ['ngRoute', 'ui.bootstrap']);
+
+	// Declare App Services
+	app.factory('ControllerStorage', function(){
+		return {};
+	});
 
 	// Page Routes
 	app.config(['$routeProvider',
@@ -91,54 +44,80 @@
 	      });
 	  }]);
 
+	// General App Controls
+	app.controller('AppCtrl', function($scope, ControllerStorage){
+
+
+		$scope.displayModal = false;
+		$scope.url = '';
+
+
+		$scope.popupModal = function(popup){
+			$scope.url = popup;
+			$scope.displayModal = true;
+		}
+
+
+
+
+
+
+	});
+
+	
+
 	    // Home Page (Search)
 		////////////////////////////////////////////////////////////////////
+
 		app.controller('SearchCtrl', function($scope){
 			
 			// Open Saved Address Popup (popup)
 			$scope.pickAddress = function(){
-				$('#chooseAddress').fadeIn('250');
+				// $('#chooseAddress').fadeIn('250');
 			};
 
 			// Open New Address Popup (popup)
 			$scope.enterAddress = function(){
-				$('#addressInputFields').fadeIn('250');
+				// $('#addressInputFields').fadeIn('250');
 			};
 
 			$scope.chooseAddress = function(){
-
 				// If Selected From Saved Address
 				if (true) {
 
 				// Else If manual entry
 				} else {
 
-
 				};;
-
-
 			};
 
 
 
-
-
-
-
-
-
-		});
-
-		// Abstracted Popup Behavior Controls
-		app.controller('popupCtrl', function($scope){
-
-			console.log(this);
-
 		});
 
 
 
 
+		// app.directive('savedAddresses', function(){
+		// 	return {
+		// 		restrict: 'E',
+		// 		templateUrl: 'modals/savedAddresses.html'
+
+
+
+		// 	}
+		// });
+
+
+
+
+
+		// // Abstracted Popup Behavior Controls
+		// app.controller('popupCtrl', function($scope){
+
+		// 	console.log(this);
+
+		// });
 
 
 
@@ -146,20 +125,11 @@
 
 
 
-		// Test
-		app.controller('appCtrl', function($scope){
 
 
 
-			$scope.hiMe = function(){
-				alert('Hi there!');
-			}
 
-			$scope.pageTitle = "test";
-
-			$scope.clickMessage = "click me";
-
-		});
+		
 
 
 
