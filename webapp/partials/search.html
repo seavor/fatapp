@@ -1,17 +1,17 @@
-<div ng-include src="'partials/header.html'"></div>
-
 <div id="restSearch">
 
 	<div id="addressField" class="inputBox popupButton">
-		<input id="addressSearch" name="addressSearch" type="text" class="inputField" placeholder="enter address" required readonly>
+		<input id="addressSearch" name="addressSearch" type="text" class="inputField popupButton" placeholder="enter address" required readonly ng-click='popupModal("savedAddresses")'>
 	</div>
 
-	<button id="restFilterButton" class="bigButton popupButton" type="button">Filter: All Menus</button>
+	<button id="restFilterButton" class="bigButton popupButton" type="button" ng-click='popupModal("restFilters")'>Filter: All Menus</button>
 
 	<div id="dailyFitTip">
 		<h3>Cardiello Fit Tip:</h3>
 		<p>An apple a day is a played out cliche.</p>
     </div>
+
+    <div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
 
 	<!-- insert savedAddresses modal -->
 
@@ -24,3 +24,5 @@
 	<button id="searchRestaurants" class="actionButton actionRequired" type="button">Find Restraunts</button>
 
 </div>
+
+<div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
