@@ -106,7 +106,7 @@
 			};
 
 			$scope.chooseAddress = function(){
-				
+
 				// If Selected From Saved Address
 				if (true) {
 
@@ -132,7 +132,7 @@
 		// Abstracted Popup Behavior Controls
 		app.controller('popupCtrl', function($scope){
 
-
+			console.log(this);
 
 		});
 

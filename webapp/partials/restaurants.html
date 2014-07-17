@@ -1,0 +1,57 @@
+<h2 id="restFilterButton" class="subHeader popupButton" data-button="restFilter">Menu Filter: All Menus</h2>
+
+<!-- insert restFilters modal -->
+
+<!-- @TODO prompt for confirmation of last-order abandonment -->
+<div id="openRestaurants" class="restListing">
+
+	<h6>Open &amp; Delivering</h6>
+
+	<!-- ng-repeat -->
+	<div class="restaurantListingItem" data-rid="{{rid}}">
+		<div class="topBox clearfix">
+			<h5>{{na}}</h5>
+			<p class="distanceAway">0.3m</p>
+		</div>
+		<div class="bottomBox clearfix">
+			<div class="feeWrapper">
+				<p>Minimum Order: ${{mino}}}</p>
+				<p>{{cuisines}}</p>
+			</div>
+			<div class="appleRating">
+				<div class="appleWrapper">
+					<img src="images/apple{{ratingx}}.png">
+					<img src="images/apple{{ratingy}}.png">
+					<img src="images/apple{{ratingz}}.png">
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div id="closedRestaurants" class="restListing">
+	<h6>Closed</h6>
+
+	<!-- ng-repeat -->
+	<div class="restaurantListingItem" data-rid="{{rid}}">
+		<div class="topBox clearfix">
+			<h5>{{na}}</h5>
+			<p class="distanceAway">0.3m</p>
+		</div>
+		<div class="bottomBox clearfix">
+			<div class="feeWrapper">
+				<p>Minimum Order: ${{mino}}}</p>
+				<p>{{cuisines}}</p>
+			</div>
+			<div class="appleRating">
+				<div class="appleWrapper">
+					<img src="images/apple{{ratingx}}.png">
+					<img src="images/apple{{ratingy}}.png">
+					<img src="images/apple{{ratingz}}.png">
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>

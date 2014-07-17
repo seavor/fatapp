@@ -1,0 +1,15 @@
+<div id="itemQuantity" class="popupMenu">
+	<div class="popupBox clearfix">
+		<h5>Enter Quantity:</h5>
+		<div class="inputBox">
+			<select class="selectNumber inputField" name="itemQuantity">
+				<option value="1" default>1</option>
+			    <?php for ($i = 2; $i <= 10; $i++) { ?>
+			        <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+			    <?php } ?>
+			</select>
+		</div>
+		<button class="popupCancel smallButton cancelButton" type="button">Cancel</button>
+		<button for="itemOptions" class="popupOk smallButton okButton" type="submit">Ok</button>
+	</div>
+</div>
