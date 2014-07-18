@@ -1,7 +1,15 @@
 <div id="restSearch">
 
 	<div id="addressField" class="inputBox popupButton">
-		<input id="addressSearch" name="addressSearch" type="text" class="inputField popupButton" placeholder="enter address" required readonly ng-click='popupModal("savedAddresses")'>
+		<input
+			id="addressSearch"
+			name="addressSearch"
+			type="text"
+			class="inputField popupButton"
+			placeholder="enter address"
+			ng-model="addressDisplay"
+			required readonly
+			ng-click='popupModal("savedAddresses")'>
 	</div>
 
 	<button id="restFilterButton" class="bigButton popupButton" type="button" ng-click='popupModal("restFilters")'>Filter: All Menus</button>

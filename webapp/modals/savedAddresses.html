@@ -3,11 +3,11 @@
 		<h5>Choose Address:</h5>
 		<ul class="dataItems">
 			<li>
-				<label for="_{{addressName}}" ng-click="chooseAddress({{aid}})">Home
-					<input id="_{{addressName}}" name="chooseAddressOption" value="{{addressName}}" type="radio" class="">
+				<label for="_addressName" ng-click="chooseAddress('aid')">Home
+					<input id="_addressName" name="chooseAddressOption" value="addressName" type="radio" class="">
 				</label>
 			</li>
-			<button id="addNewAddress" class="bigButton buttonCenter popupButton" type="button" ng-click="enterAddress()">New Address</button>
+			<button id="addNewAddress" class="bigButton buttonCenter popupButton" type="button" ng-click="popupModal('enterAddress')">New Address</button>
 		</ul>
 	</div>
 </div>
