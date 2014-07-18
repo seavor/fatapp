@@ -38,6 +38,10 @@
 	        templateUrl: 'partials/search.html',
 	        controller: 'SearchCtrl'
 	      }).
+	      when('/restaurants', {
+	        templateUrl: 'partials/restaurants.html',
+	        controller: 'RestaurantsCtrl'
+	      }).
 	      // Reroute to Home Sceen
 	      otherwise({
 	        redirectTo: '/search'
@@ -45,7 +49,7 @@
 	  }]);
 
 	// General App Controls
-	app.controller('AppCtrl', function($scope, $http, ControllerStorage){
+	app.controller('AppCtrl', function($scope, $http, $location, ControllerStorage){
 
 		// initialize service to bind its data (+ share across controllers)
 		$scope.storage = ControllerStorage;
@@ -74,76 +78,103 @@
 
 	
 
-	    // Home Page (Search)
-		////////////////////////////////////////////////////////////////////
+    // Home Page (Search)
+	////////////////////////////////////////////////////////////////////
 
-		app.controller('SearchCtrl', function($scope, $http, ControllerStorage){
+	app.controller('SearchCtrl', function($scope, $http, $location, ControllerStorage){
 
-			$scope.displayRestButton = false;
+		$scope.storage = ControllerStorage;
 
-			// init variables for address form
-			$scope.addrForm = {};
-			$scope.addrForm.addressLine = '';
-			$scope.addrForm.city = '';
-			$scope.addrForm.zipcode = '';
-			$scope.addrForm.nickname = '';
+		$scope.displayRestButton = false;
 
-			$scope.addressDisplay ='';
+		// init variables for address form
+		$scope.addrForm = {};
+		$scope.addrForm.addressLine = '';
+		$scope.addrForm.city = '';
+		$scope.addrForm.zipcode = '';
+		$scope.addrForm.nickname = '';
 
-
-			// Save New Address
-			$scope.saveAddress = function() {
-				$scope.storage.addrLine = $scope.addrForm.addressLine;
-				$scope.storage.city = $scope.addrForm.city;
-				$scope.storage.zipcode = $scope.addrForm.zipcode;
-				$scope.storage.nickname = $scope.addrForm.nickname;
-				// TODO: store if user logged in
-				$scope.closeModal();
-				$scope.addressDisplay = $scope.storage.addrLine + ', ' + $scope.storage.city + ', ' + $scope.storage.zipcode;
-				$scope.displayRestButton = true;
-			};
-			
-			// Open Saved Address Popup (popup)
-			$scope.pickAddress = function(){
-				// $('#chooseAddress').fadeIn('250');
-			};
+		$scope.addressDisplay ='';
 
 
-			$scope.chooseAddress = function(){
-				// If Selected From Saved Address
-				if (true) {
-
-				// Else If manual entry
-				} else {
-
-				};;
-			};
-
-			// Find restaurants
-			$scope.findRestaurants = function(){
-				var reqUrl = 'http://r-test.ordr.in/dl/ASAP/'
-					+ $scope.storage.zipcode + '/'
-					+ $scope.storage.city + '/'
-					+ $scope.storage.addrLine + '?_auth=1,vwXYUSj_Bxl3UT-8xM7NAoHnEcVKM-OcrbPIvCzj5e4&callback=JSON_CALLBACK';
-				reqUrl = encodeURI(reqUrl);
-				console.log(reqUrl);
-
-				$http.jsonp( reqUrl )
-					.success( function( data, status, header, config ) {
-						console.log('SUCCESS');
-						console.log(data);
-						// TODO: save data into storage, redirect to next page
-					})
-					.error( function( data, status, header, config ) {
-						console.log(':(');
-						console.log(data);
-					});
-			};
+		// Save New Address
+		$scope.saveAddress = function() {
+			$scope.storage.addrLine = $scope.addrForm.addressLine;
+			$scope.storage.city = $scope.addrForm.city;
+			$scope.storage.zipcode = $scope.addrForm.zipcode;
+			$scope.storage.nickname = $scope.addrForm.nickname;
+			// TODO: store if user logged in
+			$scope.closeModal();
+			$scope.addressDisplay = $scope.storage.addrLine + ', ' + $scope.storage.city + ', ' + $scope.storage.zipcode;
+			$scope.displayRestButton = true;
+		};
+		
+		// Open Saved Address Popup (popup)
+		$scope.pickAddress = function(){
+			// $('#chooseAddress').fadeIn('250');
+		};
 
 
+		$scope.chooseAddress = function(){
+			// If Selected From Saved Address
+			if (true) {
 
-		});
+			// Else If manual entry
+			} else {
 
+			};;
+		};
+
+		// Find restaurants
+		$scope.findRestaurants = function(){
+			var reqUrl = 'http://r-test.ordr.in/dl/ASAP/'
+				+ $scope.storage.zipcode + '/'
+				+ $scope.storage.city + '/'
+				+ $scope.storage.addrLine + '?_auth=1,vwXYUSj_Bxl3UT-8xM7NAoHnEcVKM-OcrbPIvCzj5e4&callback=JSON_CALLBACK';
+			reqUrl = encodeURI(reqUrl);
+			console.log(reqUrl);
+
+			$http.jsonp( reqUrl )
+				.success( function( data, status, header, config ) {
+					console.log('SUCCESS');
+					console.log(data);
+					// TODO: save data into storage, redirect to next page
+				})
+				.error( function( data, status, header, config ) {
+					console.log(':(');
+					console.log(data);
+				});
+
+			$location.path('/restaurants');
+		};
+
+
+
+	});
+
+
+	// Restaurants List Page
+	////////////////////////////////////////////////////////////////////
+
+	app.controller('RestaurantsCtrl', function($scope, $http, $location, ControllerStorage){
+
+		$scope.storage = ControllerStorage;
+
+
+		$scope.rid = 123;
+		$scope.name = 'Name';
+		$scope.distance = '42 mi';
+		$scope.mino = '$10.00';
+		$scope.cuisines = 'American';
+
+		$scope.serviceDemo = $scope.storage.addrLine;
+
+
+		
+
+
+
+	});
 
 
 
