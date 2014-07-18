@@ -1,7 +1,7 @@
-<div id="addressInputFields" class="popupMenu">
+<div id="addressInputFields" class="popupMenu" ng-controller="EnterAddressCtrl">
 	<div class="popupBox clearfix">
 		<h5>Enter Address:</h5>
-		<form ng-submit="saveAddress()">
+		<form ng-submit="storeAddress()">
 			<label class="inputBox">
 				<input id="addressLineInput" name="addressLine" type="text" ng-model="addrForm.addressLine" class="inputField" required placeholder="Address Line">
 			</label>
@@ -11,16 +11,16 @@
 			<label class="inputBox">
 				<input id="zipcodeInput" name="zipcode" type="number" class="inputField" ng-model="addrForm.zipcode" required placeholder="Zip Code">
 			</label>
-			<label class="inputBox">
+			<label class="inputBox" ng-show="userLoggedIn()">
 				<input id="nicknameInput" name="nickname" type="text" class="inputField" ng-model="addrForm.nickname" placeholder="Nickname (optional)">
 			</label>
-			<div class="saveField disabledText">
+			<div class="saveField disabledText" ng-show="userLoggedIn()">
 				<label for="saveAddress">Save this Address
 					<input id="saveAddress" name="saveAddress" type="checkbox" ng-model="addrForm.saveAddress" disabled>
-				</label>
+				</label> <!-- @TODO if checked, call saveAddress() -->
 			</div>
 			<button class="popupCancel smallButton cancelButton" ng-click="closeModal()" type="button">Cancel</button>
-			<input type="submit" class="popupOk smallButton okButton" id="submit" value="Submit" />
+			<input type="submit" class="popupOk smallButton okButton" id="submit" value="Ok" />
 			<!-- <button class="popupOk smallButton okButton" type="button" ng-click="saveAddress()">Ok</button> -->
 		</form>
 	</div>

@@ -8,8 +8,9 @@
 			class="inputField popupButton"
 			placeholder="enter address"
 			ng-model="addressDisplay"
+			ng-click='popupModal(selectAddress())'
 			required readonly
-			ng-click='popupModal("savedAddresses")'>
+		>
 	</div>
 
 	<button id="restFilterButton" class="bigButton popupButton" type="button" ng-click='popupModal("restFilters")'>Filter: All Menus</button>
@@ -19,8 +20,8 @@
 		<p>An apple a day is a played out cliche.</p>
     </div>
 
-	<!-- <button id="loginButton" class="existingUser actionButton" type="button">Login</button> -->
-	<button id="searchRestaurants" class="actionButton actionRequired" ng-click='findRestaurants()' type="button" ng-show="displayRestButton">Find Restraunts</button>
+	<!-- <button id="loginButton" class="existingUser actionButton" type="button" ng-hide="userLoggedIn()">Login</button> -->
+	<button id="searchRestaurants" class="actionButton actionRequired" ng-click='findRestaurants()' type="button" ng-show="displayRestButton()">Find Restraunts</button>
 
 </div>
 
