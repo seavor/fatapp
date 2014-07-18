@@ -54,7 +54,6 @@
 		// initialize service to bind its data (+ share across controllers)
 		$scope.storage = ControllerStorage;
 
-
 		$scope.displayModal = false;
 		$scope.url = '';
 
