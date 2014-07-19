@@ -1,14 +1,14 @@
 <div id="menuContent">
 
-	<div id="menuHeader" class="restaurantListingItem" data-rid="{{rid}}">
+	<div id="menuHeader" class="restaurantListingItem">
 		<div class="topBox clearfix">
-			<h5>{{name}}</h5>
+			<h5>{{menu.name}}</h5>
 			<p class="distanceAway">{{distance}}</p>
 		</div>
 		<div class="bottomBox clearfix">
 			<div class="feeWrapper">
-				<p>Minimum Order: ${{mino}}}</p>
-				<p>{{cuisines}}</p>
+				<p>Minimum Order: ${{restaurant.services.deliver.mino}}</p>
+				<p><span ng-repeat="filter in restaurant.filters">{{filter}}, </p>
 			</div>
 			<div class="appleRating">
 				<div class="appleWrapper">
@@ -20,25 +20,25 @@
 		</div>
 	</div>
 
-	<div id='menuTip' class="healthTips">
+	<div ng-show="mainTip" id='menuTip' class="healthTips">
 		<h4>Jay's Tips</h4>
-		<p>{{restTip}}</p>
+		<p>{{menu.tip}}</p>
 	</div>
 
 	<!-- Display each Category -->
-	<div id="menuCategories">
+	<div id="menuCategories" ng-repeat="category in menu.menu">
 		<div class="catPanel">
-			<h3>{{catName}}</h3>
-			<div class="catItems">
+			<h3 ng-click="accordionSelect(category.id)">{{category.name}}</h3>
+			<div ng-show="accordionShow == category.id" class="catItems">
 				<div class="healthTips">
-					<p>{{catTip}}</p>
+					<p>{{category.tip}}</p>
 				</div>
 
 				<!-- Display each Category's Menu Item -->
-				<div class="menuItem itemBest" data-iid="{{iid}}">
-					<h6>{{itemName}}</h6>
-					<p class="itemPrice">${{itemPrice}}</p>
-					<p class="itemDescription">{{itemDescription}}</p>
+				<div class="menuItem itemBest" ng-repeat="item in category.children" ng-click='viewItem(item.id)'>
+					<h6>{{item.name}}</h6>
+					<p class="itemPrice">${{item.price}}</p>
+					<p class="itemDescription">{{item.descrip}}</p>
 				</div>
 
 			</div>

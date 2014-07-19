@@ -9,39 +9,13 @@
 
 	<h3>Been good lately? Treat yourself:</h3>
 
-	<div data-option="opt{{oid}}" class="itemOptions popupButton">
+	<div class="itemOptions popupButton">
 		<h4>{{optionName}}</h4>
 		<p class="itemOptionSelections"><!-- @TODO insert selected choices --></p>
 	</div>
 
-	<div data-popup="opt{{oid}}" class="popupMenu {{isRadio}}">
-		<div class="popupBox clearfix {{mustChoose}} ?>">
-			<h5>{{optionName}}</h5>
-			<p class="error"></p>
-			<ul class="{{itemType}}"> <!-- dataItems or popupItems (why did i put this comment??) -->
-				<li>
-					<label for="_{{sid}}"> <!-- selection id ($option['id'] from legacy) -->
-						<span class="name">{{selectionName}}</span>
-						<input
-							id="_{{sid}}"
-							name="{{ ??? item[children][i][id] ??? }}" 
-							value="{{sid}}"
-							type="{{isType radio/check}}"
-							class=""
-							data-price="{{selectionPrice}}"
-						>
-						<p class="popupItemPrice">(${{selectionPrice}})</p>
-					</label>
-				</li>
-			</ul>
-			<button class="popupOk smallButton okButton itemButton" type="button" data-min="{{minSelect}}" data-max="{{maxSelect}}">Ok</button>
-		</div>
-	</div>
-
 </div>
 
-<!-- insert quantity modal -->
-
-<!-- insert actionInfo partial -->
-
 <button id="addToOrder" class="actionButton" type="button">Add to Order</button>
+
+<div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>

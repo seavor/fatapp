@@ -3,7 +3,7 @@
 		id="filterSearch"
 		name="filterSearch"
 		type="text"
-		class="bigButton popupButton"
+		class="inputField popupButton"
 		placeholder="Filter: All Menus"
 		ng-model="filterDisplay"
 		ng-click='popupModal("restFilters")'
@@ -14,61 +14,43 @@
 <!-- insert restFilters modal -->
 
 <!-- @TODO prompt for confirmation of last-order abandonment -->
+
 <div id="openRestaurants" class="restListing">
 
 	<div>{{serviceDemo}}</div>
 
 	<h6>Open &amp; Delivering</h6>
 
-	<!-- ng-repeat -->
-	<div class="restaurantListingItem" data-rid="{{rid}}">
-		<div class="topBox clearfix">
-			<h5>{{name}}</h5>
-			<p class="distanceAway">{{distance}}</p>
-		</div>
-		<div class="bottomBox clearfix">
-			<div class="feeWrapper">
-				<p>Minimum Order: ${{mino}}}</p>
-				<p>{{cuisines}}</p>
+	<div ng-repeat="restaurant in restaurantList">
+
+		<!-- ng-repeat -->
+		<div class="restaurantListingItem" ng-click="viewMenu(restaurant.id)">
+			<div class="topBox clearfix">
+				<h5>{{restaurant.na}}</h5>
+				<p class="distanceAway">{{distance}}</p>
 			</div>
-			<div class="appleRating">
-				<div class="appleWrapper">
-					<img src="images/apple{{ratingx}}.png">
-					<img src="images/apple{{ratingy}}.png">
-					<img src="images/apple{{ratingz}}.png">
+			<div class="bottomBox clearfix">
+				<div class="feeWrapper">
+					<p>Minimum Order: ${{restaurant.services.deliver.mino}}</p>
+					<p><span ng-repeat="filter in restaurant.filters">{{filter}}, </p>
+				</div>
+				<div class="appleRating">
+					<div class="appleWrapper">
+						<img src="images/apple{{ratingx}}.png">
+						<img src="images/apple{{ratingy}}.png">
+						<img src="images/apple{{ratingz}}.png">
+					</div>
 				</div>
 			</div>
 		</div>
+
 	</div>
 
 </div>
 
-<div id="closedRestaurants" class="restListing">
-	<h6>Closed</h6>
-
-	<!-- ng-repeat -->
-	<div class="restaurantListingItem" data-rid="{{rid}}">
-		<div class="topBox clearfix">
-			<h5>{{name}}</h5>
-			<p class="distanceAway">{{distance}}</p>
-		</div>
-		<div class="bottomBox clearfix">
-			<div class="feeWrapper">
-				<p>Minimum Order: ${{mino}}}</p>
-				<p>{{cuisines}}</p>
-			</div>
-			<div class="appleRating">
-				<div class="appleWrapper">
-					<img src="images/apple{{ratingx}}.png">
-					<img src="images/apple{{ratingy}}.png">
-					<img src="images/apple{{ratingz}}.png">
-				</div>
-			</div>
-		</div>
-	</div>
+<!-- @TODO work in closed restraunts -->
 
 </div>
-
 <div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
 
 <!-- 
