@@ -1,29 +1,29 @@
-<div id="restFilters" class="popupMenu" ng-controller="RestFiltersCtrl">
+<div id="restFilters" class="popupMenu" ng-controller="RestFilterCtrl">
 	<div class="popupBox clearfix">
 		<form ng-submit="filterSelection()">
 			<ul class="popupItems">
 			<li>
 				<label for="restFilterAll">All Menus
-					<input id="restFilterAll" name="all" ng-model="filterForm.all" value="All Menus" type="checkbox" class="" checked>
+					<input id="restFilterAll" name="all" ng-model="filterForm.all" ng-change="filterControl('all')" value="All Menus" type="checkbox" class="".>
 				</label>
 			</li>
 				<li>
 					<label for="restFilterBrunch">Brunch
-						<input id="restFilterBrunch" name="brunch" ng-model="filterForm.brunch" value="Brunch" type="checkbox" class="">
+						<input id="restFilterBrunch" name="brunch" ng-model="filterForm.brunch" ng-change="filterControl('brunch')" value="Brunch" type="checkbox" class="">
 					</label>
 				</li>
 				<li>
 					<label for="restFilterLunch">Lunch
-						<input id="restFilterLunch" name="lunch" ng-model="filterForm.lunch" value="Lunch" type="checkbox" class="">
+						<input id="restFilterLunch" name="lunch" ng-model="filterForm.lunch" ng-change="filterControl('lunch')" value="Lunch" type="checkbox" class="">
 					</label>
 				</li>
 				<li>
 					<label for="restFilterDinner">Dinner
-						<input id="restFilterDinner" name="dinner" ng-model="filterForm.dinner" value="Dinner" type="checkbox" class="">
+						<input id="restFilterDinner" name="dinner" ng-model="filterForm.dinner" ng-change="filterControl('dinner')" value="Dinner" type="checkbox" class="">
 					</label>
 				</li>
 			</ul>
+			<button class="popupOk smallButton okButton" type="submit">Ok</button>
 		</form>
-		<button class="popupOk smallButton okButton" type="submit">Ok</button>
 	</div>
 </div>

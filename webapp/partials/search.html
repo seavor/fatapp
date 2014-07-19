@@ -13,7 +13,17 @@
 		>
 	</div>
 
-	<button id="restFilterButton" class="bigButton popupButton" type="button" ng-click='popupModal("restFilters")'>Filter: All Menus</button>
+	<div id="restFilterButton" class="inputBox popupButton">
+		<input
+			id="filterSearch"
+			name="filterSearch"
+			type="text"
+			class="bigButton popupButton"
+			ng-model="filterDisplay"
+			ng-click='popupModal("restFilters")'
+			required readonly
+		>
+	</div>
 
 	<div id="dailyFitTip">
 		<h3>Cardiello Fit Tip:</h3>
