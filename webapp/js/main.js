@@ -154,6 +154,17 @@ app.config(['$routeProvider',
 
 	});
 
+	app.controller('OptionsCtrl', function($rootScope, $scope, ControllerStorage){
+
+		$scope.storage = ControllerStorage;
+		$scope.option = $scope.storage.activeOption;
+
+
+	    console.log($scope.option.children);
+
+
+	});
+
 	
     // Home Page (Search)
 	////////////////////////////////////////////////////////////////////
@@ -3136,7 +3147,251 @@ app.config(['$routeProvider',
 
 	app.controller('ItemCtrl', function($scope, $http, $location, ControllerStorage){
 
-		
+		$scope.storage = ControllerStorage;
+
+		$scope.item = {
+	        "additional_fee": "0.00",
+	        "availability": [
+	            0
+	        ],
+	        "children": [
+	            {
+	                "additional_fee": "0.00",
+	                "children": [
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025922",
+	                        "is_orderable": "1",
+	                        "name": " No Dressing",
+	                        "price": "0.00"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025923",
+	                        "is_orderable": "1",
+	                        "name": "Homemade Vinaigrette and Balsamic Dressing",
+	                        "price": "0.00"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025924",
+	                        "is_orderable": "1",
+	                        "name": "Ranch Dressing",
+	                        "price": "0.00"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025925",
+	                        "is_orderable": "1",
+	                        "name": "Caesar Dressing",
+	                        "price": "0.00"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025926",
+	                        "is_orderable": "1",
+	                        "name": "Bleu Cheese Dressing",
+	                        "price": "0.00"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025927",
+	                        "is_orderable": "1",
+	                        "name": "Creamy Italian Dressing",
+	                        "price": "0.00"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025928",
+	                        "is_orderable": "1",
+	                        "name": "French Dressing",
+	                        "price": "0.00"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025929",
+	                        "is_orderable": "1",
+	                        "name": "Honey Mustard Dressing",
+	                        "price": "0.00"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025930",
+	                        "is_orderable": "1",
+	                        "name": "Russian Dressing",
+	                        "price": "0.00"
+	                    }
+	                ],
+	                "descrip": "",
+	                "free_child_select": "0",
+	                "id": "19025921",
+	                "is_orderable": "0",
+	                "item_select_weight": "1",
+	                "max_child_select": "1",
+	                "max_free_child_select": "0",
+	                "min_child_select": "1",
+	                "name": "Choice of Salad Dressing",
+	                "price": "0.00"
+	            },
+	            {
+	                "additional_fee": "0.00",
+	                "children": [
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025932",
+	                        "is_orderable": "1",
+	                        "name": "Black Olives",
+	                        "price": "1.25"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025933",
+	                        "is_orderable": "1",
+	                        "name": "Cranberries",
+	                        "price": "1.25"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025934",
+	                        "is_orderable": "1",
+	                        "name": "Croutons",
+	                        "price": "1.25"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025935",
+	                        "is_orderable": "1",
+	                        "name": "Green Olives",
+	                        "price": "1.25"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025936",
+	                        "is_orderable": "1",
+	                        "name": "Hot Cherry Peppers",
+	                        "price": "1.75"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025937",
+	                        "is_orderable": "1",
+	                        "name": "Shaved Parmesan ",
+	                        "price": "1.75"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025938",
+	                        "is_orderable": "1",
+	                        "name": "Shredded Mozzarella",
+	                        "price": "1.75"
+	                    },
+	                    {
+	                        "additional_fee": "0.00",
+	                        "availability": [
+	                            0
+	                        ],
+	                        "descrip": "",
+	                        "id": "19025939",
+	                        "is_orderable": "1",
+	                        "name": "Walnuts",
+	                        "price": "1.25"
+	                    }
+	                ],
+	                "descrip": "",
+	                "free_child_select": "0",
+	                "id": "19025931",
+	                "is_orderable": "0",
+	                "item_select_weight": "1",
+	                "max_child_select": "8",
+	                "max_free_child_select": "0",
+	                "min_child_select": "0",
+	                "name": "Salad Extras",
+	                "price": "0.00"
+	            }
+	        ],
+	        "descrip": "",
+	        "id": "19025920",
+	        "is_orderable": "1",
+	        "name": "Tomato & Cucumber Salad",
+	        "price": "12.50",
+	        "rating": 1
+	    }
+
+	    $scope.optionPopup = function(option){
+	    	$scope.storage.activeOption = option;
+	    	$scope.popupModal('options');
+	    	
+	    };
+
+	    // Return if Radio Button
+	    $scope.isType = function(max){
+	    	if (max == 1) { return 'radio'; }
+	    	else { return 'checkbox'; };	
+	    };
 
 
 	});

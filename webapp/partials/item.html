@@ -1,7 +1,7 @@
 <div class="menuItem itemBest" data-iid="{{iid}}">
-	<h6>{{itemName}}</h6>
-	<p class="itemPrice">${{itemPrice}}</p>
-	<p class="itemDescription">{{itemDescription}}</p>
+	<h6>{{item.name}}</h6>
+	<p class="itemPrice">${{item.price}}</p>
+	<p class="itemDescription">{{item.descrip}}</p>
 	<p class="error itemError"></p>
 </div>
 
@@ -9,8 +9,8 @@
 
 	<h3>Been good lately? Treat yourself:</h3>
 
-	<div class="itemOptions popupButton">
-		<h4>{{optionName}}</h4>
+	<div class="itemOptions popupButton" ng-repeat="option in item.children" ng-click="optionPopup(option)">
+		<h4>{{option.name}}</h4>
 		<p class="itemOptionSelections"><!-- @TODO insert selected choices --></p>
 	</div>
 
