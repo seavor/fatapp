@@ -1,23 +1,22 @@
-<div data-popup="" class="popupMenu {{isRadio}}">
+<div data-popup="" class="popupMenu {{isRadio}}" ng-controller="OptionsCtrl">
 	<div class="popupBox clearfix {{mustChoose}} ?>">
-		<h5>{{optionName}}</h5>
+		<h5>{{option.name}}</h5>
 		<p class="error"></p>
 		<ul class="{{itemType}}"> <!-- dataItems or popupItems (why did i put this comment??) -->
-			<li>
-				<label for="_{{sid}}"> <!-- selection id ($option['id'] from legacy) -->
-					<span class="name">{{selectionName}}</span>
+			<li ng-repeat="choice in option.children">
+				<label for="_{{choice.id}}"> <!-- selection id ($option['id'] from legacy) -->
+					<span class="name">{{choice.name}}</span>
 					<input
-						id="_{{sid}}"
-						name="{{ ??? item[children][i][id] ??? }}" 
-						value="{{sid}}"
-						type="{{isType radio/check}}"
+						id="_{{choice.id}}"
+						name="{{ choice.name }}"
+						type="{{isType(option.max_child_select)}}"
 						class=""
-						data-price="{{selectionPrice}}"
+						data-price="{{choice.price}}"
 					>
-					<p class="popupItemPrice">(${{selectionPrice}})</p>
+					<p class="popupItemPrice">(${{choice.price}})</p>
 				</label>
 			</li>
 		</ul>
-		<button class="popupOk smallButton okButton itemButton" type="button" data-min="{{minSelect}}" data-max="{{maxSelect}}">Ok</button>
+		<button class="popupOk smallButton okButton itemButton" type="button" data-min="{{option.min_child_select}}" data-max="{{option.max_child_select}}">Ok</button>
 	</div>
 </div>
