@@ -1,4 +1,15 @@
-<h2 id="restFilterButton" class="subHeader popupButton">Menu Filter: All Menus</h2>
+<div id="restFilterButton" class="subHeader popupButton">
+	<input
+		id="filterSearch"
+		name="filterSearch"
+		type="text"
+		class="bigButton popupButton"
+		placeholder="Filter: All Menus"
+		ng-model="filterDisplay"
+		ng-click='popupModal("restFilters")'
+		required readonly
+	>
+</div>
 
 <!-- insert restFilters modal -->
 
@@ -57,6 +68,8 @@
 	</div>
 
 </div>
+
+<div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
 
 <!-- 
 @TODO
