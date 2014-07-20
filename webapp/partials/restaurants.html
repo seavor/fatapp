@@ -21,7 +21,7 @@
 
 	<h6>Open &amp; Delivering</h6>
 
-	<div ng-repeat="restaurant in restaurantList">
+	<div ng-repeat="restaurant in restaurantList | filter: restFilter ">
 
 		<!-- ng-repeat -->
 		<div class="restaurantListingItem" ng-click="viewMenu(restaurant.id)">

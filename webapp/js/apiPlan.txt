@@ -1,0 +1,25 @@
+* Delivery List (addr, city, zip)
+
+* Restaurant Details (rid)
+
+* Restaurant Fee (rid, subtotal, tip, [ASAP], zip, city, addr)
+
+* Order ( rid, traystring, tip(in dollars), [ASAP], firstname, lastname, addr, city, stat, zip, phone,
+	email, ccName, cc#, ccCVC, ccExiry(mm/yyyy), ccAddr, ccCity, ccState, ccZIp, ccPhone)
+
+
+== user stuff ==
+
+* create account
+
+* get saved addresses (for user)
+
+* create new address
+
+* get saved CCs
+
+* create new CC
+
+* order history (?)
+
+* login call

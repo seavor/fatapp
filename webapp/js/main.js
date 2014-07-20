@@ -1,21 +1,8 @@
-// jQuery Helpers (to be replaced as much as possible)
-	////////////////////////////////////////////////////////////////////////
-
-		// Hide Action Items during Popup Events, Scroll to Top
-		// $('.popupButton').on('click', function(){
-		// 	 $('html, body').animate({
-		//         scrollTop: $("#appContent").offset().top
-		//     }, 400);
-		// 	$('button.actionButton').hide('400');
-		// 	$('.actionInfo').hide('400');
-		// });
-
-
 // Angular Setup
 ////////////////////////////////////////////////////////////////////////
 
 // Declare App Module
-var app = angular.module('app', ['ngRoute', 'ui.bootstrap']);
+var app = angular.module('app', ['ngRoute']);
 
 // Declare App Services
 app.factory('ControllerStorage', function(){
@@ -89,10 +76,11 @@ app.config(['$routeProvider',
 		    {"aid":"001", "addressName":"Home", "addressLine":"392 Broadway", "city":"New York", "state":"NY", "zipcode":"10013"}, 
 		    {"aid":"002", "addressName":"Work", "addressLine":"920 Broadway", "city":"New York", "state":"NY", "zipcode":"10010"}, 
 		    {"aid":"003", "addressName":"School", "addressLine":"1480 Broadway", "city":"New York", "state":"NY", "zipcode":"10036"}
-		]
+		];
 
 		$scope.storage = ControllerStorage;
 		$scope.storage.addressList = $scope.addressList;
+
 	});
 
 	app.controller('EnterAddressCtrl', function($scope, $http, $location, ControllerStorage){
@@ -130,7 +118,7 @@ app.config(['$routeProvider',
 				$scope.storage.filterForm.brunch = false;
 				$scope.storage.filterForm.lunch = false;
 				$scope.storage.filterForm.dinner = false;
-			};
+			}
 
 			var filterDisp = 'Filter: ';
 			for(var filter in $scope.filterForm ) {
@@ -168,7 +156,9 @@ app.config(['$routeProvider',
 		$scope.storage = ControllerStorage;
 
 			// // init variables for address form
-			// $scope.addrForm = {};
+		// need this initialization, new address isn't picked up otherwise!
+		$scope.addrForm = {};
+		// but no need to init the object contents, though.
 			// $scope.addrForm.addressLine = '';
 			// $scope.addrForm.city = '';
 			// $scope.addrForm.zipcode = '';
@@ -309,8 +299,8 @@ app.config(['$routeProvider',
 		        "is_delivering": 0,
 		        "rating": 1,
 		        "filters" : [
-		        	"brunch",
-		        	"dinner"
+		        	"dinner",
+		        	"brunch"
 		        ]
 		    },
 		    {
@@ -397,7 +387,7 @@ app.config(['$routeProvider',
 		        	"dinner"
 		        ]
 		    }
-		] // End restaurantList
+		]; // End restaurantList
 
 		$scope.rid = 123;
 		$scope.name = 'Name';
@@ -408,10 +398,25 @@ app.config(['$routeProvider',
 		$scope.serviceDemo = $scope.storage.addrLine;
 
 		$scope.filterDisplay = $scope.storage.filterDisplay;
+		$scope.filterForm = $scope.storage.filterForm;
+
+		// Compare and Filter Restraunts
+		$scope.restFilter = function( rest ) {
+			if( $scope.filterForm.all ) {
+				return true;
+			}
+			for( var restType in rest.filters ) {
+				if( $scope.filterForm[ rest.filters[ restType ] ] ) {
+					return true;
+				}
+			}
+			return false;
+		};
 
 		// Keep Filtered Field Updated
 		$scope.$watch('storage.filterDisplay', function() {
 			$scope.filterDisplay = $scope.storage.filterDisplay;
+			$scope.filterForm = $scope.storage.filterForm;
 		});
 
 		$scope.ratingx = 1;
@@ -423,9 +428,6 @@ app.config(['$routeProvider',
 			$location.path('/menu');
 		};
 		
-
-
-
 	});
 
 	// Menu View Page
@@ -476,7 +478,7 @@ app.config(['$routeProvider',
 		        	"brunch",
 		        	"dinner"
 		        ]
-		    }
+		    };
 
 		$scope.ratingx = 1;
 		$scope.ratingy = 1;
@@ -3113,7 +3115,7 @@ app.config(['$routeProvider',
 		    "isActive": true,
 		    "tip": "When you exercise hard for 90 minutes or more, especially if you're doing something at high intensity that takes a lot of endurance, you need a diet that can help you perform at your peak and recover quickly afterward.",
 		    "rating": 3
-		}
+		};
 
 		$scope.mainTip = true;
 
@@ -3126,7 +3128,7 @@ app.config(['$routeProvider',
 			// If Accordion is open, close Main Tip
 			if ($scope.accordionShow > 0) { $scope.mainTip = false; }
 			// Otherwise, Show main tip
-			else { $scope.mainTip = true; };
+			else { $scope.mainTip = true; }
 		};
 
 		$scope.viewItem = function(iid){
@@ -3373,7 +3375,7 @@ app.config(['$routeProvider',
 	        "name": "Tomato & Cucumber Salad",
 	        "price": "12.50",
 	        "rating": 1
-	    }
+	    };
 
 	    $scope.optionPopup = function(option){
 	    	$scope.storage.activeOption = option;
@@ -3384,17 +3386,19 @@ app.config(['$routeProvider',
 	    // Return if Radio Button
 	    $scope.isType = function(min, max){
 	    	if (min == 1 && max == 1) { return 'radio'; }
-	    	else { return 'checkbox'; };	
+	    	else { return 'checkbox'; }
 	    };
-
 
 	});
 
 
 
+// @TODO Validation
 
-
-
+// min/max buttons (options)
+// all "required" options have been selected (item page)
+// address field validation (search + checkout / enterAddressCtrl modal)
+// show checkout button when order minimum reached (menu page)
 
 
 
