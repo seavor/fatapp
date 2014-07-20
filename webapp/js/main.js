@@ -99,8 +99,6 @@ app.config(['$routeProvider',
 
 		$scope.storage = ControllerStorage;
 
-		
-
 	});
 
 	app.controller('RestFilterCtrl', function($rootScope, $scope, ControllerStorage){
@@ -158,10 +156,6 @@ app.config(['$routeProvider',
 
 		$scope.storage = ControllerStorage;
 		$scope.option = $scope.storage.activeOption;
-
-
-	    console.log($scope.option.children);
-
 
 	});
 
@@ -3388,8 +3382,8 @@ app.config(['$routeProvider',
 	    };
 
 	    // Return if Radio Button
-	    $scope.isType = function(max){
-	    	if (max == 1) { return 'radio'; }
+	    $scope.isType = function(min, max){
+	    	if (min == 1 && max == 1) { return 'radio'; }
 	    	else { return 'checkbox'; };	
 	    };
 
