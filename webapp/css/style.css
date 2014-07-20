@@ -688,6 +688,8 @@ h5.headerDivide  {
 	}
 	
 	.popupBox {
+		max-height: 75%;
+		overflow: scroll;
 		width: 80%;
 		padding: 10px;
 		margin: 75px auto 0;
