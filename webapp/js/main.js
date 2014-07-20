@@ -89,7 +89,7 @@ app.config(['$routeProvider',
 
 	});
 
-	app.controller('RestFilterCtrl', function($rootScope, $scope, ControllerStorage){
+	app.controller('RestFilterCtrl', function($scope, ControllerStorage){
 
 		$scope.storage = ControllerStorage;
 
@@ -140,11 +140,12 @@ app.config(['$routeProvider',
 
 	});
 
-	app.controller('OptionsCtrl', function($rootScope, $scope, ControllerStorage){
+	app.controller('OptionsCtrl', function($scope, ControllerStorage){
 
 		$scope.storage = ControllerStorage;
-		$scope.option = $scope.storage.activeOption;
-
+		$scope.$watch('storage.activeOption', function() {
+			$scope.option = $scope.storage.activeOption;
+		});
 	});
 
 	
@@ -5788,6 +5789,12 @@ app.config(['$routeProvider',
 			}
 		}
 
+		$scope.optionData = {};
+
+		$scope.optionsDisp = {};
+
+		$scope.optionErrMsg = '';
+
 
 	    $scope.optionPopup = function(option){
 	    	$scope.storage.activeOption = option;
@@ -5799,6 +5806,33 @@ app.config(['$routeProvider',
 	    $scope.isType = function(min, max){
 	    	if (min == 1 && max == 1) { return 'radio'; }
 	    	else { return 'checkbox'; }
+	    };
+
+	    $scope.storeOptions = function(min, max, optionId) {
+	    	// get # of chosen options
+	    	var selectedNum = 0;
+	    	for( var opt in $scope.optionData ) {
+	    		if( $scope.optionData.opt ) {
+	    			selectedNum += 1;
+	    		}
+	    	}
+	    	// number checking
+	    	if( selectedNum < min ) {
+	    		$scope.optionErrMsg = 'Need at least ' + min + ' options selected';
+	    	} else if( selectedNum > max ) {
+	    		$scope.optionErrMsg = 'Need at most ' + max + ' options selected';
+	    	} else {
+	    		// option # checks went through
+	    		// put in the names of the selected options
+	    		for( var opt in $scope.optionData ) {
+		    		if( $scope.optionData.opt ) {
+		    			$scope.optionsDisp[ optionId ] += $scope.optionData.opt + ', ';
+		    		}
+		    	}
+		    	// clear the error message
+	    		$scope.optionErrMsg = '';
+	    		$scope.closeModal();
+	    	}
 	    };
 
 	});
