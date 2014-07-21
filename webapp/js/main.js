@@ -5808,6 +5808,19 @@ app.config(['$routeProvider',
 	    	else { return 'checkbox'; }
 	    };
 
+	    //return the ng-model (diff-t whether radio or checkbox)
+	    $scope.isModel = function(option, choice){
+	    	if (option.min_child_select == 1 && option.max_child_select == 1) {
+	    		return $scope.optionData[ option.id ];
+	    	} else {
+	    		// ensure $scope.optionData[ option.id ] exists
+	    		$scope.optionData[ option.id ] = $scope.optionData[ option.id ] 
+	    			? $scope.optionData[ option.id ] : {};
+	    		return $scope.optionData[ option.id ][ choice.id ];
+
+	    	}
+	    };
+
 	    $scope.storeOptions = function(min, max, optionId) {
 	    	// get # of chosen options
 	    	var selectedNum = 0;

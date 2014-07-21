@@ -15,8 +15,8 @@
 							type="{{isType(option.min_child_select, option.max_child_select)}}"
 							class=""
 							ng-model="optionData[ option.id +'/'+ choice.id ]"
-							ng-true-value="{{ choice.price }}"
-							ng-value="{{ choice.price }}"
+							ng-true-value="{{ choice }}"
+							ng-value="{{ choice }}"
 						>
 						<p class="popupItemPrice">(${{choice.price}})</p>
 					</label>
@@ -26,3 +26,6 @@
 		</form>
 	</div>
 </div>
+
+
+<!-- ng-model="optionData[ option.id +'/'+ choice.id ]" -->
