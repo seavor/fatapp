@@ -4,9 +4,10 @@
 // Declare App Module
 var app = angular.module('app', ['ngRoute']);
 
-// Declare App Services
+// Declare sessionStorage
 app.factory('ControllerStorage', function(){
-	return {};
+	var db = window.sessionStorage;
+	return db;
 });
 
 // Page Routes
@@ -36,33 +37,62 @@ app.config(['$routeProvider',
       });
   }]);
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// General App Controls
 	////////////////////////////////////////////////////////////////////
+	
 	app.controller('AppCtrl', function($scope, $http, $location, ControllerStorage){
 
-		// initialize service to bind its data (+ share across controllers)
-		$scope.storage = ControllerStorage;
+		// Simulate User Loggin Status
+		$scope.userLoggedIn = function(){
+			return true;
+		};
 
-		// @TODO clear out storage on app start
+		// Modal Activation Controls
+		////////////////////////////////////////////////////////////////
 
 		// Initialize Modal Variables
 		$scope.displayModal = false;
-		// $scope.url = '';
+		$scope.url = '';
 
 		$scope.popupModal = function(popup){
 			$scope.url = popup;
 			$scope.displayModal = true;
 		};
 
+		$scope.switchModal = function(popup){
+			$scope.closeModal();
+			$scope.popupModal(popup);
+		};
+
 		$scope.closeModal = function() {
+			$scope.url = '';
 			$scope.displayModal = false;
 		};
 
-		// Simulate User Loggin Status
-		$scope.userLoggedIn = function(){
-			return true;
+		// Storage & Display Controls
+		////////////////////////////////////////////////////////////////
+
+		// initialize service to bind its data (+ share across controllers)
+		$scope.storage = ControllerStorage;
+
+		$scope.storeObject = function(obj) {
+			return JSON.stringify(obj);
+		};
+
+		$scope.formattedFilter = function(){
+			var fil = '';
+			return JSON.parse($scope.storage.filter, function(k, v){
+				if ( v ) { fil += (k.charAt(0).toUpperCase() + k.slice(1)) + ', '; }
+				return fil.substring(0, fil.length - 2) + ' Menus';
+			});
+		};
+
+		$scope.clearStorage = function(){
+			window.sessionStorage.clear();
+			$location.path('/blank');
 		};
 
 	});
@@ -70,40 +100,59 @@ app.config(['$routeProvider',
 
     // Modal View Controllers
 	////////////////////////////////////////////////////////////////////
-	app.controller('SavedAddressesCtrl', function($scope, $http, $location, ControllerStorage){
+	app.controller('SavedAddressesCtrl', function($scope, $http, $location){
+
 		$scope.addressList = [
-			// @TODO ajax call for address info from (aid)
+			// @TODO ajax call for address info (aid)
 		    {"aid":"001", "addressName":"Home", "addressLine":"392 Broadway", "city":"New York", "state":"NY", "zipcode":"10013"}, 
 		    {"aid":"002", "addressName":"Work", "addressLine":"920 Broadway", "city":"New York", "state":"NY", "zipcode":"10010"}, 
 		    {"aid":"003", "addressName":"School", "addressLine":"1480 Broadway", "city":"New York", "state":"NY", "zipcode":"10036"}
 		];
+		
+		$scope.chooseAddress = function(aid){
+			$scope.addressList.forEach(function(addr) {
+			    if (aid == addr.aid) {
+			    	$scope.storage.deliveryAddress = $scope.storeObject(addr);
+					$scope.storage.deliveryAddressDisplay = addr.addressLine + ', ' + addr.city + ', ' + addr.zipcode;
+					$scope.closeModal();
+				}
+			});
+		};
 
-		$scope.storage = ControllerStorage;
-		$scope.storage.addressList = $scope.addressList;
+		// Save Address when Checkbox Selected
+		$scope.saveAddress = function(){
+
+		};
 
 	});
 
-	app.controller('EnterAddressCtrl', function($scope, $http, $location, ControllerStorage){
+	app.controller('EnterAddressCtrl', function($scope, $http){
 
-		$scope.storage = ControllerStorage;
+		// need this initialization, new address isn't picked up otherwise!
+		$scope.addrForm = {};
+
+		// Store New Address
+		$scope.storeAddress = function() {
+			$scope.storage.deliveryAddress = $scope.storeObject($scope.addrForm);
+			// TODO: store if user logged in
+			$scope.storage.deliveryAddressDisplay = $scope.addrForm.addressLine + ', ' + $scope.addrForm.city + ', ' + $scope.addrForm.zipcode;
+			$scope.closeModal();
+		};
 
 	});
 
-	app.controller('RestFilterCtrl', function($scope, ControllerStorage){
-
-		$scope.storage = ControllerStorage;
-
-		$scope.filterForm = $scope.storage.filterForm;
-
+	app.controller('RestFilterCtrl', function($scope){
 
 		$scope.filterControl = function(filter){
 
+			// Unselect All when another option is selected
 			if ( this.filterForm.all ) {
 				if( filter !== 'all') {
 					this.filterForm.all = false;
 				}
 			}
 
+			// Select All if all filter options are selected
 			if ( (this.filterForm.brunch && this.filterForm.lunch && this.filterForm.dinner) || (filter == 'all') ) {
 				this.filterForm.brunch = false;
 				this.filterForm.lunch = false;
@@ -111,78 +160,72 @@ app.config(['$routeProvider',
 				this.filterForm.all = true;
 			}
 
+			// If all Filter options are unselected, reselect All option
+			var i = 0;
+			angular.forEach(this.filterForm, function(v, k) {
+				if (v == true && k != 'all') { i = 1 }
+			});
+			if (i == 0) { $scope.filterForm.all = true; }
+
 		};
 
 		$scope.filterSelection = function(){
-			if ($scope.filterForm.all) {
-				$scope.storage.filterForm.brunch = false;
-				$scope.storage.filterForm.lunch = false;
-				$scope.storage.filterForm.dinner = false;
-			}
-
-			var filterDisp = 'Filter: ';
-			for(var filter in $scope.filterForm ) {
-				if( $scope.filterForm[ filter ] ) {
-					filterDisp += filter.charAt(0).toUpperCase() + filter.slice(1);
-					// Append 'Menus' if filter is All
-					if (filter == 'all') { filterDisp += ' Menus  '; }
-					else { filterDisp += ', '; }
-				}	
-			}
-
-			// Remove Trailing Comma
-			filterDisp = filterDisp.slice(0, -2);
-			$scope.storage.filterDisplay = filterDisp;
-
+			$scope.storage.filter = JSON.stringify($scope.filterForm);
 			$scope.closeModal();
-
+			if ($scope.filterForm.all) { $scope.storage.filterDisplay = "All Menus"; }
+			else { $scope.storage.filterDisplay = $scope.formattedFilter(); }
 		};
 
-	});
-
-	app.controller('OptionsCtrl', function($scope, ControllerStorage){
-
-		$scope.storage = ControllerStorage;
-		$scope.$watch('storage.activeOption', function() {
-			$scope.option = $scope.storage.activeOption;
+		// Keep Filtered Display Updated
+		$scope.$watch('storage.filter', function() {
+			var fil = '';
+			$scope.storage.filterDisplay = $scope.formattedFilter();
 		});
+
 	});
 
+	app.controller('OptionsCtrl', function($scope){
+
+		$scope.$watch('storage.activeOption', function() {
+			$scope.option = JSON.parse($scope.storage.activeOption);
+		});
+
+	    // Return if Radio Button
+	    $scope.isType = function(min, max){
+	    	if (min == 1 && max == 1) { return 'radio'; }
+	    	else { return 'checkbox'; }
+	    };
+
+	    $scope.checkRadio = function(min, max, option, choice){
+	    	if ($scope.isType(min, max) == 'radio') {
+	    		$scope.optionData = {};
+	    		console.log(this.choice);
+	    		$scope.optionData[ option.id +'/'+ choice.id] = JSON.stringify(choice);
+	    	};
+	    };
+    
+
+	
+	});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
     // Home Page (Search)
 	////////////////////////////////////////////////////////////////////
 
-	app.controller('SearchCtrl', function($scope, $http, $location, ControllerStorage){
+	app.controller('SearchCtrl', function($scope, $http, $location){
 
-		$scope.storage = ControllerStorage;
 
-			// // init variables for address form
-		// need this initialization, new address isn't picked up otherwise!
-		$scope.addrForm = {};
-		// but no need to init the object contents, though.
-			// $scope.addrForm.addressLine = '';
-			// $scope.addrForm.city = '';
-			// $scope.addrForm.zipcode = '';
-			// $scope.addrForm.nickname = '';
-			// $scope.addressDisplay = '';
+		// Initialize Filter Display/Checkbox/Storage
+		$scope.filterForm = { "all" : true};
+		$scope.storage.filterDisplay = "All Menus";
+		$scope.storage.filter = $scope.storeObject($scope.filterForm);
 
-			// Initialize Filter Checkbox
-			$scope.filterForm = { "all" : true };
-
-			// Initialize Filter & Address Storage Space
-			$scope.storage.filterForm = $scope.filterForm;
-			// $scope.storage.addressObj = {};
-			
-			// Initialize Filter Display
-			$scope.storage.filterDisplay = 'Filter: All Menus';
-
-			// Keep Filtered Display Updated
-			$scope.$watch('storage.filterDisplay', function() {
-				$scope.filterDisplay = $scope.storage.filterDisplay;
-			});
-
-			// Reveal 'Find Restaurants' button upon Address Selection
-			$scope.storage.findRestButtonState = false;
+		// Reveal 'Find Restaurants' button upon Address Selection
+		$scope.$watch('storage.deliveryAddressDisplay', function() {
+			if ($scope.storage.deliveryAddressDisplay != undefined) { $scope.storage.findRestButtonState = true; }
+			else { $scope.storage.findRestButtonState = false; }
+		});
 
 		$scope.displayRestButton = function(){
 			// Change this to check against storage of search address
@@ -190,50 +233,21 @@ app.config(['$routeProvider',
 			return state;
 		};
 
+		// Select Saved/Enter Address per Login Status
 		$scope.selectAddress = function(){
-
-			if ($scope.userLoggedIn() == true ) {
-				return 'savedAddresses';
-			} else {
-				return 'enterAddress';
-			}
-		};
-		
-		$scope.chooseAddress = function(aid){
-			$scope.storage.addressList.forEach(function(addr) {
-			    if (aid == addr.aid) {
-			    	$scope.storage.addressObj = addr;
-					$scope.addressDisplay = $scope.storage.addressObj.addressLine + ', ' + $scope.storage.addressObj.city + ', ' + $scope.storage.addressObj.zipcode;
-					$scope.storage.findRestButtonState = true;
-					$scope.closeModal();
-				}
-			});
-			// @TODO
-			// populate storage fields with address info
-		};
-
-		// Store New Address
-		$scope.storeAddress = function() {
-			$scope.storage.addressObj = $scope.addrForm;
-			// TODO: store if user logged in
-			$scope.addressDisplay = $scope.storage.addressObj.addressLine + ', ' + $scope.storage.addressObj.city + ', ' + $scope.storage.addressObj.zipcode;
-			$scope.storage.findRestButtonState = true;
-			$scope.closeModal();
-		};
-
-
-		// Save Address when Checkbox Selected
-		$scope.saveAddress = function(){
-
+			if ($scope.userLoggedIn() == true ) { return 'savedAddresses'; }
+			else { return 'enterAddress'; }
 		};
 		
 
 		// Find restaurants
 		$scope.findRestaurants = function(){
+			var address = JSON.parse($scope.storage.deliveryAddress);
+			console.log(address);
 			var reqUrl = 'http://r-test.ordr.in/dl/ASAP/'
-				+ $scope.storage.zipcode + '/'
-				+ $scope.storage.city + '/'
-				+ $scope.storage.addrLine + '?_auth=1,vwXYUSj_Bxl3UT-8xM7NAoHnEcVKM-OcrbPIvCzj5e4&callback=JSON_CALLBACK';
+				+ address.zipcode + '/'
+				+ address.city + '/'
+				+ address.addressLine + '?_auth=1,vwXYUSj_Bxl3UT-8xM7NAoHnEcVKM-OcrbPIvCzj5e4&callback=JSON_CALLBACK';
 			reqUrl = encodeURI(reqUrl);
 			console.log(reqUrl);
 
@@ -257,9 +271,7 @@ app.config(['$routeProvider',
 	// Restaurants List Page
 	////////////////////////////////////////////////////////////////////
 
-	app.controller('RestaurantsCtrl', function($scope, $http, $location, ControllerStorage){
-
-		$scope.storage = ControllerStorage;
+	app.controller('RestaurantsCtrl', function($scope, $http, $location){
 
 		$scope.restaurantList = [
 		    {
@@ -390,22 +402,16 @@ app.config(['$routeProvider',
 		    }
 		]; // End restaurantList
 
-		$scope.rid = 123;
-		$scope.name = 'Name';
-		$scope.distance = '42 mi';
-		$scope.mino = '$10.00';
-		$scope.cuisines = 'American';
+		$scope.showAddress = $scope.storage.addressLineDisplay;
 
-		$scope.serviceDemo = $scope.storage.addrLine;
-
-		$scope.filterDisplay = $scope.storage.filterDisplay;
-		$scope.filterForm = $scope.storage.filterForm;
+		// Initialize Filter Display/Checkbox/Storage
+		$scope.filterForm = JSON.parse($scope.storage.filter);
+		$scope.storage.filterDisplay = $scope.formattedFilter();
 
 		// Compare and Filter Restraunts
 		$scope.restFilter = function( rest ) {
-			if( $scope.filterForm.all ) {
-				return true;
-			}
+			if( $scope.filterForm.all ) { return true; }
+
 			for( var restType in rest.filters ) {
 				if( $scope.filterForm[ rest.filters[ restType ] ] ) {
 					return true;
@@ -414,12 +420,7 @@ app.config(['$routeProvider',
 			return false;
 		};
 
-		// Keep Filtered Field Updated
-		$scope.$watch('storage.filterDisplay', function() {
-			$scope.filterDisplay = $scope.storage.filterDisplay;
-			$scope.filterForm = $scope.storage.filterForm;
-		});
-
+		// @TODO Write Rating function
 		$scope.ratingx = 1;
 		$scope.ratingy = 1;
 		$scope.ratingz = 0;
@@ -435,9 +436,7 @@ app.config(['$routeProvider',
 	// Menu View Page
 	////////////////////////////////////////////////////////////////////
 
-	app.controller('MenuCtrl', function($scope, $http, $location, ControllerStorage){
-
-		$scope.storage = ControllerStorage;
+	app.controller('MenuCtrl', function($scope, $http, $location){
 
 		$scope.restaurant = {
 		        "id": 23865,
@@ -3143,9 +3142,7 @@ app.config(['$routeProvider',
 	// Menu View Page
 	////////////////////////////////////////////////////////////////////
 
-	app.controller('ItemCtrl', function($scope, $http, $location, ControllerStorage){
-
-		$scope.storage = ControllerStorage;
+	app.controller('ItemCtrl', function($scope, $http, $location){
 
 		$scope.menu = {
 		    "addr": "378 Greenwich St",
@@ -5789,39 +5786,34 @@ app.config(['$routeProvider',
 			}
 		}
 
+
+	    $scope.optionPopup = function(option){
+	    	$scope.storage.activeOption = JSON.stringify(option);
+	    	$scope.popupModal('options');
+	    	
+	    };
+
+	    
+
+
+
+
+
+
+
+
+
+
 		$scope.optionData = {};
 
 		$scope.optionsDisp = {};
 
 		$scope.optionErrMsg = '';
 
-
-	    $scope.optionPopup = function(option){
-	    	$scope.storage.activeOption = option;
-	    	$scope.popupModal('options');
-	    	
-	    };
-
-	    // Return if Radio Button
-	    $scope.isType = function(min, max){
-	    	if (min == 1 && max == 1) { return 'radio'; }
-	    	else { return 'checkbox'; }
-	    };
-
-	    //return the ng-model (diff-t whether radio or checkbox)
-	    $scope.isModel = function(option, choice){
-	    	if (option.min_child_select == 1 && option.max_child_select == 1) {
-	    		return $scope.optionData[ option.id ];
-	    	} else {
-	    		// ensure $scope.optionData[ option.id ] exists
-	    		$scope.optionData[ option.id ] = $scope.optionData[ option.id ] 
-	    			? $scope.optionData[ option.id ] : {};
-	    		return $scope.optionData[ option.id ][ choice.id ];
-
-	    	}
-	    };
-
 	    $scope.storeOptions = function(min, max, optionId) {
+	    		
+	    	console.log($scope.optionData);
+
 	    	// get # of chosen options
 	    	var selectedNum = 0;
 	    	for( var opt in $scope.optionData ) {
@@ -5829,6 +5821,8 @@ app.config(['$routeProvider',
 	    			selectedNum += 1;
 	    		}
 	    	}
+
+	    	console.log(min, max, selectedNum);
 	    	// number checking
 	    	if( selectedNum < min ) {
 	    		$scope.optionErrMsg = 'Need at least ' + min + ' options selected';
@@ -5839,7 +5833,9 @@ app.config(['$routeProvider',
 	    		// put in the names of the selected options
 	    		for( var opt in $scope.optionData ) {
 		    		if( $scope.optionData.opt ) {
-		    			$scope.optionsDisp[ optionId ] += $scope.optionData.opt + ', ';
+		    			$scope.optionsDisp[ option.id ] += $scope.optionData.opt.name + ', ';
+		    			// add id to the tray string 
+		    			//$scope.optionsDisp[ optionId ] += $scope.optionData.opt + ', ';
 		    		}
 		    	}
 		    	// clear the error message

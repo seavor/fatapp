@@ -7,7 +7,7 @@
 			type="text"
 			class="inputField popupButton"
 			placeholder="enter address"
-			ng-model="addressDisplay"
+			ng-model="storage.deliveryAddressDisplay"
 			ng-click='popupModal(selectAddress())'
 			required readonly
 		>
@@ -19,7 +19,7 @@
 			name="filterSearch"
 			type="text"
 			class="bigButton popupButton"
-			ng-model="filterDisplay"
+			ng-model="storage.filterDisplay"
 			ng-click='popupModal("restFilters")'
 			required readonly
 		>
