@@ -7,14 +7,14 @@
 		<form ng-submit="storeOptions( option.min_child_select, option.max_child_select, option.id )">
 			<ul class="dataItems">
 				<li ng-repeat="choice in option.children">
-					<label for="_{{choice.id}}"> <!-- selection id ($option['id'] from legacy) -->
+					<label for="_{{choice.id}}">
 						<span class="name">{{choice.name}}</span>
 						<input
 							id="_{{choice.id}}"
 							name="{{ option.id }}"
 							type="{{isType(option.min_child_select, option.max_child_select)}}"
 							class=""
-							ng-model="optionData[ option.id +'/'+ choice.id ]"
+							ng-model="optionData[ option.id +'/'+ choice.id]"
 							ng-true-value="{{ choice }}"
 							ng-value="{{ choice }}"
 						>
@@ -26,6 +26,3 @@
 		</form>
 	</div>
 </div>
-
-
-<!-- ng-model="optionData[ option.id +'/'+ choice.id ]" -->

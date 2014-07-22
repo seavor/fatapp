@@ -4,8 +4,7 @@
 		name="filterSearch"
 		type="text"
 		class="inputField popupButton"
-		placeholder="Filter: All Menus"
-		ng-model="filterDisplay"
+		ng-model="storage.filterDisplay"
 		ng-click='popupModal("restFilters")'
 		required readonly
 	>
@@ -17,7 +16,7 @@
 
 <div id="openRestaurants" class="restListing">
 
-	<div>{{serviceDemo}}</div>
+	<div>{{storage.deliveryAddressDisplay}}</div>
 
 	<h6>Open &amp; Delivering</h6>
 
