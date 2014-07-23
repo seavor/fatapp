@@ -17,6 +17,7 @@
 							ng-model="optionData"
 							ng-true-value="{{ choice }}"
 							ng-value="{{ choice }}"
+							ng-click="checkRadio(option.min_child_select, option.max_child_select, option, choice)"
 						>
 						<p class="popupItemPrice">(${{choice.price}})</p>
 					</label>

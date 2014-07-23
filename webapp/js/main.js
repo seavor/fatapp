@@ -185,16 +185,36 @@ app.config(['$routeProvider',
 
 	app.controller('OptionsCtrl', function($scope){
 
+
+
 		$scope.$watch('storage.activeOption', function() {
 			$scope.option = JSON.parse($scope.storage.activeOption);
 		});
 
+<<<<<<< HEAD
 	    // Return if Radio Button
 	    $scope.isType = function(min, max){
 	    	if (min == 1 && max == 1) { return 'radio'; }
 	    	else { return 'checkbox'; }
 	    };
     
+=======
+		var size = function(obj) {
+			var size = 0, key;
+			for (key in obj) {
+				if (obj.hasOwnProperty(key)) size += obj[key].quantity;
+			}
+			return size;
+		};
+
+		// Return if Radio Button
+		$scope.isType = function(min, max){
+			if (min == 1 && max == 1) { return 'radio'; }
+			else { return 'checkbox'; }
+		};
+
+	
+>>>>>>> a5d1b8d06788d601598627200b170e5da38098f3
 	});
 
 	// app.controller('optionModalCtrl', function($scope){
@@ -5791,53 +5811,83 @@ app.config(['$routeProvider',
 	    
 
 
-
-
-
-
-
-
-
-
-		$scope.optionData = '';
+		$scope.optionData = {};
 
 		$scope.optionsDisp = {};
 
 		$scope.optionErrMsg = '';
 
+
+
+		$scope.orderRadio = [];
+
+		$scope.checkRadio = function(min, max, option, choice){
+			if (min == max == 1) {
+				$scope.orderRadio.push(option.id + '/' + choice.id);
+				//console.log($scope.optionData[$scope.orderRadio[ $scope.orderRadio.length -1 ]]);
+			};
+		};
+
+
+
+
 	    $scope.storeOptions = function(min, max, optionId) {
-	    		
-	    	console.dir($scope.optionData);
-	    	$scope.closeModal();
 
-	    	// // get # of chosen options
-	    	// var selectedNum = 0;
-	    	// for( var opt in $scope.optionData ) {
-	    	// 	if( $scope.optionData.opt ) {
-	    	// 		selectedNum += 1;
-	    	// 	}
-	    	// }
 
-	    	// console.log(min, max, selectedNum);
-	    	// // number checking
-	    	// if( selectedNum < min ) {
-	    	// 	$scope.optionErrMsg = 'Need at least ' + min + ' options selected';
-	    	// } else if( selectedNum > max ) {
-	    	// 	$scope.optionErrMsg = 'Need at most ' + max + ' options selected';
-	    	// } else {
-	    	// 	// option # checks went through
-	    	// 	// put in the names of the selected options
-	    	// 	for( var opt in $scope.optionData ) {
-		    // 		if( $scope.optionData.opt ) {
-		    // 			$scope.optionsDisp[ option.id ] += $scope.optionData.opt.name + ', ';
-		    // 			// add id to the tray string 
-		    // 			//$scope.optionsDisp[ optionId ] += $scope.optionData.opt + ', ';
-		    // 		}
-		    // 	}
-		    // 	// clear the error message
-	    	// 	$scope.optionErrMsg = '';
-	    	// 	$scope.closeModal();
-	    	// }
+	    	// if radio, put in the appropriate optionData
+	    	if(min == max == 1) {
+	    		var lastSelectedKey = $scope.orderRadio[ $scope.orderRadio.length -1 ];
+	    		var newOptionData = {};
+	    		newOptionData[ lastSelectedKey ] = JSON.stringify($scope.optionData[ lastSelectedKey ]);
+	    		$scope.optionData = newOptionData;
+	    	}
+
+	    	// get # of chosen options
+	    	var selectedNum = 0;
+	    	for( var opt in $scope.optionData ) {
+	    		if( $scope.optionData[opt] ) {
+	    			selectedNum += 1;
+	    		}
+	    	}
+
+	    	// min/max number checking
+	    	if( selectedNum < min ) { $scope.optionErrMsg = 'Need at least ' + min + ' options selected'; }
+	    	else if ( selectedNum > max ) { $scope.optionErrMsg = 'Need at most ' + max + ' options selected'; }
+	    	else { // put in the names of the selected options
+	    		var optOnly = opt.split('/')[0];
+
+	    		var combined = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
+
+	    		for(var opt in $scope.optionData) {
+	    			if( $scope.optionData.hasOwnProperty(opt)) {
+	    				combined[ opt] = $scope.optionData[opt];
+	    			}
+	    		}
+
+	    		$scope.storage.currenItem = JSON.stringify(combined);
+
+
+	    		console.log($scope.storage.currenItem);
+	    		console.log(combined);
+
+
+	    		// display names
+				$scope.optionsDisp[optOnly] = '';
+	    		for( var opt in $scope.optionData ) {
+	    			if ($scope.optionData.hasOwnProperty(opt)) {
+			    		if( $scope.optionData[opt] ) {
+			    			$scope.optionsDisp[optOnly] += JSON.parse($scope.optionData[opt]).name + ', ';
+			    		}
+			    	}
+		    	}
+
+		    	// clear stuff
+		    	$scope.optionData = {};
+		    	$scope.orderRadio = [];
+	    		$scope.optionErrMsg = '';
+	    		$scope.closeModal();
+	    	}
+
 	    };
 
 	});
