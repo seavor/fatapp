@@ -97,7 +97,6 @@ app.config(['$routeProvider',
 
 	});
 
-
     // Modal View Controllers
 	////////////////////////////////////////////////////////////////////
 	app.controller('SavedAddressesCtrl', function($scope, $http, $location){
@@ -192,6 +191,14 @@ app.config(['$routeProvider',
 			$scope.option = JSON.parse($scope.storage.activeOption);
 		});
 
+<<<<<<< HEAD
+	    // Return if Radio Button
+	    $scope.isType = function(min, max){
+	    	if (min == 1 && max == 1) { return 'radio'; }
+	    	else { return 'checkbox'; }
+	    };
+    
+=======
 		var size = function(obj) {
 			var size = 0, key;
 			for (key in obj) {
@@ -207,7 +214,16 @@ app.config(['$routeProvider',
 		};
 
 	
+>>>>>>> a5d1b8d06788d601598627200b170e5da38098f3
 	});
+
+	// app.controller('optionModalCtrl', function($scope){
+ //    	if ($scope.option.min_child_select == 1 && $scope.option.max_child_select == 1) {
+ //    		$scope.isModel = $scope.optionData[ $scope.option.id ];
+ //    	} else {
+ //    		$scope.isModel = $scope.optionData[ $scope.option.id +'/'+ $scope.choice.id ];
+ //    	}
+	// });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -267,7 +283,6 @@ app.config(['$routeProvider',
 		};
 
 	});
-
 
 	// Restaurants List Page
 	////////////////////////////////////////////////////////////////////
@@ -5791,7 +5806,6 @@ app.config(['$routeProvider',
 	    $scope.optionPopup = function(option){
 	    	$scope.storage.activeOption = JSON.stringify(option);
 	    	$scope.popupModal('options');
-	    	
 	    };
 
 	    
@@ -5818,6 +5832,7 @@ app.config(['$routeProvider',
 
 
 	    $scope.storeOptions = function(min, max, optionId) {
+
 
 	    	// if radio, put in the appropriate optionData
 	    	if(min == max == 1) {
@@ -5872,6 +5887,7 @@ app.config(['$routeProvider',
 	    		$scope.optionErrMsg = '';
 	    		$scope.closeModal();
 	    	}
+
 	    };
 
 	});
