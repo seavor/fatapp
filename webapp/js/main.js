@@ -5836,8 +5836,10 @@ app.config(['$routeProvider',
 	    	// get # of chosen options
 	    	var selectedNum = 0;
 	    	for( var opt in $scope.optionData ) {
-	    		if( $scope.optionData[opt] ) {
-	    			selectedNum += 1;
+	                if ($scope.optionData.hasOwnProperty(opt)) {
+	    		        if( $scope.optionData[opt] ) {
+	    			        selectedNum += 1;
+                                }
 	    		}
 	    	}
 
