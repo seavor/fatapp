@@ -14,7 +14,7 @@
 							name="{{ option.id }}"
 							type="{{isType(option.min_child_select, option.max_child_select)}}"
 							class=""
-							ng-model="optionData"
+							ng-model="optionData[ option.id +'/'+ choice.id]"
 							ng-true-value="{{ choice }}"
 							ng-value="{{ choice }}"
 							ng-click="checkRadio(option.min_child_select, option.max_child_select, option, choice)"
