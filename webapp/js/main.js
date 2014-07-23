@@ -191,14 +191,7 @@ app.config(['$routeProvider',
 			$scope.option = JSON.parse($scope.storage.activeOption);
 		});
 
-<<<<<<< HEAD
-	    // Return if Radio Button
-	    $scope.isType = function(min, max){
-	    	if (min == 1 && max == 1) { return 'radio'; }
-	    	else { return 'checkbox'; }
-	    };
-    
-=======
+
 		var size = function(obj) {
 			var size = 0, key;
 			for (key in obj) {
@@ -213,8 +206,6 @@ app.config(['$routeProvider',
 			else { return 'checkbox'; }
 		};
 
-	
->>>>>>> a5d1b8d06788d601598627200b170e5da38098f3
 	});
 
 	// app.controller('optionModalCtrl', function($scope){
