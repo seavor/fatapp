@@ -97,7 +97,6 @@ app.config(['$routeProvider',
 
 	});
 
-
     // Modal View Controllers
 	////////////////////////////////////////////////////////////////////
 	app.controller('SavedAddressesCtrl', function($scope, $http, $location){
@@ -195,18 +194,16 @@ app.config(['$routeProvider',
 	    	if (min == 1 && max == 1) { return 'radio'; }
 	    	else { return 'checkbox'; }
 	    };
-
-	    $scope.checkRadio = function(min, max, option, choice){
-	    	if ($scope.isType(min, max) == 'radio') {
-	    		$scope.optionData = {};
-	    		console.log(this.choice);
-	    		$scope.optionData[ option.id +'/'+ choice.id] = JSON.stringify(choice);
-	    	};
-	    };
     
-
-	
 	});
+
+	// app.controller('optionModalCtrl', function($scope){
+ //    	if ($scope.option.min_child_select == 1 && $scope.option.max_child_select == 1) {
+ //    		$scope.isModel = $scope.optionData[ $scope.option.id ];
+ //    	} else {
+ //    		$scope.isModel = $scope.optionData[ $scope.option.id +'/'+ $scope.choice.id ];
+ //    	}
+	// });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -266,7 +263,6 @@ app.config(['$routeProvider',
 		};
 
 	});
-
 
 	// Restaurants List Page
 	////////////////////////////////////////////////////////////////////
@@ -5790,7 +5786,6 @@ app.config(['$routeProvider',
 	    $scope.optionPopup = function(option){
 	    	$scope.storage.activeOption = JSON.stringify(option);
 	    	$scope.popupModal('options');
-	    	
 	    };
 
 	    
@@ -5804,7 +5799,7 @@ app.config(['$routeProvider',
 
 
 
-		$scope.optionData = {};
+		$scope.optionData = '';
 
 		$scope.optionsDisp = {};
 
@@ -5812,36 +5807,37 @@ app.config(['$routeProvider',
 
 	    $scope.storeOptions = function(min, max, optionId) {
 	    		
-	    	console.log($scope.optionData);
+	    	console.dir($scope.optionData);
+	    	$scope.closeModal();
 
-	    	// get # of chosen options
-	    	var selectedNum = 0;
-	    	for( var opt in $scope.optionData ) {
-	    		if( $scope.optionData.opt ) {
-	    			selectedNum += 1;
-	    		}
-	    	}
+	    	// // get # of chosen options
+	    	// var selectedNum = 0;
+	    	// for( var opt in $scope.optionData ) {
+	    	// 	if( $scope.optionData.opt ) {
+	    	// 		selectedNum += 1;
+	    	// 	}
+	    	// }
 
-	    	console.log(min, max, selectedNum);
-	    	// number checking
-	    	if( selectedNum < min ) {
-	    		$scope.optionErrMsg = 'Need at least ' + min + ' options selected';
-	    	} else if( selectedNum > max ) {
-	    		$scope.optionErrMsg = 'Need at most ' + max + ' options selected';
-	    	} else {
-	    		// option # checks went through
-	    		// put in the names of the selected options
-	    		for( var opt in $scope.optionData ) {
-		    		if( $scope.optionData.opt ) {
-		    			$scope.optionsDisp[ option.id ] += $scope.optionData.opt.name + ', ';
-		    			// add id to the tray string 
-		    			//$scope.optionsDisp[ optionId ] += $scope.optionData.opt + ', ';
-		    		}
-		    	}
-		    	// clear the error message
-	    		$scope.optionErrMsg = '';
-	    		$scope.closeModal();
-	    	}
+	    	// console.log(min, max, selectedNum);
+	    	// // number checking
+	    	// if( selectedNum < min ) {
+	    	// 	$scope.optionErrMsg = 'Need at least ' + min + ' options selected';
+	    	// } else if( selectedNum > max ) {
+	    	// 	$scope.optionErrMsg = 'Need at most ' + max + ' options selected';
+	    	// } else {
+	    	// 	// option # checks went through
+	    	// 	// put in the names of the selected options
+	    	// 	for( var opt in $scope.optionData ) {
+		    // 		if( $scope.optionData.opt ) {
+		    // 			$scope.optionsDisp[ option.id ] += $scope.optionData.opt.name + ', ';
+		    // 			// add id to the tray string 
+		    // 			//$scope.optionsDisp[ optionId ] += $scope.optionData.opt + ', ';
+		    // 		}
+		    // 	}
+		    // 	// clear the error message
+	    	// 	$scope.optionErrMsg = '';
+	    	// 	$scope.closeModal();
+	    	// }
 	    };
 
 	});
