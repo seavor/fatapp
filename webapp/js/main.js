@@ -221,7 +221,7 @@ app.config(['$routeProvider',
 
 	});
 
-	app.controller('QuantityCtrl', function($scope){
+	app.controller('QuantityCtrl', function($scope, $location){
 
 	    $scope.amountRange = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 	    $scope.amount = 1;
