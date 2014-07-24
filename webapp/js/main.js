@@ -222,7 +222,36 @@ app.config(['$routeProvider',
 	});
 
 	app.controller('QuantityCtrl', function($scope){
-		
+
+	    $scope.amountRange = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+	    $scope.amount = 1;
+
+	    $scope.addItem = function() {
+
+	    	var currItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
+	    	var cids = [];
+
+	    	for(var op in currItem) {
+	    		if (currItem.hasOwnProperty(op)) {
+					if( currItem[op] ) {
+						cids.push(JSON.parse(currItem[op]).id);
+			}	}	}
+
+	    	var newItem = {
+				iid : $scope.storage.activeItem,
+				amount: this.amount,
+				cid: cids,
+				item : $scope.item
+	    	};
+
+	    	var tray = JSON.parse($scope.storage.tray);
+	    	tray.push(newItem);
+
+	    	$scope.storage.tray = JSON.stringify(tray);
+	    	$scope.storage.currentItem = '';
+	    	$location.path('/menu');
+
+	    };
 	});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -5881,36 +5910,6 @@ app.config(['$routeProvider',
 	    		$scope.optionErrMsg = '';
 	    		$scope.closeModal();
 	    	}
-
-	    };
-
-	    $scope.amountRange = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-	    $scope.amount = 1;
-
-	    $scope.addItem = function() {
-
-	    	var currItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
-	    	var cids = [];
-
-	    	for(var op in currItem) {
-	    		if (currItem.hasOwnProperty(op)) {
-					if( currItem[op] ) {
-						cids.push(JSON.parse(currItem[op]).id);
-			}	}	}
-
-	    	var newItem = {
-				iid : $scope.storage.activeItem,
-				amount: this.amount,
-				cid: cids,
-				item : $scope.item
-	    	};
-
-	    	var tray = JSON.parse($scope.storage.tray);
-	    	tray.push(newItem);
-
-	    	$scope.storage.tray = JSON.stringify(tray);
-	    	$scope.storage.currentItem = '';
-	    	$location.path('/menu');
 
 	    };
 
