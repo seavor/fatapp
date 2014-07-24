@@ -10,6 +10,15 @@ app.factory('ControllerStorage', function(){
 	return db;
 });
 
+app.filter('range', function() {
+  return function(input, total) {
+    total = parseInt(total);
+    for (var i=1; i<(total+1); i++)
+      input.push(i);
+    return input+1;
+  };
+});
+
 // Page Routes
 app.config(['$routeProvider',
   function($routeProvider) {
@@ -30,6 +39,10 @@ app.config(['$routeProvider',
       when('/item', {
         templateUrl: 'partials/item.html',
         controller: 'ItemCtrl'
+      }).
+      when('/review', {
+        templateUrl: 'partials/review.html',
+        controller: 'ReviewCtrl'
       }).
       // Reroute to Home Sceen
       otherwise({
@@ -208,13 +221,9 @@ app.config(['$routeProvider',
 
 	});
 
-	// app.controller('optionModalCtrl', function($scope){
- //    	if ($scope.option.min_child_select == 1 && $scope.option.max_child_select == 1) {
- //    		$scope.isModel = $scope.optionData[ $scope.option.id ];
- //    	} else {
- //    		$scope.isModel = $scope.optionData[ $scope.option.id +'/'+ $scope.choice.id ];
- //    	}
-	// });
+	app.controller('QuantityCtrl', function($scope){
+		
+	});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -434,7 +443,7 @@ app.config(['$routeProvider',
 
 		$scope.viewMenu = function(rid){
 			$scope.storage.activeRest = rid;
-			$scope.storage.tray = '';
+			$scope.storage.tray = '[]';
 			$location.path('/menu');
 		};
 		
@@ -3144,6 +3153,10 @@ app.config(['$routeProvider',
 			$location.path('/item');
 		};
 
+	    $scope.reviewOrder = function(){
+	    	$location.path('/review');
+	    };
+
 	});
 
 	// Menu View Page
@@ -5793,24 +5806,15 @@ app.config(['$routeProvider',
 			}
 		}
 
-
 	    $scope.optionPopup = function(option){
 	    	$scope.storage.activeOption = JSON.stringify(option);
 	    	$scope.popupModal('options');
 	    };
 
-	    
-
-
 		$scope.optionData = {};
-
 		$scope.optionsDisp = {};
-
-		$scope.optionErrMsg = '';
-
-
-
 		$scope.orderRadio = [];
+		$scope.optionErrMsg = '';
 
 		$scope.checkRadio = function(min, max, option, choice){
 			if (min == max == 1) {
@@ -5818,9 +5822,6 @@ app.config(['$routeProvider',
 				//console.log($scope.optionData[$scope.orderRadio[ $scope.orderRadio.length -1 ]]);
 			};
 		};
-
-
-
 
 	    $scope.storeOptions = function(min, max, optionId) {
 
@@ -5857,11 +5858,11 @@ app.config(['$routeProvider',
 	    			}
 	    		}
 
-	    		$scope.storage.currenItem = JSON.stringify(combined);
+	    		$scope.storage.currentItem = JSON.stringify(combined);
 
 
-	    		console.log($scope.storage.currenItem);
-	    		console.log(combined);
+	    		// console.log($scope.storage.currentItem);
+	    		// console.log(combined);
 
 
 	    		// display names
@@ -5883,9 +5884,41 @@ app.config(['$routeProvider',
 
 	    };
 
+	    $scope.amountRange = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+	    $scope.amount = 1;
+
+	    $scope.addItem = function() {
+
+	    	var currItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
+	    	var cids = [];
+
+	    	for(var op in currItem) {
+	    		if (currItem.hasOwnProperty(op)) {
+					if( currItem[op] ) {
+						cids.push(JSON.parse(currItem[op]).id);
+			}	}	}
+
+	    	var newItem = {
+				iid : $scope.storage.activeItem,
+				amount: this.amount,
+				cid: cids,
+				item : $scope.item
+	    	};
+
+	    	var tray = JSON.parse($scope.storage.tray);
+	    	tray.push(newItem);
+
+	    	$scope.storage.tray = JSON.stringify(tray);
+	    	$scope.storage.currentItem = '';
+	    	$location.path('/menu');
+
+	    };
+
 	});
 
+	app.controller('ReviewCtrl', function($scope, $http, $location){
 
+	});
 
 // @TODO Validation
 
@@ -5893,12 +5926,6 @@ app.config(['$routeProvider',
 // all "required" options have been selected (item page)
 // address field validation (search + checkout / enterAddressCtrl modal)
 // show checkout button when order minimum reached (menu page)
-
-
-
-
-
-
 		
 
 

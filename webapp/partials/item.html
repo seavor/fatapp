@@ -16,6 +16,6 @@
 
 </div>
 
-<button id="addToOrder" class="actionButton" type="button">Add to Order</button>
+<button id="addToOrder" class="actionButton" type="button" ng-click="popupModal('quantity')">Add to Order</button>
 
 <div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
