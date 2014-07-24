@@ -1,21 +1,23 @@
-<div class="menuItem itemBest" data-iid="{{iid}}">
-	<h6>{{item.name}}</h6>
-	<p class="itemPrice">${{item.price}}</p>
-	<p class="itemDescription">{{item.descrip}}</p>
-	<p class="error itemError"></p>
-</div>
-
-<div id="userChoices" class="itemOptionsBox">
-
-	<h3>Choose your options:</h3>
-
-	<div class="itemOptions popupButton" ng-repeat="option in item.children" ng-click="optionPopup(option)">
-		<h4>{{option.name}}<span class="required" ng-show="option.min_child_select > 0">*</span></h4>
-		<p class="itemOptionSelections">{{ optionsDisp[ option.id ] }}</p>
+<div ng-controller="EditItemCtrl">
+	<div class="menuItem itemBest"> <!-- data-iid="{{iid}}" -->
+		<h6>{{item.name}}</h6>
+		<p class="itemPrice">${{item.price}}</p>
+		<p class="itemDescription">{{item.descrip}}</p>
+		<p class="error itemError"></p>
 	</div>
 
+	<div id="userChoices" class="itemOptionsBox">
+
+		<h3>Choose your options:</h3>
+
+		<div class="itemOptions popupButton" ng-repeat="option in item.children" ng-click="optionPopup(option)">
+			<h4>{{option.name}}<span class="required" ng-show="option.min_child_select > 0">*</span></h4>
+			<p class="itemOptionSelections">{{ optionsDisp[ option.id ] }}</p>
+		</div>
+
+	</div>
+
+	<button id="addToOrder" class="actionButton" type="button" ng-click="popupModal('quantity')">{{orderButton}}</button>
+
+	<div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
 </div>
-
-<button id="addToOrder" class="actionButton" type="button" ng-click="popupModal('quantity')">Add to Order</button>
-
-<div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>

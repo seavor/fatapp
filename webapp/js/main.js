@@ -48,7 +48,8 @@ app.config(['$routeProvider',
       otherwise({
         redirectTo: '/search'
       });
-  }]);
+  }
+]);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -219,39 +220,14 @@ app.config(['$routeProvider',
 			else { return 'checkbox'; }
 		};
 
+		$scope.isChecked = function(){
+			return true;
+		};
+
 	});
 
 	app.controller('QuantityCtrl', function($scope, $location){
 
-	    $scope.amountRange = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-	    $scope.amount = 1;
-
-	    $scope.addItem = function() {
-
-	    	var currItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
-	    	var cids = [];
-
-	    	for(var op in currItem) {
-	    		if (currItem.hasOwnProperty(op)) {
-					if( currItem[op] ) {
-						cids.push(JSON.parse(currItem[op]).id);
-			}	}	}
-
-	    	var newItem = {
-				iid : $scope.storage.activeItem,
-				amount: this.amount,
-				cid: cids,
-				item : $scope.item
-	    	};
-
-	    	var tray = JSON.parse($scope.storage.tray);
-	    	tray.push(newItem);
-
-	    	$scope.storage.tray = JSON.stringify(tray);
-	    	$scope.storage.currentItem = '';
-	    	$location.path('/menu');
-
-	    };
 	});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -472,7 +448,6 @@ app.config(['$routeProvider',
 
 		$scope.viewMenu = function(rid){
 			$scope.storage.activeRest = rid;
-			$scope.storage.tray = '[]';
 			$location.path('/menu');
 		};
 		
@@ -5835,6 +5810,8 @@ app.config(['$routeProvider',
 			}
 		}
 
+		console.log($scope.item);
+
 	    $scope.optionPopup = function(option){
 	    	$scope.storage.activeOption = JSON.stringify(option);
 	    	$scope.popupModal('options');
@@ -5913,9 +5890,99 @@ app.config(['$routeProvider',
 
 	    };
 
+	    $scope.amountRange = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+	    $scope.amount = 1;
+
+	    $scope.addItem = function() {
+
+	    	var currItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
+	    	var cids = [];
+
+	    	for(var op in currItem) {
+	    		if (currItem.hasOwnProperty(op)) {
+					if( currItem[op] ) {
+						cids.push(JSON.parse(currItem[op]).id);
+			}	}	}
+
+	    	var newItem = {
+				iid : $scope.storage.activeItem,
+				amount: this.amount,
+				cid: cids,
+				item : $scope.item
+	    	};
+
+	    	var tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : [];
+	    	tray.push(newItem);
+
+	    	$scope.storage.tray = JSON.stringify(tray);
+	    	$scope.storage.currentItem = '';
+	    	$location.path('/menu');
+
+	    };
+
+	    $scope.orderButton = 'Add to Order';
+
 	});
 
+
+
+    app.controller('EditItemCtrl', function($scope, $http, $location){
+    	
+    	// Overwrite $parent.$csope.item variable for editItem
+    	if ($scope.storage.editItem) {
+
+    		// If on Edit Screen with No Tray, clear storage and route to Home screen
+    		var editTray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
+    		for (var item in editTray){
+    			if (editTray.hasOwnProperty(item)) {
+	    			if (editTray[item].iid == $scope.storage.editItem) {
+	    				$scope.item = editTray[item].item;
+	    	}	}	}
+
+		    $scope.addItem = function() {
+
+		    	var currItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
+		    	var cids = [];
+
+		    	for(var op in currItem) {
+		    		if (currItem.hasOwnProperty(op)) {
+						if( currItem[op] ) {
+							cids.push(JSON.parse(currItem[op]).id);
+				}	}	}
+
+				// @TODO replace old item with edited item
+
+		    	var newItem = {
+					iid : $scope.storage.activeItem,
+					amount: this.amount,
+					cid: cids,
+					item : $scope.item
+		    	};
+
+		    	var tray = JSON.parse($scope.storage.tray);
+		    	tray.push(newItem);
+
+		    	$scope.storage.tray = JSON.stringify(tray);
+		    	$scope.storage.currentItem = '';
+		    	$scope.storage.removeItem('editItem');
+		    	$location.path('/review');
+
+		    };
+
+		    $scope.orderButton = 'Edit Item';
+
+		}
+
+    });	
+
 	app.controller('ReviewCtrl', function($scope, $http, $location){
+
+		$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
+
+		$scope.editOption = function(iid){
+			$scope.storage.editItem = iid;
+			$location.path('/item');
+		};
 
 	});
 
