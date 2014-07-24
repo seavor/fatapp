@@ -1,4 +1,4 @@
-<div id="menuContent">
+ <div id="menuContent">
 
 	<div id="menuHeader" class="restaurantListingItem">
 		<div class="topBox clearfix">
@@ -12,9 +12,9 @@
 			</div>
 			<div class="appleRating">
 				<div class="appleWrapper">
-					<img src="images/apple{{ratingx}}.png">
-					<img src="images/apple{{ratingy}}.png">
-					<img src="images/apple{{ratingz}}.png">
+					<img ng-src="images/apple{{ratingx}}.png">
+					<img ng-src="images/apple{{ratingy}}.png">
+					<img ng-src="images/apple{{ratingz}}.png">
 				</div>
 			</div>
 		</div>
@@ -46,6 +46,6 @@
 	</div>
 
 	<!-- Show only once item has been added to order -->
-	<button id="reviewOrder" class="actionButton" type="button">Review Your Order</button>
+	<button id="reviewOrder" class="actionButton" type="button" ng-click="reviewOrder()">Review Your Order</button>
 
 </div>
