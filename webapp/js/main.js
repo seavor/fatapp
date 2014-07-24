@@ -211,6 +211,7 @@ app.config(['$routeProvider',
 			for (key in obj) {
 				if (obj.hasOwnProperty(key)) size += obj[key].quantity;
 			}
+			// $scope.optionActivated = true;
 			return size;
 		};
 
@@ -220,9 +221,19 @@ app.config(['$routeProvider',
 			else { return 'checkbox'; }
 		};
 
-		$scope.isChecked = function(){
-			return true;
-		};
+
+		// $scope.isChecked = false;
+
+		// $scope.compareSelected = function(){
+		// 		console.log(this);
+		// 	// if (this.choice.id == selected) {
+		// 	// 	$scope.isChecked = true;
+		// 	// }
+		// };
+			
+		// $scope.$watch('optionActivated', function() {
+		// 	$scope.compareSelected();
+		// });
 
 	});
 
@@ -265,13 +276,11 @@ app.config(['$routeProvider',
 		// Find restaurants
 		$scope.findRestaurants = function(){
 			var address = JSON.parse($scope.storage.deliveryAddress);
-			console.log(address);
 			var reqUrl = 'http://r-test.ordr.in/dl/ASAP/'
 				+ address.zipcode + '/'
 				+ address.city + '/'
 				+ address.addressLine + '?_auth=1,vwXYUSj_Bxl3UT-8xM7NAoHnEcVKM-OcrbPIvCzj5e4&callback=JSON_CALLBACK';
 			reqUrl = encodeURI(reqUrl);
-			console.log(reqUrl);
 
 			$http.jsonp( reqUrl )
 				.success( function( data, status, header, config ) {
@@ -5810,8 +5819,6 @@ app.config(['$routeProvider',
 			}
 		}
 
-		console.log($scope.item);
-
 	    $scope.optionPopup = function(option){
 	    	$scope.storage.activeOption = JSON.stringify(option);
 	    	$scope.popupModal('options');
@@ -5821,6 +5828,8 @@ app.config(['$routeProvider',
 		$scope.optionsDisp = {};
 		$scope.orderRadio = [];
 		$scope.optionErrMsg = '';
+
+		$scope.optionData['19025931/19025933'] = true;
 
 		$scope.checkRadio = function(min, max, option, choice){
 			if (min == max == 1) {
@@ -5865,11 +5874,6 @@ app.config(['$routeProvider',
 	    		}
 
 	    		$scope.storage.currentItem = JSON.stringify(combined);
-
-
-	    		// console.log($scope.storage.currentItem);
-	    		// console.log(combined);
-
 
 	    		// display names
 				$scope.optionsDisp[optOnly] = '';
