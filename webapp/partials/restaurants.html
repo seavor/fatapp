@@ -10,20 +10,15 @@
 	>
 </div>
 
-<!-- insert restFilters modal -->
-
 <!-- @TODO prompt for confirmation of last-order abandonment -->
 
 <div id="openRestaurants" class="restListing">
-
-	<div>{{storage.deliveryAddressDisplay}}</div>
 
 	<h6>Open &amp; Delivering</h6>
 
 	<div ng-repeat="restaurant in restaurantList | filter: restFilter ">
 
-		<!-- ng-repeat -->
-		<div class="restaurantListingItem" ng-click="viewMenu(restaurant.id)">
+		<div class="restaurantListingItem" ng-click="viewMenu(restaurant.id)" ng-show="restaurant.is_delivering==1" >
 			<div class="topBox clearfix">
 				<h5>{{restaurant.na}}</h5>
 				<p class="distanceAway">{{distance}}</p>
@@ -35,9 +30,38 @@
 				</div>
 				<div class="appleRating">
 					<div class="appleWrapper">
-						<img src="images/apple{{ratingx}}.png">
-						<img src="images/apple{{ratingy}}.png">
-						<img src="images/apple{{ratingz}}.png">
+						<img ng-src="images/apple{{restaurant.rating > 0 ? 1 : 0}}.png">
+						<img ng-src="images/apple{{restaurant.rating > 1 ? 1 : 0}}.png">
+						<img ng-src="images/apple{{restaurant.rating > 2 ? 1 : 0}}.png">
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<div id="closedRestaurants" class="restListing">
+
+	<h6>Closed</h6>
+
+	<div ng-repeat="restaurant in restaurantList | filter: restFilter ">
+
+		<div class="restaurantListingItem" ng-click="viewMenu(restaurant.id)" ng-show="restaurant.is_delivering==0" >
+			<div class="topBox clearfix">
+				<h5>{{restaurant.na}}</h5>
+				<p class="distanceAway">{{distance}}</p>
+			</div>
+			<div class="bottomBox clearfix">
+				<div class="feeWrapper">
+					<p>Minimum Order: ${{restaurant.services.deliver.mino}}</p>
+					<p><span ng-repeat="filter in restaurant.filters">{{filter}}, </p>
+				</div>
+				<div class="appleRating">
+					<div class="appleWrapper">
+						<img ng-src="images/apple{{restaurant.rating > 0 ? 1 : 0}}.png">
+						<img ng-src="images/apple{{restaurant.rating > 1 ? 1 : 0}}.png">
+						<img ng-src="images/apple{{restaurant.rating > 2 ? 1 : 0}}.png">
 					</div>
 				</div>
 			</div>

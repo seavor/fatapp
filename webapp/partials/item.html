@@ -31,6 +31,8 @@
 	</div>
 </div>
 
-<button id="addToOrder" class="actionButton" type="button" ng-click="popupModal('quantity')">{{orderButton}}</button>
+<button class="actionButton" type="button" ng-show="fee == 1">(Restaurant Closed)</button>
+
+<button id="addToOrder" class="actionButton" type="button" ng-click="popupModal('quantity')" ng-show="item.is_delivering != 1">{{orderButton}}</button>
 
 <div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
