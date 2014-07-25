@@ -6128,16 +6128,19 @@ app.config(['$routeProvider',
 
 	app.controller('CheckoutCtrl', function($scope, $http, $location){
 
-		if ($scope.storage.deliveryAddress) {
-			$scope.deliveryAddress = JSON.parse($scope.storage.deliveryAddress);
-			$scope.addressDisplay = $scope.storage.deliveryAddressDisplay;
-			$scope.addressName = $scope.deliveryAddress.addressName;
-		} else {
-			$scope.addressName = 'Please Select';
-			$scope.addressDisplay = ':(';
-		};
+		$scope.allFieldsFilled = true;
 
-		$scope.allFieldsFilled = false;
+		// Keep Filtered Display Updated
+		$scope.$watch('storage.deliveryAddress', function() {
+			if ($scope.storage.deliveryAddress) {
+				$scope.deliveryAddress = JSON.parse($scope.storage.deliveryAddress);
+				$scope.addressDisplay = $scope.storage.deliveryAddressDisplay;
+				$scope.addressName = $scope.deliveryAddress.addressName;
+			} else {
+				$scope.addressName = 'Please Select';
+				$scope.addressDisplay = ':(';
+			};
+		});
 
 	});
 

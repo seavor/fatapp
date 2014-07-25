@@ -154,4 +154,21 @@
 	</ul>
 </div>
 
+<div id="orderTotal" class="actionInfo">
+	<div class="itemPriceInfo">
+		<h6>Subtotal</h6>
+		<p>$22.97</p>
+	</div>
+	<div class="itemPriceInfo">
+		<h6>Tip</h6>
+		<p>$2.00</p>
+	</div>
+	<div class="itemPriceInfo">
+		<h6>TOTAL</h6>
+		<p>$24.97</p>
+	</div>
+</div>
+
 <button for="checkoutForm" id="purchase" class="actionButton actionRequired" type="button" ng-show="allFieldsFilled">Send Me Food!</button>
+
+<div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
