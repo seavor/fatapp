@@ -69,7 +69,7 @@ app.config(['$routeProvider',
 
 		// Initialize Modal Variables
 		$scope.displayModal = false;
-		$scope.url = '';
+		$scope.url = 'null';
 
 		$scope.popupModal = function(popup){
 			$scope.url = popup;
@@ -82,7 +82,7 @@ app.config(['$routeProvider',
 		};
 
 		$scope.closeModal = function() {
-			$scope.url = '';
+			$scope.url = 'null';
 			$scope.displayModal = false;
 		};
 
@@ -100,13 +100,18 @@ app.config(['$routeProvider',
 			var fil = '';
 			return JSON.parse($scope.storage.filter, function(k, v){
 				if ( v ) { fil += (k.charAt(0).toUpperCase() + k.slice(1)) + ', '; }
-				return fil.substring(0, fil.length - 2) + ' Menus';
+				return fil.substring(0, fil.length - 4) + ' Menus';
 			});
 		};
 
 		$scope.clearStorage = function(){
 			window.sessionStorage.clear();
 			$location.path('/blank');
+		};
+
+		$scope.emptyTrayPrompt = function(dest, callback){
+			$scope.prompt = callback;
+			$scope.popupModal('emptyTray');
 		};
 
 	});
@@ -238,6 +243,11 @@ app.config(['$routeProvider',
 
 	});
 
+	app.controller('EmptyTrayCtrl', function($scope, $location){
+
+			$scope.storage.removeItem('tray');
+	});
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
     // Home Page (Search)
@@ -336,7 +346,7 @@ app.config(['$routeProvider',
 		        "longitude": -74.010574,
 		        "del": 30,
 		        "mino": 15,
-		        "is_delivering": 0,
+		        "is_delivering": 1,
 		        "rating": 1,
 		        "filters" : [
 		        	"dinner",
@@ -447,15 +457,21 @@ app.config(['$routeProvider',
 			return false;
 		};
 
-		// @TODO Write Rating function
-		$scope.ratingx = 1;
-		$scope.ratingy = 1;
-		$scope.ratingz = 0;
 
 		$scope.viewMenu = function(rid){
-			$scope.storage.activeRest = rid;
-			$location.path('/menu');
-		};
+			if($scope.storage.tray && $scope.storage.activeRest != rid){
+				$scope.emptyTrayPrompt(function(proceed){
+					if(proceed) {
+						$scope.storage.activeRest = rid;
+						$location.path('/menu');
+					}
+				});
+			} else {
+				$scope.storage.activeRest = rid;
+				$location.path('/menu');
+			}
+
+		}
 		
 	});
 
@@ -3174,19 +3190,26 @@ app.config(['$routeProvider',
 
 	app.controller('ItemCtrl', function($scope, $http, $location){
 
-		$scope.displayNames = function(optOnly) {
+		// @TODO
+
+		// disable add item to tray
+
+
+		$scope.displayNames = function(oid) {
 
 			var currentItem = JSON.parse($scope.storage.currentItem);
 
-			$scope.optionsDisp[optOnly] = '';
+			$scope.optionsDisp[oid] = '';
 
     		for( var opt in currentItem ) {
     			if (currentItem.hasOwnProperty(opt)) {
-		    		if( currentItem[opt] && opt.search(optOnly) !== -1 ) {
-		    			$scope.optionsDisp[optOnly] += JSON.parse(currentItem[opt]).name + ', ';
+		    		if( currentItem[opt] && opt.search(oid) !== -1 ) {
+		    			$scope.optionsDisp[oid] += JSON.parse(currentItem[opt]).name + ', ';
 		    		}
 		    	}
 	    	}
+
+	    	$scope.optionsDisp[oid].substring(0, $scope.optionsDisp[oid].length - 2);
 		}
 
 		$scope.menu = {
@@ -5829,9 +5852,6 @@ app.config(['$routeProvider',
 
 		if( $scope.storage.editItem ) {
 			$scope.storage.activeItem = $scope.storage.editItem;
-
-			
-
 		}
 
 		// get the item data from the stored item ID & menu data
@@ -5880,14 +5900,14 @@ app.config(['$routeProvider',
 			if( option.min_child_select == option.max_child_select == 1 ) {
 
 				var currentItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
-				// var optOnly = option.id.split('/')[0];
 
 				for( var opt in currentItem ) {
 				 	if( currentItem.hasOwnProperty(opt) ) {
 						if( currentItem[opt] ) {
 				 			$scope.optionData[opt] = JSON.parse(currentItem[opt]);
 				}	}	}
-				$scope.optionData = currentItem;// ? JSON.parse($scope.storage.currentItem) : {};
+
+				$scope.optionData = currentItem;
 
 			} else {
 				$scope.optionData = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
@@ -6001,9 +6021,7 @@ app.config(['$routeProvider',
 
 	    	$scope.closeModal();
 
-	    	$location.path(
-	    		$scope.storage.editItem ? '/review' : '/menu'
-	    	);
+	    	$location.path( $scope.storage.editItem ? '/review' : '/menu' );
 
 
 	    };
