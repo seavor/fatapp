@@ -221,9 +221,6 @@ app.config(['$routeProvider',
 			else { return 'checkbox'; }
 		};
 
-
-		// $scope.isChecked = false;
-
 		// $scope.compareSelected = function(){
 		// 		console.log(this);
 		// 	// if (this.choice.id == selected) {
@@ -3177,6 +3174,21 @@ app.config(['$routeProvider',
 
 	app.controller('ItemCtrl', function($scope, $http, $location){
 
+		$scope.displayNames = function(optOnly) {
+
+			var currentItem = JSON.parse($scope.storage.currentItem);
+
+			$scope.optionsDisp[optOnly] = '';
+
+    		for( var opt in currentItem ) {
+    			if (currentItem.hasOwnProperty(opt)) {
+		    		if( currentItem[opt] && opt.search(optOnly) !== -1 ) {
+		    			$scope.optionsDisp[optOnly] += JSON.parse(currentItem[opt]).name + ', ';
+		    		}
+		    	}
+	    	}
+		}
+
 		$scope.menu = {
 		    "addr": "378 Greenwich St",
 		    "allow_asap": "yes",
@@ -5810,6 +5822,18 @@ app.config(['$routeProvider',
 		    "rating": 3
 		};
 
+		$scope.optionData = {};
+		$scope.optionsDisp = {};
+		$scope.orderRadio = [];
+		$scope.optionErrMsg = '';
+
+		if( $scope.storage.editItem ) {
+			$scope.storage.activeItem = $scope.storage.editItem;
+
+			
+
+		}
+
 		// get the item data from the stored item ID & menu data
 		for( var category in $scope.menu.menu ) {
 			for( var item in $scope.menu.menu[category].children ) {
@@ -5819,17 +5843,61 @@ app.config(['$routeProvider',
 			}
 		}
 
+		if( $scope.storage.editItem ) {
+			var cids = JSON.parse($scope.storage.editItemCids);
+			//$scope.storage.currentItem0;
+
+			var currentItem = {};
+
+			var oids = [];
+
+			for( var choiceId = 0; choiceId < cids.length; choiceId++ ) {
+				for(var optCat = 0; optCat < $scope.item.children.length; optCat++ ) {
+					for(var opt = 0; opt < $scope.item.children[optCat].children.length; opt++ ) {
+						var option = $scope.item.children[optCat].children[opt];
+
+						if( cids[choiceId] === option.id ) {
+							oids.push($scope.item.children[optCat].id);
+							currentItem[ $scope.item.children[optCat].id + '/' + option.id ] = JSON.stringify(option);
+						}
+					}
+				}
+			}
+
+			$scope.storage.currentItem = JSON.stringify( currentItem );
+
+			for(var oid = 0; oid < oids.length; oid ++) {
+				$scope.displayNames(oids[oid]);
+			}
+
+		}
+
 	    $scope.optionPopup = function(option){
+
+	    	$scope.isChecked = [];
+
+
+			if( option.min_child_select == option.max_child_select == 1 ) {
+
+				var currentItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
+				// var optOnly = option.id.split('/')[0];
+
+				for( var opt in currentItem ) {
+				 	if( currentItem.hasOwnProperty(opt) ) {
+						if( currentItem[opt] ) {
+				 			$scope.optionData[opt] = JSON.parse(currentItem[opt]);
+				}	}	}
+				$scope.optionData = currentItem;// ? JSON.parse($scope.storage.currentItem) : {};
+
+			} else {
+				$scope.optionData = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
+			}
+
 	    	$scope.storage.activeOption = JSON.stringify(option);
 	    	$scope.popupModal('options');
 	    };
 
-		$scope.optionData = {};
-		$scope.optionsDisp = {};
-		$scope.orderRadio = [];
-		$scope.optionErrMsg = '';
 
-		$scope.optionData['19025931/19025933'] = true;
 
 		$scope.checkRadio = function(min, max, option, choice){
 			if (min == max == 1) {
@@ -5837,6 +5905,8 @@ app.config(['$routeProvider',
 				//console.log($scope.optionData[$scope.orderRadio[ $scope.orderRadio.length -1 ]]);
 			};
 		};
+
+
 
 	    $scope.storeOptions = function(min, max, optionId) {
 
@@ -5852,10 +5922,10 @@ app.config(['$routeProvider',
 	    	// get # of chosen options
 	    	var selectedNum = 0;
 	    	for( var opt in $scope.optionData ) {
-	                if ($scope.optionData.hasOwnProperty(opt)) {
-	    		        if( $scope.optionData[opt] ) {
-	    			        selectedNum += 1;
-                                }
+				if ($scope.optionData.hasOwnProperty(opt)) {
+					if( $scope.optionData[opt] ) {
+						selectedNum += 1;
+					}
 	    		}
 	    	}
 
@@ -5867,23 +5937,27 @@ app.config(['$routeProvider',
 
 	    		var combined = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
 
+	    		// remove old options if radio
+	    		if(min == max == 1) {
+	    			for( var opt in combined ) {
+	    				if( combined.hasOwnProperty(opt) ) {
+	    					if( opt.search(optOnly) !== -1 ) {
+	    						combined[ opt ] = false;
+	    					}
+	    				}
+	    			}
+	    		}
+
 	    		for(var opt in $scope.optionData) {
 	    			if( $scope.optionData.hasOwnProperty(opt)) {
-	    				combined[ opt] = $scope.optionData[opt];
+	    				combined[ opt ] = $scope.optionData[opt];
 	    			}
 	    		}
 
 	    		$scope.storage.currentItem = JSON.stringify(combined);
 
 	    		// display names
-				$scope.optionsDisp[optOnly] = '';
-	    		for( var opt in $scope.optionData ) {
-	    			if ($scope.optionData.hasOwnProperty(opt)) {
-			    		if( $scope.optionData[opt] ) {
-			    			$scope.optionsDisp[optOnly] += JSON.parse($scope.optionData[opt]).name + ', ';
-			    		}
-			    	}
-		    	}
+	    		$scope.displayNames(optOnly);
 
 		    	// clear stuff
 		    	$scope.optionData = {};
@@ -5915,76 +5989,61 @@ app.config(['$routeProvider',
 				item : $scope.item
 	    	};
 
+
 	    	var tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : [];
-	    	tray.push(newItem);
+
+	    	if( $scope.storage.editItem ) { tray[ $scope.storage.editItemIndex ] = newItem; }
+	    	else { tray.push(newItem); }
+	    	
 
 	    	$scope.storage.tray = JSON.stringify(tray);
 	    	$scope.storage.currentItem = '';
-	    	$location.path('/menu');
+
+	    	$scope.closeModal();
+
+	    	$location.path(
+	    		$scope.storage.editItem ? '/review' : '/menu'
+	    	);
+
 
 	    };
 
-	    $scope.orderButton = 'Add to Order';
+	    $scope.orderButton = $scope.storage.editItem ? 'Edit Item' : 'Add to Order';
 
 	});
-
-
-
-    app.controller('EditItemCtrl', function($scope, $http, $location){
-    	
-    	// Overwrite $parent.$csope.item variable for editItem
-    	if ($scope.storage.editItem) {
-
-    		// If on Edit Screen with No Tray, clear storage and route to Home screen
-    		var editTray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
-    		for (var item in editTray){
-    			if (editTray.hasOwnProperty(item)) {
-	    			if (editTray[item].iid == $scope.storage.editItem) {
-	    				$scope.item = editTray[item].item;
-	    	}	}	}
-
-		    $scope.addItem = function() {
-
-		    	var currItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
-		    	var cids = [];
-
-		    	for(var op in currItem) {
-		    		if (currItem.hasOwnProperty(op)) {
-						if( currItem[op] ) {
-							cids.push(JSON.parse(currItem[op]).id);
-				}	}	}
-
-				// @TODO replace old item with edited item
-
-		    	var newItem = {
-					iid : $scope.storage.activeItem,
-					amount: this.amount,
-					cid: cids,
-					item : $scope.item
-		    	};
-
-		    	var tray = JSON.parse($scope.storage.tray);
-		    	tray.push(newItem);
-
-		    	$scope.storage.tray = JSON.stringify(tray);
-		    	$scope.storage.currentItem = '';
-		    	$scope.storage.removeItem('editItem');
-		    	$location.path('/review');
-
-		    };
-
-		    $scope.orderButton = 'Edit Item';
-
-		}
-
-    });	
 
 	app.controller('ReviewCtrl', function($scope, $http, $location){
 
 		$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
 
-		$scope.editOption = function(iid){
-			$scope.storage.editItem = iid;
+		$scope.optionsDisp = [];
+
+		// if we're on the review page, we don't need the marker for an item being edited any longer
+		$scope.storage.removeItem('editItem');
+
+		for(var iidx = 0; iidx < $scope.tray.length; iidx++ ) {
+			var item = $scope.tray[iidx];
+			$scope.optionsDisp[ iidx ] = '';
+			for(var cid = 0; cid < item.cid.length; cid++ ) {
+				for(var optCat = 0; optCat < item.item.children.length; optCat++ ) {
+					for(var opt = 0; opt < item.item.children[optCat].children.length; opt++ ) {
+						var option = item.item.children[optCat].children[opt]
+						if( option.id === item.cid[cid] ) {
+							$scope.optionsDisp[ iidx ] += option.name + ', ';
+						}
+					}
+				}
+			}
+		}
+
+
+		$scope.editOption = function(item, iidx){
+
+			$scope.storage.editItem = item.iid;
+			$scope.storage.editItemCids = JSON.stringify(item.cid);
+			$scope.storage.editItemIndex = iidx;
+			console.log($scope.storage.editItem);
+			console.log($scope.storage.editItemIndex);
 			$location.path('/item');
 		};
 

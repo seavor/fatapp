@@ -1,7 +1,23 @@
-<div class="itemReview popupButton clearfix" ng-repeat="item in tray" ng-click="editOption(item.iid)">
+<div class="itemReview popupButton clearfix" ng-repeat="item in tray" ng-click="editOption(item, $index)">
 	<h6>{{item.item.name}}</h6>
 	<p class="itemTotal">${{item.item.price}}</p>
 	<p class="itemAmount">x {{item.amount}}</p>
+	<p class="itemOptionSelections">{{ optionsDisp[ $index ] }}</p>
+</div>
+
+<div id="orderTotal" class="actionInfo">
+	<div class="itemPriceInfo">
+		<h6>Subtotal</h6>
+		<p>$22.97</p>
+	</div>
+	<div class="itemPriceInfo">
+		<h6>Taxes/Fees</h6>
+		<p>$2.00</p> <!-- @TODO: make fee call -->
+	</div>
+	<div class="itemPriceInfo">
+		<h6>TOTAL</h6>
+		<p>$24.97</p>
+	</div>
 </div>
 
 <button id="checkout" class="actionButton" type="button">Proceed to Checkout</button>
@@ -18,7 +34,3 @@
 </div>
 
 <button id="checkout" class="actionButton" type="button">Proceed to Checkout</button> -->
-
-<div ng-controller="x">
-	<div ng-controller="y"></div>
-</div>
