@@ -1,23 +1,36 @@
-<div ng-controller="EditItemCtrl">
-	<div class="menuItem itemBest"> <!-- data-iid="{{iid}}" -->
-		<h6>{{item.name}}</h6>
-		<p class="itemPrice">${{item.price}}</p>
-		<p class="itemDescription">{{item.descrip}}</p>
-		<p class="error itemError"></p>
-	</div>
-
-	<div id="userChoices" class="itemOptionsBox">
-
-		<h3>Choose your options:</h3>
-
-		<div class="itemOptions popupButton" ng-repeat="option in item.children" ng-click="optionPopup(option)">
-			<h4>{{option.name}}<span class="required" ng-show="option.min_child_select > 0">*</span></h4>
-			<p class="itemOptionSelections">{{ optionsDisp[ option.id ] }}</p>
-		</div>
-
-	</div>
-
-	<button id="addToOrder" class="actionButton" type="button" ng-click="popupModal('quantity')">{{orderButton}}</button>
-
-	<div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
+<div class="menuItem itemBest">
+	<h6>{{item.name}}</h6>
+	<p class="itemPrice">${{item.price}}</p>
+	<p class="itemDescription">{{item.descrip}}</p>
+	<p class="error itemError"></p>
 </div>
+
+<div id="userChoices" class="itemOptionsBox">
+
+	<h3 ng-show="item.children.length">Choose your options:</h3>
+
+	<div class="itemOptions popupButton" ng-repeat="option in item.children" ng-click="optionPopup(option)">
+		<h4>{{option.name}}<span class="required" ng-show="option.min_child_select > 0">*</span></h4>
+		<p class="itemOptionSelections">{{ optionsDisp[ option.id ] }}</p>
+	</div>
+
+</div>
+
+<div id="orderTotal" class="actionInfo">
+	<div class="itemPriceInfo">
+		<h6>Item Price</h6>
+		<p>$22.97</p>
+	</div>
+	<div class="itemPriceInfo">
+		<h6>Extras</h6>
+		<p>$2.00</p> <!-- @TODO: make fee call -->
+	</div>
+	<div class="itemPriceInfo">
+		<h6>TOTAL</h6>
+		<p>$24.97</p>
+	</div>
+</div>
+
+<button id="addToOrder" class="actionButton" type="button" ng-click="popupModal('quantity')">{{orderButton}}</button>
+
+<div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
