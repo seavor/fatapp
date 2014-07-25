@@ -44,6 +44,10 @@ app.config(['$routeProvider',
         templateUrl: 'partials/review.html',
         controller: 'ReviewCtrl'
       }).
+      when('/checkout', {
+        templateUrl: 'partials/checkout.html',
+        controller: 'CheckoutCtrl'
+      }).
       // Reroute to Home Sceen
       otherwise({
         redirectTo: '/search'
@@ -64,6 +68,13 @@ app.config(['$routeProvider',
 			return true;
 		};
 
+		// Select Saved/Enter Address per Login Status
+		$scope.selectAddress = function(){
+			console.log(this);
+			if ($scope.userLoggedIn() == true ) { return 'savedAddresses'; }
+			else { return 'enterAddress'; }
+		};
+
 		// Modal Activation Controls
 		////////////////////////////////////////////////////////////////
 
@@ -71,13 +82,15 @@ app.config(['$routeProvider',
 		$scope.displayModal = false;
 		$scope.url = 'null';
 
-		$scope.popupModal = function(popup){
+		$scope.popupModal = function(popup, param){
+			$scope.storage.popupParam = param;
 			$scope.url = popup;
 			$scope.displayModal = true;
 		};
 
-		$scope.switchModal = function(popup){
+		$scope.switchModal = function(popup, param){
 			$scope.closeModal();
+			$scope.storage.popupParam = param;
 			$scope.popupModal(popup);
 		};
 
@@ -109,14 +122,27 @@ app.config(['$routeProvider',
 			$location.path('/blank');
 		};
 
-		$scope.emptyTrayPrompt = function(dest, callback){
-			$scope.prompt = callback;
-			$scope.popupModal('emptyTray');
-		};
+		// Tray Management Controls
+		////////////////////////////////////////////////////////////////
+
+		// $scope.emptyTrayPrompt = function(dest, callback){
+		// 	$scope.prompt = callback;
+		// 	$scope.popupModal('emptyTray');
+		// };
+
+		// $scope.checkForTray = function(dest){
+		// 	// If Tray Exists, and about to order from new Restaurant
+		// 	if ($scope.storage.tray && $scope.storage.activeRest != $scope.storage.orderRest) {
+		// 		// prompt for confirmation of rest change
+		// 	} else {
+		// 		// Add item to new tray
+		// 		$scope.dest
+		// 	};
+		// };
 
 	});
 
-    // Modal View Controllers
+    // Modal Controllers
 	////////////////////////////////////////////////////////////////////
 	app.controller('SavedAddressesCtrl', function($scope, $http, $location){
 
@@ -243,14 +269,46 @@ app.config(['$routeProvider',
 
 	});
 
+	app.controller('EditItemCtrl', function($scope, $location){
+
+		var tray = JSON.parse($scope.storage.tray);
+
+		// Find the Targeted Item in the Tray and Set Variables for EditOption()
+		tray.forEach(function(v, i){
+			if (i == $scope.storage.popupParam) {
+				$scope.name = v.item.name;
+				$scope.iidx = i;
+				$scope.item = v;
+
+			}
+		});
+
+		// Splice Removed Item from array by Index
+		$scope.removeOption = function(iidx){
+			tray.forEach(function(v, i){
+				if (i == iidx) {
+					tray.splice(i, 1);
+					$scope.storage.tray = JSON.stringify(tray);
+					$scope.closeModal();
+				}
+			});
+		};
+
+	});
+
 	app.controller('EmptyTrayCtrl', function($scope, $location){
 
-			$scope.storage.removeItem('tray');
+		// If Confirmed, set $scope.storage.orderRest = $scope.storage.activeRest
+		$scope.emptyTray = function(bool){
+			if (bool) { $scope.storage.orderRest = $scope.storage.activeRest; }
+			else { $scope.closeModal(); };
+		};
+
 	});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-    // Home Page (Search)
+    // Page Controllers
 	////////////////////////////////////////////////////////////////////
 
 	app.controller('SearchCtrl', function($scope, $http, $location){
@@ -272,13 +330,6 @@ app.config(['$routeProvider',
 			var state = $scope.storage.findRestButtonState;
 			return state;
 		};
-
-		// Select Saved/Enter Address per Login Status
-		$scope.selectAddress = function(){
-			if ($scope.userLoggedIn() == true ) { return 'savedAddresses'; }
-			else { return 'enterAddress'; }
-		};
-		
 
 		// Find restaurants
 		$scope.findRestaurants = function(){
@@ -304,9 +355,6 @@ app.config(['$routeProvider',
 		};
 
 	});
-
-	// Restaurants List Page
-	////////////////////////////////////////////////////////////////////
 
 	app.controller('RestaurantsCtrl', function($scope, $http, $location){
 
@@ -432,7 +480,7 @@ app.config(['$routeProvider',
 		        "is_delivering": 0,
 		        "rating": 2,
 		        "filters" : [
-		        	"brunch",
+		        	"brunch ",
 		        	"lunch",
 		        	"dinner"
 		        ]
@@ -459,24 +507,11 @@ app.config(['$routeProvider',
 
 
 		$scope.viewMenu = function(rid){
-			if($scope.storage.tray && $scope.storage.activeRest != rid){
-				$scope.emptyTrayPrompt(function(proceed){
-					if(proceed) {
-						$scope.storage.activeRest = rid;
-						$location.path('/menu');
-					}
-				});
-			} else {
-				$scope.storage.activeRest = rid;
-				$location.path('/menu');
-			}
-
+			$scope.storage.activeRest = rid;
+			$location.path('/menu');
 		}
 		
 	});
-
-	// Menu View Page
-	////////////////////////////////////////////////////////////////////
 
 	app.controller('MenuCtrl', function($scope, $http, $location){
 
@@ -3184,9 +3219,6 @@ app.config(['$routeProvider',
 	    };
 
 	});
-
-	// Menu View Page
-	////////////////////////////////////////////////////////////////////
 
 	app.controller('ItemCtrl', function($scope, $http, $location){
 
@@ -5991,7 +6023,26 @@ app.config(['$routeProvider',
 	    $scope.amountRange = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 	    $scope.amount = 1;
 
+	  //   $scope.checkForTray = function(view, dest){
+	  //   	// If Tray Exists, and about to order from new Restaurant
+			// if ($scope.storage.tray && $scope.storage.activeRest != $scope.storage.orderRest) {
+			// 	$scope.popupModal('emptyTray');
+			// } else {
+			// 	// Add item to new tray
+			// 	if (view == 'modal' {
+			// 		$scope.popupModal(dest);
+			// 	};
+			// };
+	  //   };
+
 	    $scope.addItem = function() {
+
+	  //   	if ($scope.storage.tray && $scope.storage.activeRest != $scope.storage.orderRest) {
+			// 	$scope.popupModal('emptyTray');
+			// 	return;
+			// }
+
+	    	$scope.storage.orderRest = $scope.storage.activeRest;
 
 	    	var currItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
 	    	var cids = [];
@@ -6034,11 +6085,18 @@ app.config(['$routeProvider',
 
 		$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
 
+		$scope.$watch('storage.tray', function() {
+			$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
+		});
+
+
 		$scope.optionsDisp = [];
 
 		// if we're on the review page, we don't need the marker for an item being edited any longer
 		$scope.storage.removeItem('editItem');
 
+
+		// Filter Out and Add Selected Options to optionDisplay object
 		for(var iidx = 0; iidx < $scope.tray.length; iidx++ ) {
 			var item = $scope.tray[iidx];
 			$scope.optionsDisp[ iidx ] = '';
@@ -6048,11 +6106,7 @@ app.config(['$routeProvider',
 						var option = item.item.children[optCat].children[opt]
 						if( option.id === item.cid[cid] ) {
 							$scope.optionsDisp[ iidx ] += option.name + ', ';
-						}
-					}
-				}
-			}
-		}
+		}	}	}	}	}
 
 
 		$scope.editOption = function(item, iidx){
@@ -6060,10 +6114,33 @@ app.config(['$routeProvider',
 			$scope.storage.editItem = item.iid;
 			$scope.storage.editItemCids = JSON.stringify(item.cid);
 			$scope.storage.editItemIndex = iidx;
-			console.log($scope.storage.editItem);
-			console.log($scope.storage.editItemIndex);
+			$scope.closeModal();
 			$location.path('/item');
 		};
+
+		$scope.fee = true;
+
+		$scope.proceedToCheckout = function(){
+			$location.path('/checkout');
+		}
+
+	});
+
+	app.controller('CheckoutCtrl', function($scope, $http, $location){
+
+		$scope.allFieldsFilled = true;
+
+		// Keep Filtered Display Updated
+		$scope.$watch('storage.deliveryAddress', function() {
+			if ($scope.storage.deliveryAddress) {
+				$scope.deliveryAddress = JSON.parse($scope.storage.deliveryAddress);
+				$scope.addressDisplay = $scope.storage.deliveryAddressDisplay;
+				$scope.addressName = $scope.deliveryAddress.addressName;
+			} else {
+				$scope.addressName = 'Please Select';
+				$scope.addressDisplay = ':(';
+			};
+		});
 
 	});
 
@@ -6075,7 +6152,8 @@ app.config(['$routeProvider',
 // show checkout button when order minimum reached (menu page)
 		
 
-
+// When item is added from new restaurant = prompt to empty tray
+// App Reset = prompt to empty
 
 
 

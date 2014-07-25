@@ -1,15 +1,15 @@
-<div id="editItemMenu" class="popupMenu">
+<div id="editItemMenu" class="popupMenu" ng-controller="EditItemCtrl">
 	<div class="popupBox clearfix">
-		<h5>{{itemName}}</h5>
+		<h5>{{name}}</h5>
 		<ul class="lineItems">
-			<li>
+			<li class="popupButton" ng-click="editOption(item, iidx)">
 				<h4 title="edit" class="">Edit Item</h4>
 			</li>
-			<li>
+			<li class="popupButton" ng-click="removeOption(iidx)"">
 				<h4 title="remove" class="">Remove Item</h4>
 			</li>
 		</ul>
-		<button class="popupCancel smallButton cancelButton" type="button">Cancel</button>
+		<button class="popupCancel smallButton cancelButton" type="button" ng-click="closeModal()">Cancel</button>
 	</div>
 </div>
 

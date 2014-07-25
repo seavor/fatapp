@@ -1,18 +1,8 @@
-<div id="deliveryAddressBoxUser" class="popupButton">
+<div id="deliveryAddressBoxUser" class="popupButton" ng-click='popupModal(selectAddress())'>
 	<h2 id="deliveryAddress" class="mainHeader">Delivery Address</h2>
 	<div id="chosenAddress" class="screenItem">
-		<h3>Choose Address</h3>
-		<p>{{addressLine}}</p>
-	</div>
-</div>
-
-<!-- insert savedAddresses modal -->
-
-<!-- Guest/No Saved Addresses View -->
-<div id="deliveryAddressBoxGuest" class="popupButton">
-	<h2 id="deliveryAddress" class="mainHeader">Delivery Address</h2>
-	<div id="chosenAddress" class="screenItem">
-		<h3>Enter Address</h3>
+		<h3>{{addressName}}</h3>
+		<p>{{addressDisplay}}</p>
 	</div>
 </div>
 
@@ -164,8 +154,21 @@
 	</ul>
 </div>
 
-<!-- insert actionItem partial -->
+<div id="orderTotal" class="actionInfo">
+	<div class="itemPriceInfo">
+		<h6>Subtotal</h6>
+		<p>$22.97</p>
+	</div>
+	<div class="itemPriceInfo">
+		<h6>Tip</h6>
+		<p>$2.00</p>
+	</div>
+	<div class="itemPriceInfo">
+		<h6>TOTAL</h6>
+		<p>$24.97</p>
+	</div>
+</div>
 
-<!-- insert tip modal -->
+<button for="checkoutForm" id="purchase" class="actionButton actionRequired" type="button" ng-show="allFieldsFilled">Send Me Food!</button>
 
-<button for="checkoutForm" id="purchase" class="actionButton actionRequired" type="button">Send Me Food!</button>
+<div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>

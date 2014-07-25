@@ -1,4 +1,4 @@
-<div class="itemReview popupButton clearfix" ng-repeat="item in tray" ng-click="editOption(item, $index)">
+<div class="itemReview popupButton clearfix" ng-repeat="item in tray" ng-click="popupModal('editItem', $index)">
 	<h6>{{item.item.name}}</h6>
 	<p class="itemTotal">${{item.item.price}}</p>
 	<p class="itemAmount">x {{item.amount}}</p>
@@ -20,7 +20,9 @@
 	</div>
 </div>
 
-<button id="checkout" class="actionButton" type="button">Proceed to Checkout</button>
+<button id="checkout" class="actionButton" type="button" ng-show="fee == true" ng-click="proceedToCheckout()">Proceed to Checkout</button>
+
+<div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
 
 
 
