@@ -1,18 +1,8 @@
-<div id="deliveryAddressBoxUser" class="popupButton">
+<div id="deliveryAddressBoxUser" class="popupButton" ng-click='popupModal(selectAddress())'>
 	<h2 id="deliveryAddress" class="mainHeader">Delivery Address</h2>
 	<div id="chosenAddress" class="screenItem">
-		<h3>Choose Address</h3>
-		<p>{{addressLine}}</p>
-	</div>
-</div>
-
-<!-- insert savedAddresses modal -->
-
-<!-- Guest/No Saved Addresses View -->
-<div id="deliveryAddressBoxGuest" class="popupButton">
-	<h2 id="deliveryAddress" class="mainHeader">Delivery Address</h2>
-	<div id="chosenAddress" class="screenItem">
-		<h3>Enter Address</h3>
+		<h3>{{addressName}}</h3>
+		<p>{{addressDisplay}}</p>
 	</div>
 </div>
 
@@ -164,8 +154,4 @@
 	</ul>
 </div>
 
-<!-- insert actionItem partial -->
-
-<!-- insert tip modal -->
-
-<button for="checkoutForm" id="purchase" class="actionButton actionRequired" type="button">Send Me Food!</button>
+<button for="checkoutForm" id="purchase" class="actionButton actionRequired" type="button" ng-show="allFieldsFilled">Send Me Food!</button>

@@ -20,7 +20,7 @@
 	</div>
 </div>
 
-<button id="checkout" class="actionButton" type="button">Proceed to Checkout</button>
+<button id="checkout" class="actionButton" type="button" ng-show="fee == true" ng-click="proceedToCheckout()">Proceed to Checkout</button>
 
 <div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
 

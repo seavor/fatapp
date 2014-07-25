@@ -44,6 +44,10 @@ app.config(['$routeProvider',
         templateUrl: 'partials/review.html',
         controller: 'ReviewCtrl'
       }).
+      when('/checkout', {
+        templateUrl: 'partials/checkout.html',
+        controller: 'CheckoutCtrl'
+      }).
       // Reroute to Home Sceen
       otherwise({
         redirectTo: '/search'
@@ -62,6 +66,13 @@ app.config(['$routeProvider',
 		// Simulate User Loggin Status
 		$scope.userLoggedIn = function(){
 			return true;
+		};
+
+		// Select Saved/Enter Address per Login Status
+		$scope.selectAddress = function(){
+			console.log(this);
+			if ($scope.userLoggedIn() == true ) { return 'savedAddresses'; }
+			else { return 'enterAddress'; }
 		};
 
 		// Modal Activation Controls
@@ -319,13 +330,6 @@ app.config(['$routeProvider',
 			var state = $scope.storage.findRestButtonState;
 			return state;
 		};
-
-		// Select Saved/Enter Address per Login Status
-		$scope.selectAddress = function(){
-			if ($scope.userLoggedIn() == true ) { return 'savedAddresses'; }
-			else { return 'enterAddress'; }
-		};
-		
 
 		// Find restaurants
 		$scope.findRestaurants = function(){
@@ -6091,6 +6095,8 @@ app.config(['$routeProvider',
 		// if we're on the review page, we don't need the marker for an item being edited any longer
 		$scope.storage.removeItem('editItem');
 
+
+		// Filter Out and Add Selected Options to optionDisplay object
 		for(var iidx = 0; iidx < $scope.tray.length; iidx++ ) {
 			var item = $scope.tray[iidx];
 			$scope.optionsDisp[ iidx ] = '';
@@ -6100,11 +6106,7 @@ app.config(['$routeProvider',
 						var option = item.item.children[optCat].children[opt]
 						if( option.id === item.cid[cid] ) {
 							$scope.optionsDisp[ iidx ] += option.name + ', ';
-						}
-					}
-				}
-			}
-		}
+		}	}	}	}	}
 
 
 		$scope.editOption = function(item, iidx){
@@ -6115,6 +6117,27 @@ app.config(['$routeProvider',
 			$scope.closeModal();
 			$location.path('/item');
 		};
+
+		$scope.fee = true;
+
+		$scope.proceedToCheckout = function(){
+			$location.path('/checkout');
+		}
+
+	});
+
+	app.controller('CheckoutCtrl', function($scope, $http, $location){
+
+		if ($scope.storage.deliveryAddress) {
+			$scope.deliveryAddress = JSON.parse($scope.storage.deliveryAddress);
+			$scope.addressDisplay = $scope.storage.deliveryAddressDisplay;
+			$scope.addressName = $scope.deliveryAddress.addressName;
+		} else {
+			$scope.addressName = 'Please Select';
+			$scope.addressDisplay = ':(';
+		};
+
+		$scope.allFieldsFilled = false;
 
 	});
 
