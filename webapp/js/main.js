@@ -125,11 +125,6 @@ app.config(['$routeProvider',
 		// Tray Management Controls
 		////////////////////////////////////////////////////////////////
 
-		// $scope.emptyTrayPrompt = function(dest, callback){
-		// 	$scope.prompt = callback;
-		// 	$scope.popupModal('emptyTray');
-		// };
-
 		// $scope.checkForTray = function(dest){
 		// 	// If Tray Exists, and about to order from new Restaurant
 		// 	if ($scope.storage.tray && $scope.storage.activeRest != $scope.storage.orderRest) {
@@ -288,9 +283,16 @@ app.config(['$routeProvider',
 	app.controller('EmptyTrayCtrl', function($scope, $location){
 
 		// If Confirmed, set $scope.storage.orderRest = $scope.storage.activeRest
-		$scope.emptyTray = function(bool){
-			if (bool) { $scope.storage.orderRest = $scope.storage.activeRest; }
-			else { $scope.closeModal(); };
+		$scope.emptyTrayPrompt = function(bool){
+			console.log(bool);
+			if (bool) {
+				$scope.storage.orderRest = $scope.storage.activeRest;
+				$scope.closeModal();
+				$scope.storage.removeItem('tray');
+				$scope.addItem();
+			} else {
+				$scope.closeModal();
+			}
 		};
 
 	});
@@ -6044,11 +6046,13 @@ app.config(['$routeProvider',
 	  //   };
 
 	    $scope.addItem = function() {
+	    	console.log('addItem');
 
-	  //   	if ($scope.storage.tray && $scope.storage.activeRest != $scope.storage.orderRest) {
-			// 	$scope.popupModal('emptyTray');
-			// 	return;
-			// }
+	    	if ($scope.storage.orderRest && $scope.storage.activeRest != $scope.storage.orderRest) {
+	    		$scope.closeModal();
+				$scope.popupModal('emptyTray');
+				return;
+			}
 
 	    	$scope.storage.orderRest = $scope.storage.activeRest;
 
@@ -6145,7 +6149,7 @@ app.config(['$routeProvider',
 							var option = item.item.children[optCat].children[opt]
 							if( option.id === item.cid[cid] ) {
 								$scope.optionsDisp[ iidx ] += option.name + ', ';
-			}	}	}	}	}
+			}	}	}	}	} 
 		};
 
 
