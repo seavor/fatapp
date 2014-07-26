@@ -6114,9 +6114,8 @@ app.config(['$routeProvider',
 					});
 				});
 
-				itemPrice *= parseFloat(obj.amount);
+				itemPrice *= parseFloat(obj.amount).toFixed(2);
 				$scope.price += itemPrice;
-				$scope.price = $scope.price.toFixed(2);
 			});
 		}
 
