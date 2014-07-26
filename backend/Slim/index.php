@@ -1,4 +1,18 @@
 <?php
+
+// Establish Database Connection
+function jcoreDB() {
+    $dbhost = '54.213.127.189';
+    $dbuser = 'adminx';
+    $dbpass = 'banana';
+    $dbname = 'jcore';
+    $connection = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+    return $connection;
+}
+
+// Set Default Timezone
+date_default_timezone_set("America/New_York");
+
 /**
  * Step 1: Require the Slim Framework
  *
@@ -39,7 +53,23 @@ $app->get('/', function () use ($app) {
 });
 
 $app->get('/test/:city', function($city){
+
+    $db = jcoreDB();
+    
     echo "City name before: " . $city;
+
+    // Get Restaurant List
+    $query = "SELECT * FROM Items";
+    $rests = mysqli_query($db, $query);
+    while ($row = mysqli_fetch_assoc($rests)) {
+        echo '<pre>';
+        print_r($row);
+        echo '</pre>';
+    }
+
+    mysqli_free_result($rests);
+    mysqli_close($db);
+
 });
 
 
