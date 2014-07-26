@@ -127,11 +127,6 @@ app.config(['$routeProvider', '$locationProvider',
 		// Tray Management Controls
 		////////////////////////////////////////////////////////////////
 
-		// $scope.emptyTrayPrompt = function(dest, callback){
-		// 	$scope.prompt = callback;
-		// 	$scope.popupModal('emptyTray');
-		// };
-
 		// $scope.checkForTray = function(dest){
 		// 	// If Tray Exists, and about to order from new Restaurant
 		// 	if ($scope.storage.tray && $scope.storage.activeRest != $scope.storage.orderRest) {
@@ -165,7 +160,7 @@ app.config(['$routeProvider', '$locationProvider',
 			});
 		};
 
-		// Save Address when Checkbox Selected
+		// @TODO Save Address when Checkbox Selected
 		$scope.saveAddress = function(){
 
 		};
@@ -180,7 +175,7 @@ app.config(['$routeProvider', '$locationProvider',
 		// Store New Address
 		$scope.storeAddress = function() {
 			$scope.storage.deliveryAddress = $scope.storeObject($scope.addrForm);
-			// TODO: store if user logged in
+			// TODO: AJAX save store if user logged in & Checked Save
 			$scope.storage.deliveryAddressDisplay = $scope.addrForm.addressLine + ', ' + $scope.addrForm.city + ', ' + $scope.addrForm.zipcode;
 			$scope.closeModal();
 		};
@@ -290,9 +285,16 @@ app.config(['$routeProvider', '$locationProvider',
 	app.controller('EmptyTrayCtrl', function($scope, $location){
 
 		// If Confirmed, set $scope.storage.orderRest = $scope.storage.activeRest
-		$scope.emptyTray = function(bool){
-			if (bool) { $scope.storage.orderRest = $scope.storage.activeRest; }
-			else { $scope.closeModal(); };
+		$scope.emptyTrayPrompt = function(bool){
+			console.log(bool);
+			if (bool) {
+				$scope.storage.orderRest = $scope.storage.activeRest;
+				$scope.closeModal();
+				$scope.storage.removeItem('tray');
+				$scope.addItem();
+			} else {
+				$scope.closeModal();
+			}
 		};
 
 	});
@@ -3212,9 +3214,12 @@ app.config(['$routeProvider', '$locationProvider',
 
 	app.controller('ItemCtrl', function($scope, $http, $location){
 
-		// @TODO
+		$scope.itemOrderable = true;
 
-		// disable add item to tray
+		// @TODO disable add item to tray (css color-fade, ng-click disabled)
+		if (true == false) { // item.is_delivering != 1 || restaurant.not_deliverying == 1 
+			$scope.itemOrderable = false;
+		};
 
 		// method to display names of options chosen
 		$scope.displayNames = function(oid) {
@@ -6046,11 +6051,13 @@ app.config(['$routeProvider', '$locationProvider',
 	  //   };
 
 	    $scope.addItem = function() {
+	    	console.log('addItem');
 
-	  //   	if ($scope.storage.tray && $scope.storage.activeRest != $scope.storage.orderRest) {
-			// 	$scope.popupModal('emptyTray');
-			// 	return;
-			// }
+	    	if ($scope.storage.orderRest && $scope.storage.activeRest != $scope.storage.orderRest) {
+	    		$scope.closeModal();
+				$scope.popupModal('emptyTray');
+				return;
+			}
 
 	    	$scope.storage.orderRest = $scope.storage.activeRest;
 
@@ -6109,9 +6116,8 @@ app.config(['$routeProvider', '$locationProvider',
 					});
 				});
 
-				itemPrice *= parseFloat(obj.amount);
+				itemPrice *= parseFloat(obj.amount).toFixed(2);
 				$scope.price += itemPrice;
-				$scope.price = $scope.price.toFixed(2);
 			});
 		}
 
@@ -6147,7 +6153,7 @@ app.config(['$routeProvider', '$locationProvider',
 							var option = item.item.children[optCat].children[opt]
 							if( option.id === item.cid[cid] ) {
 								$scope.optionsDisp[ iidx ] += option.name + ', ';
-			}	}	}	}	}
+			}	}	}	}	} 
 		};
 
 
