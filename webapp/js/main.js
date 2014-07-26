@@ -252,17 +252,6 @@ app.config(['$routeProvider',
 			else { return 'checkbox'; }
 		};
 
-		// $scope.compareSelected = function(){
-		// 		console.log(this);
-		// 	// if (this.choice.id == selected) {
-		// 	// 	$scope.isChecked = true;
-		// 	// }
-		// };
-			
-		// $scope.$watch('optionActivated', function() {
-		// 	$scope.compareSelected();
-		// });
-
 	});
 
 	app.controller('QuantityCtrl', function($scope, $location){
@@ -3226,7 +3215,7 @@ app.config(['$routeProvider',
 
 		// disable add item to tray
 
-
+		// method to display names of options chosen
 		$scope.displayNames = function(oid) {
 
 			var currentItem = JSON.parse($scope.storage.currentItem);
@@ -5882,6 +5871,10 @@ app.config(['$routeProvider',
 		$scope.orderRadio = [];
 		$scope.optionErrMsg = '';
 
+
+
+
+		// if we are editing an item, set that item ID to be the active item ID
 		if( $scope.storage.editItem ) {
 			$scope.storage.activeItem = $scope.storage.editItem;
 		}
@@ -5895,9 +5888,30 @@ app.config(['$routeProvider',
 			}
 		}
 
+		$scope.extraPrice = '0.00';
+		$scope.totalPrice = $scope.item.price;
+		$scope.$watch('storage.currentItem', function() {
+
+			$scope.extraPrice = 0;
+			var currentItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
+
+			for(var opt in currentItem) {
+				if( currentItem.hasOwnProperty(opt) ) {
+					if(currentItem[ opt ]) {
+						$scope.extraPrice += parseFloat(JSON.parse(currentItem[opt]).price);
+					}
+				}
+			}
+
+			$scope.totalPrice = (parseFloat($scope.item.price) + $scope.extraPrice).toFixed(2)
+;
+			$scope.extraPrice = $scope.extraPrice.toFixed(2);
+
+		});
+
+		// if editing item, recreate the storage.currentItem (w/ all chosen options)
 		if( $scope.storage.editItem ) {
 			var cids = JSON.parse($scope.storage.editItemCids);
-			//$scope.storage.currentItem0;
 
 			var currentItem = {};
 
@@ -5925,10 +5939,7 @@ app.config(['$routeProvider',
 		}
 
 	    $scope.optionPopup = function(option){
-
-	    	$scope.isChecked = [];
-
-
+	    	// if radio, JSON.parse 2 levels deep (is this rly necessary?)
 			if( option.min_child_select == option.max_child_select == 1 ) {
 
 				var currentItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
@@ -5941,7 +5952,7 @@ app.config(['$routeProvider',
 
 				$scope.optionData = currentItem;
 
-			} else {
+			} else { // if checkbox, just parse.
 				$scope.optionData = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
 			}
 
@@ -5954,7 +5965,6 @@ app.config(['$routeProvider',
 		$scope.checkRadio = function(min, max, option, choice){
 			if (min == max == 1) {
 				$scope.orderRadio.push(option.id + '/' + choice.id);
-				//console.log($scope.optionData[$scope.orderRadio[ $scope.orderRadio.length -1 ]]);
 			};
 		};
 
