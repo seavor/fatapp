@@ -286,7 +286,6 @@ app.config(['$routeProvider', '$locationProvider',
 
 		// If Confirmed, set $scope.storage.orderRest = $scope.storage.activeRest
 		$scope.emptyTrayPrompt = function(bool){
-			console.log(bool);
 			if (bool) {
 				$scope.storage.orderRest = $scope.storage.activeRest;
 				$scope.closeModal();
@@ -3213,6 +3212,7 @@ app.config(['$routeProvider', '$locationProvider',
 	});
 
 	app.controller('ItemCtrl', function($scope, $http, $location){
+		console.log(JSON.stringify('[19035012: [19035014], 19035022: [19035023]]'));
 
 		$scope.itemOrderable = true;
 
@@ -6051,8 +6051,8 @@ app.config(['$routeProvider', '$locationProvider',
 	  //   };
 
 	    $scope.addItem = function() {
-	    	console.log('addItem');
 
+	    	// orderRest exists only if there's a tray
 	    	if ($scope.storage.orderRest && $scope.storage.activeRest != $scope.storage.orderRest) {
 	    		$scope.closeModal();
 				$scope.popupModal('emptyTray');
@@ -6116,9 +6116,11 @@ app.config(['$routeProvider', '$locationProvider',
 					});
 				});
 
-				itemPrice *= parseFloat(obj.amount).toFixed(2);
-				$scope.price += itemPrice;
+				itemPrice *= parseFloat(obj.amount);
+				$scope.price += parseFloat(itemPrice);
 			});
+
+			$scope.price = $scope.price.toFixed(2);
 		}
 
 		$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
