@@ -320,7 +320,7 @@ app.config(['$routeProvider',
 			return state;
 		};
 
-		// Find restaurants
+		// Find restaurants @TODO
 		$scope.findRestaurants = function(){
 			var address = JSON.parse($scope.storage.deliveryAddress);
 			var reqUrl = 'http://r-test.ordr.in/dl/ASAP/'
@@ -333,7 +333,6 @@ app.config(['$routeProvider',
 				.success( function( data, status, header, config ) {
 					console.log('SUCCESS');
 					console.log(data);
-					// TODO: save data into storage, redirect to next page
 				})
 				.error( function( data, status, header, config ) {
 					console.log(':(');
@@ -5903,8 +5902,7 @@ app.config(['$routeProvider',
 				}
 			}
 
-			$scope.totalPrice = (parseFloat($scope.item.price) + $scope.extraPrice).toFixed(2)
-;
+			$scope.totalPrice = (parseFloat($scope.item.price) + $scope.extraPrice).toFixed(2);
 			$scope.extraPrice = $scope.extraPrice.toFixed(2);
 
 		});
@@ -6093,10 +6091,40 @@ app.config(['$routeProvider',
 
 	app.controller('ReviewCtrl', function($scope, $http, $location){
 
+		$scope.getSubtotal = function() {
+			$scope.price = 0;
+			angular.forEach($scope.tray, function(obj, trayItemKey) {
+
+				var itemPrice = parseFloat(obj.item.price);
+
+				angular.forEach(obj.cid, function(cidVal, cidKey) {
+					angular.forEach(obj.item.children, function(optCatVal, optCatKey) {
+						angular.forEach(obj.item.children[optCatKey].children, function(optVal, optKey) {
+							if( cidVal === optVal.id ) {
+								itemPrice += parseFloat(optVal.price);
+							}
+						})
+					});
+				});
+
+				itemPrice *= parseFloat(obj.amount);
+				$scope.price += itemPrice;
+				$scope.price = $scope.price.toFixed(2);
+			});
+		}
+
 		$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
 
 		$scope.$watch('storage.tray', function() {
 			$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
+
+			$scope.getSubtotal();
+			$scope.updateDisplay();
+			// @TODO : make Fee call
+			$scope.taxes = '3.50';
+
+			$scope.priceTotal = (parseFloat($scope.price) + parseFloat($scope.taxes) ).toFixed(2);
+
 		});
 
 
@@ -6107,16 +6135,18 @@ app.config(['$routeProvider',
 
 
 		// Filter Out and Add Selected Options to optionDisplay object
-		for(var iidx = 0; iidx < $scope.tray.length; iidx++ ) {
-			var item = $scope.tray[iidx];
-			$scope.optionsDisp[ iidx ] = '';
-			for(var cid = 0; cid < item.cid.length; cid++ ) {
-				for(var optCat = 0; optCat < item.item.children.length; optCat++ ) {
-					for(var opt = 0; opt < item.item.children[optCat].children.length; opt++ ) {
-						var option = item.item.children[optCat].children[opt]
-						if( option.id === item.cid[cid] ) {
-							$scope.optionsDisp[ iidx ] += option.name + ', ';
-		}	}	}	}	}
+		$scope.updateDisplay = function(){
+			for(var iidx = 0; iidx < $scope.tray.length; iidx++ ) {
+				var item = $scope.tray[iidx];
+				$scope.optionsDisp[ iidx ] = '';
+				for(var cid = 0; cid < item.cid.length; cid++ ) {
+					for(var optCat = 0; optCat < item.item.children.length; optCat++ ) {
+						for(var opt = 0; opt < item.item.children[optCat].children.length; opt++ ) {
+							var option = item.item.children[optCat].children[opt]
+							if( option.id === item.cid[cid] ) {
+								$scope.optionsDisp[ iidx ] += option.name + ', ';
+			}	}	}	}	}
+		};
 
 
 		$scope.editOption = function(item, iidx){
