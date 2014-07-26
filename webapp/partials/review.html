@@ -8,19 +8,26 @@
 <div id="orderTotal" class="actionInfo">
 	<div class="itemPriceInfo">
 		<h6>Subtotal</h6>
-		<p>$22.97</p>
+		<p>${{price}}</p>
 	</div>
 	<div class="itemPriceInfo">
 		<h6>Taxes/Fees</h6>
-		<p>$2.00</p> <!-- @TODO: make fee call -->
+		<p>${{taxes}}</p> <!-- @TODO: make fee call -->
 	</div>
 	<div class="itemPriceInfo">
 		<h6>TOTAL</h6>
-		<p>$24.97</p>
+		<p>${{priceTotal}}</p>
 	</div>
 </div>
 
-<button id="checkout" class="actionButton" type="button" ng-show="fee == true" ng-click="proceedToCheckout()">Proceed to Checkout</button>
+<button
+	id="checkout"
+	class="actionButton"
+	type="button"
+	ng-show="fee == true"
+	ng-click="proceedToCheckout()" >
+		Proceed to Checkout
+</button>
 
 <div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
 

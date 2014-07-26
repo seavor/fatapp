@@ -251,7 +251,7 @@ form .inputField {
 		width: 50%;
 		height: auto;
 		position: absolute;
-		top: 50px; left: 50%; /*<== @TODO shouldnt be necessary*/
+		top: 50px; left: 50%;
 		display: none;
 	}
 
