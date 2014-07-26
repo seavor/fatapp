@@ -158,7 +158,7 @@ app.config(['$routeProvider',
 			});
 		};
 
-		// Save Address when Checkbox Selected
+		// @TODO Save Address when Checkbox Selected
 		$scope.saveAddress = function(){
 
 		};
@@ -173,7 +173,7 @@ app.config(['$routeProvider',
 		// Store New Address
 		$scope.storeAddress = function() {
 			$scope.storage.deliveryAddress = $scope.storeObject($scope.addrForm);
-			// TODO: store if user logged in
+			// TODO: AJAX save store if user logged in & Checked Save
 			$scope.storage.deliveryAddressDisplay = $scope.addrForm.addressLine + ', ' + $scope.addrForm.city + ', ' + $scope.addrForm.zipcode;
 			$scope.closeModal();
 		};
@@ -3212,9 +3212,12 @@ app.config(['$routeProvider',
 
 	app.controller('ItemCtrl', function($scope, $http, $location){
 
-		// @TODO
+		$scope.itemOrderable = true;
 
-		// disable add item to tray
+		// @TODO disable add item to tray (css color-fade, ng-click disabled)
+		if (true == false) { // item.is_delivering != 1 || restaurant.not_deliverying == 1 
+			$scope.itemOrderable = false;
+		};
 
 		// method to display names of options chosen
 		$scope.displayNames = function(oid) {
