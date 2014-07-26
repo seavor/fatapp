@@ -12,7 +12,7 @@
 	</div>
 	<div class="itemPriceInfo">
 		<h6>Taxes/Fees</h6>
-		<p>${{taxes}}</p> <!-- @TODO: make fee call -->
+		<p>${{taxes}}</p>
 	</div>
 	<div class="itemPriceInfo">
 		<h6>TOTAL</h6>
@@ -30,16 +30,3 @@
 </button>
 
 <div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
-
-
-
-
-
-
-<!-- <div data-itemnumber='{{iid}}' class="itemReview popupButton clearfix">
-	<h6>{{itemName}}</h6>
-	<p class="itemTotal">${{itemPrice}}</p>
-	<p class="itemAmount">x {{itemQuantity}}</p>
-</div>
-
-<button id="checkout" class="actionButton" type="button">Proceed to Checkout</button> -->
