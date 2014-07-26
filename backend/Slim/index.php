@@ -1,5 +1,18 @@
 <?php
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+require 'Slim/Slim.php';
+
+\Slim\Slim::registerAutoloader();
+
+$app = new \Slim\Slim();
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Set Default Timezone
+date_default_timezone_set("America/New_York");
+
 // Establish Database Connection
 function jcoreDB() {
     $dbhost = '54.213.127.189';
@@ -10,52 +23,14 @@ function jcoreDB() {
     return $connection;
 }
 
-// Set Default Timezone
-date_default_timezone_set("America/New_York");
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
-/**
- * Step 1: Require the Slim Framework
- *
- * If you are not using Composer, you need to require the
- * Slim Framework and register its PSR-0 autoloader.
- *
- * If you are using Composer, you can skip this step.
- */
-require 'Slim/Slim.php';
-
-\Slim\Slim::registerAutoloader();
-
-/**
- * Step 2: Instantiate a Slim application
- *
- * This example instantiates a Slim application using
- * its default settings. However, you will usually configure
- * your Slim application now by passing an associative array
- * of setting names and values into the application constructor.
- */
-$app = new \Slim\Slim();
-
-$app->config('templates.path', '../../webapp');
-
-/**
- * Step 3: Define the Slim application routes
- *
- * Here we define several Slim application routes that respond
- * to appropriate HTTP request methods. In this example, the second
- * argument for `Slim::get`, `Slim::post`, `Slim::put`, `Slim::patch`, and `Slim::delete`
- * is an anonymous function.
- */
-
-// GET route
-
-$app->get('/', function () use ($app) {
-    $app->render('index.html');
-});
-
-$app->get('/test/:city', function($city){
+$app->get('/test/:city', function($city) {
 
     $db = jcoreDB();
-    
+
     echo "City name before: " . $city;
 
     // Get Restaurant List
@@ -72,29 +47,13 @@ $app->get('/test/:city', function($city){
 
 });
 
-
-/* This hacky bit allows us to dynamically render the static files 
-that the front-end uses (such as js / css) 
-PLACE AFTER ALL OTHER ROUTES
-ROUTES DEFINED AFTER THIS ONE WILL BE OVERWRITTEN
-*/
-$app->get('/:public+', function ($public) use ($app) {
-    $tgt = '';
-    foreach ($public as $key => $value) {
-        $tgt .= $value . '/';
-    }
-    $tgt = rtrim($tgt, '/');
-    $app->render($tgt);
-});
-
-
 // POST route
-$app->post(
-    '/post',
-    function () {
-        echo 'This is a POST route';
-    }
-);
+// $app->post(
+//     '/post',
+//     function () {
+//         echo 'This is a POST route';
+//     }
+// );
 
 // // PUT route
 // $app->put(
