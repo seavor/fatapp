@@ -20,8 +20,8 @@ app.filter('range', function() {
 });
 
 // Page Routes
-app.config(['$routeProvider',
-  function($routeProvider) {
+app.config(['$routeProvider', '$locationProvider',
+  function($routeProvider, $locationProvider) {
     $routeProvider.
       // Home Sceen
       when('/search', {
@@ -52,6 +52,8 @@ app.config(['$routeProvider',
       otherwise({
         redirectTo: '/search'
       });
+
+      $locationProvider.html5Mode(true);
   }
 ]);
 

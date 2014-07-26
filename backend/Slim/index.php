@@ -21,6 +21,8 @@ require 'Slim/Slim.php';
  */
 $app = new \Slim\Slim();
 
+$app->config('templates.path', '../../webapp');
+
 /**
  * Step 3: Define the Slim application routes
  *
@@ -31,11 +33,28 @@ $app = new \Slim\Slim();
  */
 
 // GET route
-$app->get('/test/:city', function($city){
-    echo "City name:" . $city;
-    $test = serialize(array('test' => "result"));
-    print_r(unserialize($test));
 
+$app->get('/', function () use ($app) {
+    $app->render('index.html');
+});
+
+$app->get('/test/:city', function($city){
+    echo "City name before: " . $city;
+});
+
+
+/* This hacky bit allows us to dynamically render the static files 
+that the front-end uses (such as js / css) 
+PLACE AFTER ALL OTHER ROUTES
+ROUTES DEFINED AFTER THIS ONE WILL BE OVERWRITTEN
+*/
+$app->get('/:public+', function ($public) use ($app) {
+    $tgt = '';
+    foreach ($public as $key => $value) {
+        $tgt .= $value . '/';
+    }
+    $tgt = rtrim($tgt, '/');
+    $app->render($tgt);
 });
 
 
