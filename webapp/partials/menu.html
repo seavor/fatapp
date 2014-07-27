@@ -7,14 +7,14 @@
 		</div>
 		<div class="bottomBox clearfix">
 			<div class="feeWrapper">
-				<p>Minimum Order: ${{restaurant.services.deliver.mino}}</p>
-				<p><span ng-repeat="filter in restaurant.filters">{{filter}}, </p>
+				<p>Minimum Order: ${{menu.mino}}</p> <!-- @TODO: use fee call -->
+				<p><span ng-repeat="filter in menu.filters">{{filter}}, </p> <!-- @TODO: use filter from rest info call -->
 			</div>
 			<div class="appleRating">
 				<div class="appleWrapper">
-					<img ng-src="images/apple{{restaurant.rating > 0 ? 1 : 0}}.png">
-					<img ng-src="images/apple{{restaurant.rating > 1 ? 1 : 0}}.png">
-					<img ng-src="images/apple{{restaurant.rating > 2 ? 1 : 0}}.png">
+					<img ng-src="images/apple{{menu.rating > 0 ? 1 : 0}}.png">
+					<img ng-src="images/apple{{menu.rating > 1 ? 1 : 0}}.png">
+					<img ng-src="images/apple{{menu.rating > 2 ? 1 : 0}}.png">
 				</div>
 			</div>
 		</div>

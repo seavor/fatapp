@@ -60,6 +60,8 @@ $app->get('/rd/:rid', function($rid) {
 
 });
 
+// note: put filters into restaurant details call
+
 
 // Get Fee (based on subtotal & address)
 ///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -347,8 +347,8 @@ app.config(['$routeProvider',// '$locationProvider',
 				$scope.restaurantList = data;
 			})
 			.error( function( data, status, header, config ) {
-				console.log(':(');
-				console.log(data);
+				console.log(status);
+				// @TODO : show error message (if any)
 			});
 
 		$scope.showAddress = $scope.storage.addressLineDisplay;
@@ -378,49 +378,6 @@ app.config(['$routeProvider',// '$locationProvider',
 	});
 
 	app.controller('MenuCtrl', function($scope, $http, $location){
-
-		$scope.restaurant = {
-		        "id": 23865,
-		        "na": "Salaam Bombay",
-		        "cs_phone": "212-226-9400",
-		        "rds_info": {
-		            "id": 186,
-		            "name": "delivery.com",
-		            "logo": ""
-		        },
-		        "services": {
-		            "deliver": {
-		                "time": 30,
-		                "mino": 15,
-		                "can": 0
-		            }
-		        },
-		        "allow_tip": 1,
-		        "allow_asap": 1,
-		        "cu": [
-		            "Indian",
-		            "Vegetarian"
-		        ],
-		        "addr": "319 Greenwich St, New York, NY",
-		        "full_addr": {
-		            "addr": "319 Greenwich St",
-		            "addr2": "",
-		            "city": "New York",
-		            "state": "NY",
-		            "postal_code": "10013-3301"
-		        },
-		        "city": "New York",
-		        "latitude": 40.717113,
-		        "longitude": -74.010574,
-		        "del": 30,
-		        "mino": 15,
-		        "is_delivering": 0,
-		        "rating": 1,
-		        "filters" : [
-		        	"brunch",
-		        	"dinner"
-		        ]
-		    };
 
 		$scope.ratingx = 1;
 		$scope.ratingy = 1;
@@ -3056,8 +3013,15 @@ app.config(['$routeProvider',// '$locationProvider',
 		    "hasChanged": false,
 		    "isActive": true,
 		    "tip": "When you exercise hard for 90 minutes or more, especially if you're doing something at high intensity that takes a lot of endurance, you need a diet that can help you perform at your peak and recover quickly afterward.",
-		    "rating": 3
+		    "rating": 3,
+		    "filters" : [
+		    	"breakfast",
+		    	"lunch"
+		    ]
 		};
+
+		// fix for while the requests are not in
+		$scope.menu.mino = '3.25';
 
 		$scope.mainTip = true;
 
