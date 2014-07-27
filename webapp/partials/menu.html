@@ -22,16 +22,16 @@
 
 	<div ng-show="mainTip" id='menuTip' class="healthTips">
 		<h4>Jay's Tips</h4>
-		<p>{{menu.tip}}</p>
+		<p>{{menu.tip}}todo</p>
 	</div>
 
 	<!-- Display each Category -->
 	<div id="menuCategories" ng-repeat="category in menu.menu">
 		<div class="catPanel">
-			<h3 ng-click="accordionSelect(category.id)">{{category.name}}</h3>
-			<div ng-show="accordionShow == category.id" class="catItems">
+			<h3 ng-click="accordionSelect(category.cat_id)">{{category.name}}</h3>
+			<div ng-show="accordionShow == category.cat_id" class="catItems">
 				<div class="healthTips">
-					<p>{{category.tip}}</p>
+					<p>{{category.cat_tip}}</p>
 				</div>
 
 				<!-- Display each Category's Menu Item -->
