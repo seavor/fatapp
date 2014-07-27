@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS `Users` (
   `email` VARCHAR(255) NULL,
   `tip_subscript` TINYINT NOT NULL DEFAULT 0,
   `favorites` TEXT NULL,
+  `deleted` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -125,6 +126,16 @@ GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE `jcore`.`Categories` TO 'editorx';
 GRANT DELETE, INSERT, UPDATE, SELECT ON TABLE `jcore`.`Items` TO 'editorx';
 GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE `jcore`.`Restaurants` TO 'editorx';
 GRANT DELETE, SELECT, UPDATE ON TABLE `jcore`.`Admins` TO 'editorx';
+SET SQL_MODE = '';
+GRANT USAGE ON *.* TO fatapp;
+ DROP USER fatapp;
+SET SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+CREATE USER 'fatapp' IDENTIFIED BY 'banana';
+
+GRANT SELECT ON TABLE `jcore`.`Categories` TO 'fatapp';
+GRANT SELECT ON TABLE `jcore`.`Items` TO 'fatapp';
+GRANT SELECT ON TABLE `jcore`.`Restaurants` TO 'fatapp';
+GRANT SELECT, UPDATE, INSERT ON TABLE `jcore`.`Users` TO 'fatapp';
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
