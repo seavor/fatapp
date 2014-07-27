@@ -13,73 +13,103 @@ $app = new \Slim\Slim();
 // Set Default Timezone
 date_default_timezone_set("America/New_York");
 
-// Establish Database Connection
-function jcoreDB() {
-    $dbhost = '54.213.127.189';
-    $dbuser = 'adminx';
-    $dbpass = 'banana';
-    $dbname = 'jcore';
-    $connection = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
-    return $connection;
-}
+include 'data.php';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-$app->get('/test/:city', function($city) {
 
-    $db = jcoreDB();
 
-    echo "City name before: " . $city;
+// Get Restaurant List (delivery zone)
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Get Restaurant List
-    $query = "SELECT * FROM Items";
+$app->get('/rl/:zip/:city/:addr', function($zip, $city, $addr) {
+
+    // Ordr.in Tree
+    $data = json_decode(file_get_contents(RESTHOST . 'dl/ASAP/' . urlencode($zip) . '/' . urlencode($city) . '/' . urlencode($addr) . '?_auth=1,' . APIKEY), true);
+
+    $db = openConnection();
+
+    $query = "SELECT rating, filters, id FROM Restaurants WHERE activated = 1";
     $rests = mysqli_query($db, $query);
+
     while ($row = mysqli_fetch_assoc($rests)) {
-        echo '<pre>';
-        print_r($row);
-        echo '</pre>';
+        foreach ($data as $key => $value) {
+            if ($row['id'] == $value['id']) {
+                $value['rating'] = $row['rating'];
+                $value['filters'] = json_decode($row['filters']);
+                $restaurants[] = $value;
+            }
+        }
     }
 
     mysqli_free_result($rests);
     mysqli_close($db);
 
+    echo json_encode($restaurants);
+
 });
 
-// POST route
-// $app->post(
-//     '/post',
-//     function () {
-//         echo 'This is a POST route';
-//     }
-// );
 
-// // PUT route
-// $app->put(
-//     '/put',
-//     function () {
-//         echo 'This is a PUT route';
-//     }
-// );
+// Get Restaurant Details (menu)
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
-// // PATCH route
-// $app->patch('/patch', function () {
-//     echo 'This is a PATCH route';
-// });
+$app->get('/rd/:rid', function($rid) {
+    echo 'restaurant details: ' . $rid;
 
-// // DELETE route
-// $app->delete(
-//     '/delete',
-//     function () {
-//         echo 'This is a DELETE route';
-//     }
-// );
+});
 
-/**
- * Step 4: Run the Slim application
- *
- * This method should be called last. This executes the Slim application
- * and returns the HTTP response to the HTTP client.
- */
+
+// Get Fee (based on subtotal & address)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+$app->get('/fee/:rid/:subtotal/:tip/:datetime/:zip/:city/:addr', function($rid, $subtotal, $tip, $datetime, $zip, $city, $addr) {
+
+    $reqUrl =
+        RESTHOST.
+        'fee/'.
+        urlencode($rid).'/'.
+        urlencode($subtotal).'/'.
+        urlencode($tip).'/'.
+        urlencode($datetime).'/'.
+        urlencode($zip).'/'.
+        urlencode($city).'/'.
+        urlencode($addr).'/'.
+        '?_auth=1,'.APIKEY;
+
+    $data = file_get_contents($reqUrl);
+
+    echo $data;
+
+});
+
+
+// Post Order
+///////////////////////////////////////////////////////////////////////////////////////////////////
+$app->post('/order/:rid', function($rid) use ($app) {
+    $body = $app->request->getBody();
+
+    echo 'make order: ' . $body;
+});
+
+
+
+
+// == user stuff ==
+
+// * create account
+
+// * get saved addresses (for user)
+
+// * create new address
+
+// * get saved CCs
+
+// * create new CC
+
+// * order history (?)
+
+// * login call
+
 $app->run();
