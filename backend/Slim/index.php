@@ -19,6 +19,12 @@ include 'data.php';
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+function printR($arr){
+    echo '<pre>';
+    print_r($arr);
+    echo '</pre>';
+};
+                
 
 
 // Get Restaurant List (delivery zone)
@@ -31,13 +37,13 @@ $app->get('/rl/:zip/:city/:addr', function($zip, $city, $addr) {
 
     $db = openConnection();
 
-    $query = "SELECT rating, filters, id FROM Restaurants WHERE activated = 1";
+    $query = "SELECT * FROM Restaurants WHERE rest_activated = 1";
     $rests = mysqli_query($db, $query);
 
     while ($row = mysqli_fetch_assoc($rests)) {
         foreach ($data as $key => $value) {
-            if ($row['id'] == $value['id']) {
-                $value['rating'] = $row['rating'];
+            if ($row['rest_id'] == $value['id']) {
+                $value['rating'] = $row['rest_rating'];
                 $value['filters'] = json_decode($row['filters']);
                 $restaurants[] = $value;
             }
@@ -56,12 +62,94 @@ $app->get('/rl/:zip/:city/:addr', function($zip, $city, $addr) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 $app->get('/rd/:rid', function($rid) {
-    echo 'restaurant details: ' . $rid;
+
+    $db = openConnection();
+
+    //echo 'restaurant details: ' . $rid;
+
+    $query = "SELECT * FROM Restaurants WHERE rest_id = ". $rid;
+    $rest = mysqli_query($db, $query);
+
+    $query = "SELECT * FROM Categories WHERE rest_id = ". $rid;
+    $cats = mysqli_query($db, $query);
+
+    $query = "SELECT item.* FROM Items AS item INNER JOIN Categories AS cat ON (item.cat_id = cat.cat_id) WHERE cat.rest_id = ". $rid . ' AND item.item_activated = 1';
+    $items = mysqli_query($db, $query);
+
+    $jcore = [];
+
+    while ($restRow = mysqli_fetch_assoc($rest)) {
+        // Init Cat Array
+        $categories = [];
+
+        // Add Categories to Correct Array
+        while($catRow = mysqli_fetch_assoc($cats)) {
+            $itemsArr = [];
+            $categories[] = $catRow;
+        }
+
+        // Append Categories to Rest Array
+        $restRow['categories'] = $categories;
+        $restRow['filters'] = json_decode($restRow['filters']);
+        $jcore = $restRow;
+
+        // Add Items to their Categories
+        while($itemRow = mysqli_fetch_assoc($items)) {
+            foreach ($jcore['categories'] as $index => $category) {
+                if($itemRow['cat_id'] == $category['cat_id']) {
+                    $itemRow['options'] = json_decode($itemRow['options']);
+                    $jcore['categories'][$index]['items'][] = $itemRow;
+        }   }   }
+    
+    }
+
+     // Ordr.in Tree
+    $data = json_decode(file_get_contents(RESTHOST . 'rd/' . urlencode($rid) . '?_auth=1,' . APIKEY), true);
+
+
+
+    $newData = $data;
+
+    // put in meta-data about restaurant
+    $newData['filters'] = $jcore['filters'];
+    $newData['rating'] = $jcore['rest_rating'];
+    $newData['tip'] = $jcore['rest_tip'];
+    $newData['menu'] = $jcore['categories'];
+
+    // Loop thru Menu Categories & Items in Jcore structure
+    foreach ($newData["menu"] as $catIdx => $cat) {
+        foreach ($newData["menu"][$catIdx]['items'] as $itmIdx => $itm) {
+            
+            //finding the right ordr.in item...
+            foreach ($data['menu'] as $oiCatIdx => $oiCat) {
+                foreach ($data['menu'][$oiCatIdx]['children'] as $oiItmIdx => $oiItm) {
+                    if( $oiItm['id'] == $itm['item_id']) {
+                        $itemToInsert = $oiItm;
+                        $itemToInsert['rating'] = $itm['item_rating'];
+                        
+                        // mark Jay's options as such
+                        if(array_key_exists('children', $itemToInsert)) {
+                            foreach ($itemToInsert['children'] as $iiOptIdx => $iiOpt) {
+                                //if an option has jay's choices...
+                                foreach ($itm['options'] as $jayOpt => $jayCh) {
+                                    if($jayOpt == $iiOpt['id']) {
+                                        foreach ($itemToInsert['children'][$iiOptIdx]['children'] as $iiChoiceIdx => $iiChoice) {
+                                            if(in_array($iiChoice['id'], $jayCh)) {
+                                                $itemToInsert['children'][$iiOptIdx]['children'][$iiChoiceIdx]['jay_choice'] = true;
+                        }   }   }   }   }   }
+
+                        break 2; // Break out back into $newData["menu"][$catIdx]['items']
+
+            }   }   }
+            
+            // add the ordr.in data + rating + options
+            $newData["menu"][$catIdx]['children'][] = $itemToInsert;//appropraite ordr.in item
+            unset($newData['menu'][$catIdx]['items']);
+    }   }
+
+    echo json_encode($newData);
 
 });
-
-// note: put filters into restaurant details call
-
 
 // Get Fee (based on subtotal & address)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,8 +182,6 @@ $app->post('/order/:rid', function($rid) use ($app) {
 
     echo 'make order: ' . $body;
 });
-
-
 
 
 // == user stuff ==
