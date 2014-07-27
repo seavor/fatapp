@@ -415,18 +415,20 @@ app.config(['$routeProvider',// '$locationProvider',
 				});
 		}
 
+		// Set menu to storage menu on Page Refresh
+		if ( $scope.storage.menu ) { $scope.menu = JSON.parse($scope.storage.menu); }
+		else { $location.path('/search'); } // Redirect to Home if no Menu exists
+
 		// Update Menu when changed
 		$scope.$watch('storage.menu', function() {
-			$scope.menu = $scope.storage.menu ? JSON.parse($scope.storage.menu) : {};
+			if ( $scope.storage.menu ) { $scope.menu = JSON.parse($scope.storage.menu); $scope.menu.mino = '15.00';}
+			else { $location.path('/search'); } // Redirect to Home if no Menu exists
 		});
 
 		// Update activeRest to newRest
 		$scope.storage.activeRest = $scope.storage.newRest;
 
-
-		// fix for while the requests are not in
-		//$scope.menu.mino = '3.25';
-
+		// Menu Accordian Logic
 		$scope.mainTip = true;
 
 		$scope.accordionSelect = function(cid){
