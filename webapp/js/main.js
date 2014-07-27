@@ -416,13 +416,12 @@ app.config(['$routeProvider',// '$locationProvider',
 		}
 
 		// Set menu to storage menu on Page Refresh
-		if ( $scope.storage.menu ) { $scope.menu = JSON.parse($scope.storage.menu); }
-		else { $location.path('/search'); } // Redirect to Home if no Menu exists
+		$scope.menu = $scope.storage.menu ? JSON.parse($scope.storage.menu) : {};
 
 		// Update Menu when changed
 		$scope.$watch('storage.menu', function() {
-			if ( $scope.storage.menu ) { $scope.menu = JSON.parse($scope.storage.menu); $scope.menu.mino = '15.00';}
-			else { $location.path('/search'); } // Redirect to Home if no Menu exists
+			$scope.menu = $scope.storage.menu ? JSON.parse($scope.storage.menu) : {};
+			$scope.menu.mino = '15.00';
 		});
 
 		// Update activeRest to newRest
