@@ -25,8 +25,6 @@ function printR($arr){
     echo '</pre>';
 };
                 
-
-
 // Get Restaurant List (delivery zone)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,9 +44,7 @@ $app->get('/rl/:zip/:city/:addr', function($zip, $city, $addr) {
                 $value['rating'] = $row['rest_rating'];
                 $value['filters'] = json_decode($row['filters']);
                 $restaurants[] = $value;
-            }
-        }
-    }
+    }   }   }
 
     mysqli_free_result($rests);
     mysqli_close($db);
@@ -116,6 +112,8 @@ $app->get('/rd/:rid', function($rid) {
     $newData['tip'] = $jcore['rest_tip'];
     $newData['menu'] = $jcore['categories'];
 
+    // @TODO add mino to restaurant menu
+
     // Loop thru Menu Categories & Items in Jcore structure
     foreach ($newData["menu"] as $catIdx => $cat) {
         foreach ($newData["menu"][$catIdx]['items'] as $itmIdx => $itm) {
@@ -146,6 +144,11 @@ $app->get('/rd/:rid', function($rid) {
             $newData["menu"][$catIdx]['children'][] = $itemToInsert;//appropraite ordr.in item
             unset($newData['menu'][$catIdx]['items']);
     }   }
+
+    mysqli_free_result($rests);
+    mysqli_free_result($cats);
+    mysqli_free_result($items);
+    mysqli_close($db);
 
     echo json_encode($newData);
 
