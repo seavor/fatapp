@@ -11,12 +11,6 @@ app.factory('ControllerStorage', function(){
 });
 
 
-app.factory('RestaurantStorage', function(){
-	return {};
-});
-
-
-
 app.filter('range', function() {
   return function(input, total) {
     total = parseInt(total);
@@ -333,23 +327,9 @@ app.config(['$routeProvider',// '$locationProvider',
 		// Find restaurants @TODO
 		$scope.restListQuery = function(){
 			var address = JSON.parse($scope.storage.deliveryAddress);
-			// var reqUrl = 'http://r-test.ordr.in/dl/ASAP/'
-			// 	+ address.zipcode + '/'
-			// 	+ address.city + '/'
-			// 	+ address.addressLine + '?_auth=1,vwXYUSj_Bxl3UT-8xM7NAoHnEcVKM-OcrbPIvCzj5e4&callback=JSON_CALLBACK';
 
 			var reqUrl = 'http://jay.craftinc.co/Slim/rl/' + address.zipcode + '/' + address.city + '/' + address.addressLine;
 			$scope.storage.restListQuery = encodeURI(reqUrl);
-
-			// $http.jsonp( reqUrl )
-			// 	.success( function( data, status, header, config ) {
-			// 		console.log('SUCCESS');
-			// 		console.log(data);
-			// 	})
-			// 	.error( function( data, status, header, config ) {
-			// 		console.log(':(');
-			// 		console.log(data);
-			// 	});
 
 			$location.path('/restaurants');
 		};
@@ -360,145 +340,16 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		console.log($scope.storage.restListQuery);
 
+		// @TODO: screen loader
+
 		$http.get( $scope.storage.restListQuery )
 			.success( function( data, status, header, config ) {
-					console.log('SUCCESS');
-					console.log(data);
-					$scope.restaurantList = data;
-				})
-				.error( function( data, status, header, config ) {
-					console.log(':(');
-					console.log(data);
-				});
-
-		// $scope.restaurantList = [
-		//     {
-		//         "id": 23865,
-		//         "na": "Salaam Bombay",
-		//         "cs_phone": "212-226-9400",
-		//         "rds_info": {
-		//             "id": 186,
-		//             "name": "delivery.com",
-		//             "logo": ""
-		//         },
-		//         "services": {
-		//             "deliver": {
-		//                 "time": 30,
-		//                 "mino": 15,
-		//                 "can": 0
-		//             }
-		//         },
-		//         "allow_tip": 1,
-		//         "allow_asap": 1,
-		//         "cu": [
-		//             "Indian",
-		//             "Vegetarian"
-		//         ],
-		//         "addr": "319 Greenwich St, New York, NY",
-		//         "full_addr": {
-		//             "addr": "319 Greenwich St",
-		//             "addr2": "",
-		//             "city": "New York",
-		//             "state": "NY",
-		//             "postal_code": "10013-3301"
-		//         },
-		//         "city": "New York",
-		//         "latitude": 40.717113,
-		//         "longitude": -74.010574,
-		//         "del": 30,
-		//         "mino": 15,
-		//         "is_delivering": 1,
-		//         "rating": 1,
-		//         "filters" : [
-		//         	"dinner",
-		//         	"brunch"
-		//         ]
-		//     },
-		//     {
-		//         "id": 23938,
-		//         "na": "Tribeca Pizzeria",
-		//         "cs_phone": "212-732-5959",
-		//         "rds_info": {
-		//             "id": 186,
-		//             "name": "delivery.com",
-		//             "logo": ""
-		//         },
-		//         "services": {
-		//             "deliver": {
-		//                 "time": 30,
-		//                 "mino": 7,
-		//                 "can": 0
-		//             }
-		//         },
-		//         "allow_tip": 1,
-		//         "allow_asap": 1,
-		//         "cu": [
-		//             "Italian",
-		//             "Pizza",
-		//             "Wings"
-		//         ],
-		//         "addr": "378 Greenwich St, New York, NY",
-		//         "full_addr": {
-		//             "addr": "378 Greenwich St",
-		//             "addr2": "",
-		//             "city": "New York",
-		//             "state": "NY",
-		//             "postal_code": "10013-2328"
-		//         },
-		//         "city": "New York",
-		//         "latitude": 40.720028,
-		//         "longitude": -74.010292,
-		//         "del": 30,
-		//         "mino": 7,
-		//         "is_delivering": 0,
-		//         "rating": 3,
-		//         "filters" : [
-		//         	"lunch"
-		//         ]
-		//     },
-		//     {
-		//         "id": 23946,
-		//         "na": "Katz's Delicatessen Restaurant",
-		//         "cs_phone": "212-254-2246",
-		//         "rds_info": {
-		//             "id": 186,
-		//             "name": "delivery.com",
-		//             "logo": ""
-		//         },
-		//         "services": {
-		//             "deliver": {
-		//                 "time": 30,
-		//                 "mino": 75,
-		//                 "can": 0
-		//             }
-		//         },
-		//         "allow_tip": 1,
-		//         "allow_asap": 1,
-		//         "cu": [
-		//             "Sandwiches"
-		//         ],
-		//         "addr": "205 E Houston St, New York, NY",
-		//         "full_addr": {
-		//             "addr": "205 E Houston St",
-		//             "addr2": "",
-		//             "city": "New York",
-		//             "state": "NY",
-		//             "postal_code": "10002-1017"
-		//         },
-		//         "city": "New York",
-		//         "latitude": 40.72234,
-		//         "longitude": -73.987343,
-		//         "del": 30,
-		//         "mino": 75,
-		//         "is_delivering": 0,
-		//         "rating": 2,
-		//         "filters" : [
-		//         	"brunch ",
-		//         	"lunch",
-		//         	"dinner"
-		//         ]
-		//     }
-		// ]; // End restaurantList
+				$scope.restaurantList = data;
+			})
+			.error( function( data, status, header, config ) {
+				console.log(':(');
+				console.log(data);
+			});
 
 		$scope.showAddress = $scope.storage.addressLineDisplay;
 
