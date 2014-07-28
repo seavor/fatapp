@@ -849,9 +849,10 @@ h5.headerDivide  {
 	border-radius: 10px;
 	background: rgba(200, 0, 0, 1);
 	position: absolute;
-	top: 30%; right: 15%;
-	display: none;
+	bottom: 30px; right: 15%;
 	font-size: 12px;
+	color: white;
+	text-align: center;
 }
 
 #loading {

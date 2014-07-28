@@ -64,7 +64,7 @@ app.config(['$routeProvider',// '$locationProvider',
 	// General App Controls
 	////////////////////////////////////////////////////////////////////
 	
-	app.controller('AppCtrl', function($scope, $http, $location, ControllerStorage){
+	app.controller('AppCtrl', function($scope, $http, $location, $timeout, ControllerStorage){
 
 		// Simulate User Loggin Status
 		$scope.userLoggedIn = function(){
@@ -84,6 +84,7 @@ app.config(['$routeProvider',// '$locationProvider',
 		// Initialize Modal Variables
 		$scope.displayModal = false;
 		$scope.displayLoader = false;
+		$scope.displayError = false;
 		$scope.url = 'null';
 
 		$scope.popupModal = function(popup, param){
@@ -111,6 +112,21 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.displayLoader = false;
 		};
 
+		$scope.flashError = function(){
+			$scope.displayError = true;
+			$timeout(function(){
+				$scope.displayError = false;
+				// $scope.storage.errorMsg = '';
+		    }, 3000); 
+		};
+
+		// Update Display Error Message
+		$scope.$watch('storage.errorMsg', function() {
+			$scope.errorMsg = $scope.storage.errorMsg;
+		}); // $scope.errorMsg = ''; // Default
+
+
+
 		// Storage & Display Controls
 		////////////////////////////////////////////////////////////////
 
@@ -134,18 +150,12 @@ app.config(['$routeProvider',// '$locationProvider',
 			$location.path('/blank');
 		};
 
-		// Tray Management Controls
-		////////////////////////////////////////////////////////////////
-
-		// $scope.checkForTray = function(dest){
-		// 	// If Tray Exists, and about to order from new Restaurant
-		// 	if ($scope.storage.tray && $scope.storage.activeRest != $scope.storage.orderRest) {
-		// 		// prompt for confirmation of rest change
-		// 	} else {
-		// 		// Add item to new tray
-		// 		$scope.dest
-		// 	};
-		// };
+		$scope.storageSpace = function(){
+			// Console Log remainingStorageSpace/totalStorageSpace
+			var limit = 1024 * 1024 * 5; // 5 MB
+ 			var remSpace = limit - unescape(encodeURIComponent(JSON.stringify($scope.storage))).length;
+ 			console.log(remSpace+'/'+limit);
+		};
 
 	});
 
@@ -349,10 +359,6 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('RestaurantsCtrl', function($scope, $http, $location){
 
-		console.log($scope.storage.restListQuery);
-
-		// @TODO: screen loader
-
 		$scope.showLoader();
 
 		$http.get( $scope.storage.restListQuery )
@@ -363,10 +369,10 @@ app.config(['$routeProvider',// '$locationProvider',
 			.error( function( data, status, header, config ) {
 				console.log(status);
 				$scope.hideLoader();
-				// @TODO : show error message (if any)
+				// $scope.storage.errorMsg = 'test';
+				$location.path('/blank');
+				// $scope.flashError();
 			});
-		
-
 
 		$scope.showAddress = $scope.storage.addressLineDisplay;
 
@@ -407,10 +413,12 @@ app.config(['$routeProvider',// '$locationProvider',
 				.success( function( data, status, header, config ) {
 					$scope.storage.menu = JSON.stringify(data);
 					$scope.hideLoader();
+					$scope.storageSpace();
 				})
 				.error( function( data, status, header, config ) {
 					console.log(status);
 					$scope.hideLoader();
+					$location.path('/blank');
 					// @TODO : show error message (if any)
 				});
 		}
