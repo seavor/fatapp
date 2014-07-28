@@ -8,6 +8,8 @@ require 'Slim/Slim.php';
 
 $app = new \Slim\Slim();
 
+$app->config('debug', true);
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Set Default Timezone
@@ -32,6 +34,8 @@ $app->get('/rl/:zip/:city/:addr', function($zip, $city, $addr) {
 
     // Ordr.in Tree
     $data = json_decode(file_get_contents(RESTHOST . 'dl/ASAP/' . urlencode($zip) . '/' . urlencode($city) . '/' . urlencode($addr) . '?_auth=1,' . APIKEY), true);
+
+    // @TODO This is twice as slow as the Restraunt Details call -_- #dafuq
 
     $db = openConnection();
 
@@ -60,8 +64,6 @@ $app->get('/rl/:zip/:city/:addr', function($zip, $city, $addr) {
 $app->get('/rd/:rid', function($rid) {
 
     $db = openConnection();
-
-    //echo 'restaurant details: ' . $rid;
 
     $query = "SELECT * FROM Restaurants WHERE rest_id = ". $rid;
     $rest = mysqli_query($db, $query);
@@ -101,8 +103,6 @@ $app->get('/rd/:rid', function($rid) {
 
      // Ordr.in Tree
     $data = json_decode(file_get_contents(RESTHOST . 'rd/' . urlencode($rid) . '?_auth=1,' . APIKEY), true);
-
-
 
     $newData = $data;
 
@@ -145,7 +145,7 @@ $app->get('/rd/:rid', function($rid) {
             unset($newData['menu'][$catIdx]['items']);
     }   }
 
-    mysqli_free_result($rests);
+    mysqli_free_result($rest);
     mysqli_free_result($cats);
     mysqli_free_result($items);
     mysqli_close($db);

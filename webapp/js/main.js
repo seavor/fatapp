@@ -56,6 +56,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
       //$locationProvider.html5Mode(true);
   }
+
 ]);
 
 
@@ -73,7 +74,6 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		// Select Saved/Enter Address per Login Status
 		$scope.selectAddress = function(){
-			console.log(this);
 			if ($scope.userLoggedIn() == true ) { return 'savedAddresses'; }
 			else { return 'enterAddress'; }
 		};
@@ -116,7 +116,7 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.displayError = true;
 			$timeout(function(){
 				$scope.displayError = false;
-				// $scope.storage.errorMsg = '';
+				$scope.storage.errorMsg = '';
 		    }, 3000); 
 		};
 
@@ -369,8 +369,8 @@ app.config(['$routeProvider',// '$locationProvider',
 			.error( function( data, status, header, config ) {
 				console.log(status);
 				$scope.hideLoader();
-				// $scope.storage.errorMsg = 'test';
 				$location.path('/blank');
+				// $scope.storage.errorMsg = 'test';
 				// $scope.flashError();
 			});
 
@@ -416,24 +416,20 @@ app.config(['$routeProvider',// '$locationProvider',
 					$scope.storageSpace();
 				})
 				.error( function( data, status, header, config ) {
-					console.log(status);
+					console.log(status+'damn'+$scope.storage.newRest);
 					$scope.hideLoader();
-					$location.path('/blank');
-					// @TODO : show error message (if any)
+					// $location.path('/blank');
 				});
 		}
 
-		// Set menu to storage menu on Page Refresh
-		$scope.menu = $scope.storage.menu ? JSON.parse($scope.storage.menu) : {};
+		// Update activeRest to newRest
+		$scope.storage.activeRest = $scope.storage.newRest;
 
 		// Update Menu when changed
 		$scope.$watch('storage.menu', function() {
 			$scope.menu = $scope.storage.menu ? JSON.parse($scope.storage.menu) : {};
 			$scope.menu.mino = '15.00';
 		});
-
-		// Update activeRest to newRest
-		$scope.storage.activeRest = $scope.storage.newRest;
 
 		// Menu Accordian Logic
 		$scope.mainTip = true;
@@ -462,7 +458,6 @@ app.config(['$routeProvider',// '$locationProvider',
 	});
 
 	app.controller('ItemCtrl', function($scope, $http, $location){
-		console.log(JSON.stringify('[19035012: [19035014], 19035022: [19035023]]'));
 
 		$scope.itemOrderable = true;
 
