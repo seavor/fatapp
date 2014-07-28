@@ -183,8 +183,63 @@ $app->get('/fee/:rid/:subtotal/:tip/:datetime/:zip/:city/:addr', function($rid, 
 $app->post('/order/:rid', function($rid) use ($app) {
     $body = $app->request->getBody();
 
-    echo 'make order: ' . $body;
+    $parsed = json_decode($body);
+
+    $fields = array(
+        'rid'             => $parsed->rid,
+        'em'              => $parsed->em,
+        'tray'            => $parsed->tray,
+        'tip'             => $parsed->tip,
+        'first_name'      => $parsed->first_name,
+        'last_name'       => $parsed->first_name,
+        'delivery_date'   => $parsed->delivery_date,
+        'phone'           => $parsed->phone,
+        'addr'            => $parsed->addr,
+        'addr2'           => $parsed->addr2,
+        'city'            => $parsed->city,
+        'state'           => $parsed->state,
+        'zip'             => $parsed->zip,
+        'card_name'       => $parsed->card_name,
+        'card_number'     => $parsed->card_number,
+        'card_cvc'        => $parsed->card_cvc,
+        'card_expiry'     => $parsed->card_expiry,
+        'card_bill_addr'  => $parsed->card_bill_addr,
+        'card_bill_addr2' => $parsed->card_bill_addr2,
+        'card_bill_city'  => $parsed->card_bill_city,
+        'card_bill_state' => $parsed->card_bill_state,
+        'card_bill_zip'   => $parsed->card_bill_zip,
+        'card_bill_phone' => $parsed->card_bill_phone
+    );
+
+    $postUrl = ORDERHOST . 'o/' . urlencode($rid) . '?_auth=1,'.APIKEY;
+
+    // //url-ify the data for the POST
+    $fields_string = '';
+    foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+    rtrim($fields_string, '&');
+
+    //open connection
+    $ch = curl_init();
+
+    //set the url, number of POST vars, POST data
+    curl_setopt($ch,CURLOPT_URL, $postUrl);
+    curl_setopt($ch,CURLOPT_POST, count($fields));
+    curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    //execute post
+    $result = curl_exec($ch);
+
+    echo $result;
+
+    //close connection
+    curl_close($ch);
+
 });
+
+
+
+
 
 
 // == user stuff ==
