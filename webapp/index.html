@@ -22,5 +22,6 @@
 <body ng-controller='AppCtrl'>
 	<div id="appContent" ng-view></div>
 	<div id="loading" ng-show="displayLoader"></div>
+	<div id="errorMsg" ng-show="displayError">{{errorMsg}}</div>
 </body>
 </html>
