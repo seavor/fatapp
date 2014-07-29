@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 // Declare App Module
-var app = angular.module('app', ['ngRoute']);
+var app = angular.module('app', ['ngRoute', 'ngAnimate']);
 
 // Declare sessionStorage
 app.factory('ControllerStorage', function(){
@@ -418,7 +418,7 @@ app.config(['$routeProvider',// '$locationProvider',
 				.error( function( data, status, header, config ) {
 					console.log(status+'damn'+$scope.storage.newRest);
 					$scope.hideLoader();
-					// $location.path('/blank');
+					$location.path('/blank');
 				});
 		}
 
