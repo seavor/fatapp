@@ -253,16 +253,6 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.option = JSON.parse($scope.storage.activeOption);
 		});
 
-
-		var size = function(obj) {
-			var size = 0, key;
-			for (key in obj) {
-				if (obj.hasOwnProperty(key)) size += obj[key].quantity;
-			}
-			// $scope.optionActivated = true;
-			return size;
-		};
-
 		// Return if Radio Button
 		$scope.isType = function(min, max){
 			if (min == 1 && max == 1) { return 'radio'; }
@@ -272,7 +262,7 @@ app.config(['$routeProvider',// '$locationProvider',
 	});
 
 	app.controller('QuantityCtrl', function($scope, $location){
-
+		// do we still need this?
 	});
 
 	app.controller('EditItemCtrl', function($scope, $location){
@@ -329,13 +319,13 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.storage.clear();
 
 		// Initialize Filter Display/Checkbox/Storage
-		$scope.filterForm = { "all" : true};
+		$scope.filterForm = { "all" : true };
 		$scope.storage.filterDisplay = "All Menus";
 		$scope.storage.filter = $scope.storeObject($scope.filterForm);
 
 		// Reveal 'Find Restaurants' button upon Address Selection
 		$scope.$watch('storage.deliveryAddressDisplay', function() {
-			if ($scope.storage.deliveryAddressDisplay != undefined) { $scope.storage.findRestButtonState = true; }
+			if ($scope.storage.deliveryAddressDisplay) { $scope.storage.findRestButtonState = true; }
 			else { $scope.storage.findRestButtonState = false; }
 		});
 
@@ -377,7 +367,8 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.showAddress = $scope.storage.addressLineDisplay;
 
 		// Initialize Filter Display/Checkbox/Storage
-		$scope.filterForm = JSON.parse($scope.storage.filter);
+		// if filter was never set, default to "all"
+		$scope.filterForm = $scope.storage.filter ? JSON.parse($scope.storage.filter) : { "all" : true };
 		$scope.storage.filterDisplay = $scope.formattedFilter();
 
 		// Compare and Filter Restraunts
@@ -402,10 +393,6 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('MenuCtrl', function($scope, $http, $location){
 
-		$scope.ratingx = 1;
-		$scope.ratingy = 1;
-		$scope.ratingz = 0;
-
 		// Get Menu data if not set or Restaurant Changed
 		if (!$scope.storage.menu || $scope.storage.activeRest != $scope.storage.newRest) {
 			$scope.showLoader();
@@ -416,6 +403,7 @@ app.config(['$routeProvider',// '$locationProvider',
 					$scope.storageSpace();
 				})
 				.error( function( data, status, header, config ) {
+					// lol
 					console.log(status+'damn'+$scope.storage.newRest);
 					$scope.hideLoader();
 					// $location.path('/blank');
@@ -425,13 +413,31 @@ app.config(['$routeProvider',// '$locationProvider',
 		// Update activeRest to newRest
 		$scope.storage.activeRest = $scope.storage.newRest;
 
+		// @TODO always make fee call when reaching this page
+		// var address = JSON.parse($scope.storage.deliveryAddress);
+		// var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
+		// 	+ $scope.storage.activeRest + '/'
+		// 	+ $scope.storage.subtotalPrice + '/' // @TODO store / get subtotal
+		// 	+ $scope.storage.tip + '/' // @TODO store tip (or make it 0 at this stage?)
+		// 	+ 'ASAP/' // default for ASAP delivery for v1
+		// 	+ address.zipcode + '/'
+		// 	+ address.city + '/'
+		// 	+ address.addressLine;
+		// $http.get( feeUrl )
+		// 	.success( function( data, status, header, config ) {
+		// 		// save gotten data (to then display it)
+		// 	})
+		// 	.error( function( data, status, header, config ) {
+		// 		console.log(status);
+		// 	});
+
 		// Update Menu when changed
 		$scope.$watch('storage.menu', function() {
 			$scope.menu = $scope.storage.menu ? JSON.parse($scope.storage.menu) : {};
 			$scope.menu.mino = '15.00';
 		});
 
-		// Menu Accordian Logic
+		// Menu Accordion Logic
 		$scope.mainTip = true;
 
 		$scope.accordionSelect = function(cid){
@@ -462,7 +468,7 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.itemOrderable = true;
 
 		// @TODO disable add item to tray (css color-fade, ng-click disabled)
-		if (true == false) { // item.is_delivering != 1 || restaurant.not_deliverying == 1 
+		if ( false ) { // item.is_delivering != 1 || restaurant.not_deliverying == 1 
 			$scope.itemOrderable = false;
 		};
 
@@ -486,14 +492,10 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		$scope.menu = JSON.parse($scope.storage.menu);
 
-
 		$scope.optionData = {};
 		$scope.optionsDisp = {};
 		$scope.orderRadio = [];
 		$scope.optionErrMsg = '';
-
-
-
 
 		// if we are editing an item, set that item ID to be the active item ID
 		if( $scope.storage.editItem ) {
@@ -516,6 +518,7 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.extraPrice = 0;
 			var currentItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
 
+			// iterate over selected options and add their prices to extraPrice
 			for(var opt in currentItem) {
 				if( currentItem.hasOwnProperty(opt) ) {
 					if(currentItem[ opt ]) {
@@ -560,6 +563,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	    $scope.optionPopup = function(option){
 	    	// if radio, JSON.parse 2 levels deep (is this rly necessary?)
+	    	// @TODO see if JSON.parse 2 lvls deep should be done
 			if( option.min_child_select == option.max_child_select == 1 ) {
 
 				var currentItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
@@ -581,7 +585,8 @@ app.config(['$routeProvider',// '$locationProvider',
 	    };
 
 
-
+	    // hack necessary to make sure radio buttons work: send the last clicked
+	    // ratio button key to the orderRadio array
 		$scope.checkRadio = function(min, max, option, choice){
 			if (min == max == 1) {
 				$scope.orderRadio.push(option.id + '/' + choice.id);
@@ -592,8 +597,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	    $scope.storeOptions = function(min, max, optionId) {
 
-
-	    	// if radio, put in the appropriate optionData
+	    	// if radio, put in the appropriate optionData from the last orderRadio elmnt
 	    	if(min == max == 1) {
 	    		var lastSelectedKey = $scope.orderRadio[ $scope.orderRadio.length -1 ];
 	    		var newOptionData = {};
@@ -667,6 +671,9 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	    $scope.addItem = function() {
 
+	    	// check to make sure all necessary options have been selected
+	    	// well, i actually need to revisit the structure to get a grasp on this.
+
 	    	// orderRest exists only if there's a tray
 	    	if ($scope.storage.orderRest && $scope.storage.activeRest != $scope.storage.orderRest) {
 	    		$scope.closeModal();
@@ -689,7 +696,8 @@ app.config(['$routeProvider',// '$locationProvider',
 				iid : $scope.storage.activeItem,
 				amount: this.amount,
 				cid: cids,
-				item : $scope.item
+				item : $scope.item,
+				price : $scope.totalPrice
 	    	};
 
 
@@ -717,6 +725,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		$scope.getSubtotal = function() {
 			$scope.price = 0;
+			// @TODO greatly simplify since price is now being saved
 			angular.forEach($scope.tray, function(obj, trayItemKey) {
 
 				var itemPrice = parseFloat(obj.item.price);
@@ -787,7 +796,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		$scope.proceedToCheckout = function(){
 			$location.path('/checkout');
-		}
+		};
 
 	});
 
@@ -811,7 +820,6 @@ app.config(['$routeProvider',// '$locationProvider',
 
 // @TODO Validation
 
-// min/max buttons (options)
 // all "required" options have been selected (item page)
 // address field validation (search + checkout / enterAddressCtrl modal)
 // show checkout button when order minimum reached (menu page)
