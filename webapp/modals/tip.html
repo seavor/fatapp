@@ -2,9 +2,9 @@
 	<div class="popupBox clearfix">
 		<h5>Give a Tip:</h5>
 		<div class="inputBox">
-			<input id="tipInput" name="tip" type="text" class="inputField" placeholder="Tip Amount">
+			<input id="tipInput" ng-model="customer.tipUpdate" name="tip" type="number" class="inputField" placeholder="$0.00">
 		</div>
-		<button class="popupCancel smallButton cancelButton" type="button">Cancel</button>
-		<button class="popupOk smallButton okButton" type="button">Ok</button>
+		<button class="popupCancel smallButton cancelButton" ng-click="closeModal()" type="button">Cancel</button>
+		<button type="button" class="popupOk smallButton okButton" ng-click="updateTip()">Ok</button>
 	</div>
 </div>

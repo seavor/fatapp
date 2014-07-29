@@ -57,7 +57,6 @@ $app->get('/rl/:zip/:city/:addr', function($zip, $city, $addr) {
 
 });
 
-
 // Get Restaurant Details (menu)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -177,13 +176,14 @@ $app->get('/fee/:rid/:subtotal/:tip/:datetime/:zip/:city/:addr', function($rid, 
 
 });
 
-
 // Post Order
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 $app->post('/order/:rid', function($rid) use ($app) {
     $body = $app->request->getBody();
 
     $parsed = json_decode($body);
+
+    print_r($parsed);
 
     // manually taking each value, just in case.
     $fields = array(
@@ -202,7 +202,7 @@ $app->post('/order/:rid', function($rid) use ($app) {
         'zip'             => $parsed->zip,
         'card_name'       => $parsed->card_name,
         'card_number'     => $parsed->card_number,
-        'card_cvc'        => $parsed->card_cvc,
+        'card_cvc'        => $parsed->cvv,
         'card_expiry'     => $parsed->card_expiry,
         'card_bill_addr'  => $parsed->card_bill_addr,
         'card_bill_addr2' => $parsed->card_bill_addr2,
@@ -211,6 +211,8 @@ $app->post('/order/:rid', function($rid) use ($app) {
         'card_bill_zip'   => $parsed->card_bill_zip,
         'card_bill_phone' => $parsed->card_bill_phone
     );
+
+
 
     $postUrl = ORDERHOST . 'o/' . urlencode($rid) . '?_auth=1,'.APIKEY;
 
@@ -240,10 +242,11 @@ $app->post('/order/:rid', function($rid) use ($app) {
 
 
 
+$app->run();
 
 
 
-// == user stuff ==
+// == USER STUFF ==
 
 // * create account
 
@@ -258,5 +261,3 @@ $app->post('/order/:rid', function($rid) use ($app) {
 // * order history (?)
 
 // * login call
-
-$app->run();

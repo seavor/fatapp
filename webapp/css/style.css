@@ -37,6 +37,7 @@
 	min-height: 100%;
 	position: relative;
 	overflow: scroll;
+	margin-bottom: 75px;
 }
 
 /******************************************************
@@ -115,7 +116,7 @@ form .inputField {
 
 		.actionInfo .itemPriceInfo {
 			float: left;
-			width: 33%;
+			width: 33.3%;
 			text-align: center;
 		}
 
@@ -123,7 +124,7 @@ form .inputField {
 				font-size: 14px;
 			}
 
-			.actionInfo .itemPriceInfo p {
+			.actionInfo .itemPriceInfo input {
 				font-size: 12px;
 			}
 
@@ -616,6 +617,10 @@ h2.mainHeader {
 #tipButton {
 	background: white;
 	border: 1px solid lightgrey;
+	width: 150px;
+	height: 100%;
+	font-size: 20px;
+	text-align: center;
 }
 
 #tipMenu .inputBox {

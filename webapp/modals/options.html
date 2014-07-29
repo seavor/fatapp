@@ -3,7 +3,6 @@
 		<h5>{{option.name}}</h5>
 		<p class="itemDescription">{{option.descrip}}</p>
 		<p class="error">{{optionErrMsg}}</p>
-		
 		<form ng-submit="storeOptions( option.min_child_select, option.max_child_select, option.id )">
 			<ul class="dataItems">
 				<li ng-repeat="choice in option.children">
