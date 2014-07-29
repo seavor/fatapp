@@ -20,6 +20,8 @@ app.filter('range', function() {
   };
 });
 
+
+
 // Page Routes
 app.config(['$routeProvider',// '$locationProvider',
   function($routeProvider /*, $locationProvider*/) {
@@ -156,6 +158,18 @@ app.config(['$routeProvider',// '$locationProvider',
  			var remSpace = limit - unescape(encodeURIComponent(JSON.stringify($scope.storage))).length;
  			console.log(remSpace+'/'+limit);
 		};
+
+		$scope.findYearRange = function() {
+            var currentYear = new Date().getFullYear(), years = ['YY'];
+            var endYear = currentYear + 100;
+            console.log(currentYear);
+
+            while ( currentYear < endYear ) {
+                    years.push(currentYear++);
+            } 
+
+            return years;
+    	}
 
 	});
 
@@ -816,6 +830,68 @@ app.config(['$routeProvider',// '$locationProvider',
 			};
 		});
 
+		$scope.customer = {};
+		$scope.orderObject = {};
+    	$scope.yearRange = $scope.findYearRange();
+
+		$scope.updateTip = function(){
+			$scope.customer.tip = $scope.customer.tipUpdate;
+			$scope.closeModal();
+		};
+
+		$scope.orderFood = function() {
+
+			// var deliveryAddress = JSON.parse($scope.storage.deliveryAddress);
+
+			$scope.orderObject.rid = $scope.storage.orderRest;
+			$scope.orderObject.em = $scope.customer.email;
+			$scope.orderObject.tray = $scope.storage.tray;
+			$scope.orderObject.tip = $scope.customer.tip || 0;
+			$scope.orderObject.first_name = 'Jeremy';
+			$scope.orderObject.last_name = 'Letto';
+			$scope.orderObject.delivery_date = 'ASAP';
+			$scope.orderObject.phone = $scope.customer.phone;
+			$scope.orderObject.addr = $scope.deliveryAddress.addressLine;
+			$scope.orderObject.addr2 = ''; // not asked for
+			$scope.orderObject.city = $scope.deliveryAddress.city;
+			$scope.orderObject.state = $scope.deliveryAddress.state;
+			$scope.orderObject.zip = $scope.deliveryAddress.zipcode;
+			$scope.orderObject.card_name = $scope.customer.cardName;
+			$scope.orderObject.card_number = $scope.customer.cardNumber;
+			$scope.orderObject.card_expiry = $scope.customer.cardMonth + '/' + $scope.customer.cardYear;
+			$scope.orderObject.cvv = $scope.customer.cvv;
+			$scope.orderObject.card_bill_addr = $scope.customer.billAddr;
+			$scope.orderObject.card_bill_addr2 = $scope.customer.billAddr2 || '';
+			$scope.orderObject.card_bill_city = $scope.customer.billCity;
+			$scope.orderObject.card_bill_state = $scope.customer.billState;
+			$scope.orderObject.card_bill_zip = $scope.customer.billZip;
+			$scope.orderObject.card_bill_phone = $scope.customer.phone; // not asked for
+
+
+
+			console.dir($scope.orderObject);
+
+			if ($scope.orderObject.saveCard == true) {
+				console.log('saveCard!');
+			};
+
+			var reqURL = 'http://jay.craftinc.co/Slim/order/'+$scope.storage.orderRest	;
+
+			$http.post( reqURL, $scope.orderObject )
+				.success( function( data, status, header, config ) {
+					console.dir(data);
+
+
+				})
+				.error( function( data, status, header, config ) {
+				
+
+
+				});
+
+		};
+
+
 	});
 
 // @TODO Validation
@@ -827,10 +903,6 @@ app.config(['$routeProvider',// '$locationProvider',
 
 // When item is added from new restaurant = prompt to empty tray
 // App Reset = prompt to empty
-
-
-
-
 
 
 
