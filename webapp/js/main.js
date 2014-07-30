@@ -318,8 +318,8 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.storage.filter = JSON.stringify($scope.filterForm);
 
 		// Reveal 'Find Restaurants' button upon Address Selection
-		$scope.$watch('storage.deliveryAddressDisplay', function() {
-			if ($scope.storage.deliveryAddressDisplay) { $scope.storage.findRestButtonState = true; }
+		$scope.$watch('storage.deliveryAddress', function() {
+			if ($scope.storage.deliveryAddress) { $scope.storage.findRestButtonState = true; }
 			else { $scope.storage.findRestButtonState = false; }
 		});
 
@@ -331,33 +331,54 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		// Find restaurants @TODO
 		$scope.restListQuery = function(){
+
+			$scope.showLoader();
+
 			var address = JSON.parse($scope.storage.deliveryAddress);
 
 			var reqUrl = 'http://jay.craftinc.co/Slim/rl/' + address.zipcode + '/' + address.city + '/' + address.addressLine;
-			$scope.storage.restListQuery = encodeURI(reqUrl);
+			$scope.storage.reqUrl = reqUrl;
 
-			$location.path('/restaurants');
+			$http.get( reqUrl )
+				.success( function( data, status, header, config ) {
+					$scope.storage.restaurantList = JSON.stringify(data);
+					$scope.storage.newSearch = true;
+					$location.path('/restaurants');
+				})
+				.error( function( data, status, header, config ) {
+					console.log('Invalid Address: ', data);
+					$scope.hideLoader();
+					// $scope.storage.errorMsg = 'Invalid Address';
+					// $scope.flashError();
+				});
+
 		};
 
 	});
 
 	app.controller('RestaurantsCtrl', function($scope, $http, $location){
 
-		$scope.showLoader();
+		// Check if not a newSearch, refresh restaurantList if so
+		if ($scope.storage.newSearch != 'true') {
+			$scope.showLoader();
+			var promise = $http.get( $scope.storage.reqUrl )
+				.success( function( data, status, header, config ) {
+					$scope.restaurantList = data;
+					$scope.hideLoader();
+				})
+				.error( function( data, status, header, config ) {
+					console.log('Invalid Address: ', data);
+					$scope.hideLoader();
+					// $scope.storage.errorMsg = 'Invalid Address';
+					// $scope.flashError();
+				});
+		// Otherwise, show page
+		} else { $scope.hideLoader(); };
 
-		$http.get( $scope.storage.restListQuery )
-			.success( function( data, status, header, config ) {
-				$scope.restaurantList = data;
-				$scope.hideLoader();
-			})
-			.error( function( data, status, header, config ) {
-				console.log(status);
-				$scope.hideLoader();
-				$location.path('/blank');
-				// $scope.storage.errorMsg = 'test';
-				// $scope.flashError();
-			});
+		// Turn off newSearch param after check
+		$scope.storage.newSearch = false;
 
+		$scope.restaurantList = JSON.parse($scope.storage.restaurantList);
 		$scope.showAddress = $scope.storage.addressLineDisplay;
 
 		// Initialize Filter Display/Checkbox/Storage
