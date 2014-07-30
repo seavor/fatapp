@@ -1,0 +1,128 @@
+[
+    {
+        "id": 23865,
+        "na": "Salaam Bombay",
+        "cs_phone": "212-226-9400",
+        "rds_info": {
+            "id": 186,
+            "name": "delivery.com",
+            "logo": ""
+        },
+        "services": {
+            "deliver": {
+                "time": 30,
+                "mino": 15,
+                "can": 0
+            }
+        },
+        "allow_tip": 1,
+        "allow_asap": 1,
+        "cu": [
+            "Indian",
+            "Vegetarian"
+        ],
+        "addr": "319 Greenwich St, New York, NY",
+        "full_addr": {
+            "addr": "319 Greenwich St",
+            "addr2": "",
+            "city": "New York",
+            "state": "NY",
+            "postal_code": "10013-3301"
+        },
+        "city": "New York",
+        "latitude": 40.717113,
+        "longitude": -74.010574,
+        "del": 30,
+        "mino": 15,
+        "is_delivering": 0,
+        "rating": 1,
+        "filters" : [
+        	"brunch",
+        	"dinner"
+        ]
+    },
+    {
+        "id": 23938,
+        "na": "Tribeca Pizzeria",
+        "cs_phone": "212-732-5959",
+        "rds_info": {
+            "id": 186,
+            "name": "delivery.com",
+            "logo": ""
+        },
+        "services": {
+            "deliver": {
+                "time": 30,
+                "mino": 7,
+                "can": 0
+            }
+        },
+        "allow_tip": 1,
+        "allow_asap": 1,
+        "cu": [
+            "Italian",
+            "Pizza",
+            "Wings"
+        ],
+        "addr": "378 Greenwich St, New York, NY",
+        "full_addr": {
+            "addr": "378 Greenwich St",
+            "addr2": "",
+            "city": "New York",
+            "state": "NY",
+            "postal_code": "10013-2328"
+        },
+        "city": "New York",
+        "latitude": 40.720028,
+        "longitude": -74.010292,
+        "del": 30,
+        "mino": 7,
+        "is_delivering": 0,
+        "rating": 3,
+        "filters" : [
+        	"lunch"
+        ]
+    },
+    {
+        "id": 23946,
+        "na": "Katz's Delicatessen Restaurant",
+        "cs_phone": "212-254-2246",
+        "rds_info": {
+            "id": 186,
+            "name": "delivery.com",
+            "logo": ""
+        },
+        "services": {
+            "deliver": {
+                "time": 30,
+                "mino": 75,
+                "can": 0
+            }
+        },
+        "allow_tip": 1,
+        "allow_asap": 1,
+        "cu": [
+            "Sandwiches"
+        ],
+        "addr": "205 E Houston St, New York, NY",
+        "full_addr": {
+            "addr": "205 E Houston St",
+            "addr2": "",
+            "city": "New York",
+            "state": "NY",
+            "postal_code": "10002-1017"
+        },
+        "city": "New York",
+        "latitude": 40.72234,
+        "longitude": -73.987343,
+        "del": 30,
+        "mino": 75,
+        "is_delivering": 0,
+        "rating": 2,
+        "filters" : [
+        	"brunch",
+        	"lunch",
+        	"dinner"
+        ]
+    }
+]

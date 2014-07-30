@@ -1,0 +1,38 @@
+<div id="restSearch">
+
+	<div id="addressField" class="inputBox popupButton">
+		<input
+			id="addressSearch"
+			name="addressSearch"
+			type="text"
+			class="inputField popupButton"
+			placeholder="enter address"
+			ng-model="storage.deliveryAddressDisplay"
+			ng-click='popupModal(selectAddress())'
+			required readonly
+		>
+	</div>
+
+	<div id="restFilterButton" class="inputBox popupButton">
+		<input
+			id="filterSearch"
+			name="filterSearch"
+			type="text"
+			class="bigButton popupButton"
+			ng-model="storage.filterDisplay"
+			ng-click='popupModal("restFilters")'
+			required readonly
+		>
+	</div>
+
+	<div id="dailyFitTip">
+		<h3>Cardiello Fit Tip:</h3>
+		<p>An apple a day is a played out cliche.</p>
+    </div>
+
+	<!-- <button id="loginButton" class="existingUser actionButton" type="button" ng-hide="userLoggedIn()">Login</button> -->
+	<button id="searchRestaurants" class="actionButton actionRequired" ng-click='restListQuery()' type="button" ng-show="displayRestButton()">Find Restraunts</button>
+
+</div>
+
+<div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>

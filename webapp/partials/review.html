@@ -1,0 +1,33 @@
+<div class="itemReview popupButton clearfix" ng-repeat="item in tray" ng-click="popupModal('editItem', $index)">
+	<h6>{{item.item.name}}</h6>
+	<p class="itemTotal">${{item.item.price}}</p>
+	<p class="itemAmount">x {{item.amount}}</p>
+	<p class="itemOptionSelections">{{ optionsDisp[ $index ] }}</p>
+</div>
+
+<div id="orderTotal" class="actionInfo">
+	<div class="itemPriceInfo">
+		<h6>Subtotal</h6>
+		<p>${{price}}</p>
+	</div>
+	<div class="itemPriceInfo">
+		<h6>Taxes/Fees</h6>
+		<p>${{taxes}}</p>
+	</div>
+	<div class="itemPriceInfo">
+		<h6>TOTAL</h6>
+		<p>${{priceTotal}}</p>
+	</div>
+</div>
+
+<button
+	id="checkout"
+	class="actionButton"
+	type="button"
+	ng-show="fee == true"
+	ng-click="proceedToCheckout()" >
+	<!-- @TODO: change to if mino is satisfied -->
+		Proceed to Checkout
+</button>
+
+<div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>

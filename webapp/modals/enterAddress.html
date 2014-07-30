@@ -1,0 +1,27 @@
+<div id="addressInputFields" class="popupMenu" ng-controller="EnterAddressCtrl">
+	<div class="popupBox clearfix">
+		<h5>Enter Address:</h5>
+		<form ng-submit="storeAddress()">
+			<label class="inputBox">
+				<input id="addressLineInput" name="addressLine" type="text" ng-model="addrForm.addressLine" class="inputField" placeholder="Address Line" required autofocus>
+			</label>
+			<label class="inputBox">
+				<input id="cityInput" name="city" type="text" class="inputField" ng-model="addrForm.city" required placeholder="City">
+			</label>
+			<label class="inputBox">
+				<input id="zipcodeInput" name="zipcode" type="number" class="inputField" ng-model="addrForm.zipcode" required placeholder="Zip Code">
+			</label>
+			<label class="inputBox" ng-show="userLoggedIn()">
+				<input id="nicknameInput" name="addressName" type="text" class="inputField" ng-model="addrForm.addressName" placeholder="Nickname (optional)"> <!-- @TODO change to addressName -->
+			</label>
+			<div class="saveField disabledText" ng-show="userLoggedIn()">
+				<label for="saveAddress">Save this Address
+					<input id="saveAddress" name="saveAddress" type="checkbox" ng-model="addrForm.saveAddress" disabled>
+				</label>
+			</div>
+			<button class="popupCancel smallButton cancelButton" ng-click="closeModal()" type="button">Cancel</button>
+			<button type="submit" class="popupOk smallButton okButton">Ok</button>
+		</form>
+	</div>
+</div>
+

@@ -1,0 +1,50 @@
+ <div id="menuContent">
+
+	<div id="menuHeader" class="restaurantListingItem">
+		<div class="topBox clearfix">
+			<h5>{{menu.name}}</h5>
+			<p class="distanceAway">{{distance}}</p>
+		</div>
+		<div class="bottomBox clearfix">
+			<div class="feeWrapper">
+				<p>Minimum Order: ${{menu.mino}}</p> <!-- @TODO: use fee call -->
+				<p><span ng-repeat="filter in menu.filters">{{filter}}, </p> <!-- @TODO: use filter from rest info call -->
+			</div>
+			<div class="appleRating">
+				<div class="appleWrapper">
+					<img ng-src="images/apple{{menu.rating > 0 ? 1 : 0}}.png">
+					<img ng-src="images/apple{{menu.rating > 1 ? 1 : 0}}.png">
+					<img ng-src="images/apple{{menu.rating > 2 ? 1 : 0}}.png">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div ng-show="mainTip" id='menuTip' class="healthTips">
+		<h4>Jay's Tips</h4>
+		<p>{{menu.tip}}</p>
+	</div>
+
+	<!-- Display each Category -->
+	<div id="menuCategories" ng-repeat="category in menu.menu">
+		<div class="catPanel">
+			<h3 ng-click="accordionSelect(category.cat_id)">{{category.name}}</h3>
+			<div ng-show="accordionShow == category.cat_id" class="catItems">
+				<div class="healthTips">
+					<p>{{category.cat_tip}}</p>
+				</div>
+
+				<!-- Display each Category's Menu Item -->
+				<div class="menuItem itemBest" ng-repeat="item in category.children" ng-click='viewItem(item.id)'>
+					<h6>{{item.name}}</h6>
+					<p class="itemPrice">${{item.price}}</p>
+					<p class="itemDescription">{{item.descrip}}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Show only once item has been added to order -->
+	<button id="reviewOrder" class="actionButton" type="button" ng-click="reviewOrder()" ng-show="storage.tray">Review Your Order</button>
+
+</div>

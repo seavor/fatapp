@@ -1,0 +1,10 @@
+<div id="tipMenu" class="popupMenu">
+	<div class="popupBox clearfix">
+		<h5>Give a Tip:</h5>
+		<div class="inputBox">
+			<input id="tipInput" ng-model="customer.tipUpdate" name="tip" type="number" class="inputField" placeholder="$0.00">
+		</div>
+		<button class="popupCancel smallButton cancelButton" ng-click="closeModal()" type="button">Cancel</button>
+		<button type="button" class="popupOk smallButton okButton" ng-click="updateTip()">Ok</button>
+	</div>
+</div>

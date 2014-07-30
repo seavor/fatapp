@@ -1,0 +1,17 @@
+<div id="itemQuantity" class="popupMenu" ng-controller="QuantityCtrl">
+	<div class="popupBox clearfix">
+		<h5>Enter Quantity:</h5>
+		<div class="inputBox">
+			<select class="selectNumber inputField" name="itemAmount" ng-model="amount">
+				<option
+					ng-repeat="i in amountRange"
+					ng-value="{{$index+1}}"
+					ng-selected="$index==0"
+				>{{$index+1}}
+				</option>
+			</select>
+		</div>
+		<button class="popupCancel smallButton cancelButton" type="button" ng-click="closeModal()">Cancel</button>
+		<button for="itemOptions" class="popupOk smallButton okButton" ng-click="addItem()">Ok</button>
+	</div>
+</div>
