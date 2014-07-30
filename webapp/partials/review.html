@@ -8,14 +8,14 @@
 <div id="orderTotal" class="actionInfo">
 	<div class="itemPriceInfo">
 		<h6>Subtotal</h6>
-		<p>${{price}}</p>
+		<p>${{subTotal}}</p>
 	</div>
-	<div class="itemPriceInfo inputBox">
+	<div class="itemPriceInfo inputBox"> <!-- TODO Change this to a P tag with {{binding}} -->
 		<input id="tipButton" class="popupButton" ng-model="storage.tip" placeholder="Give a tip?" ng-click="popupModal('tip')" readonly>
 	</div>
 	<div class="itemPriceInfo">
 		<h6>TOTAL</h6>
-		<p>${{priceTotal}}</p>
+		<p>${{storage.priceTotal}}</p>
 	</div>
 </div>
 

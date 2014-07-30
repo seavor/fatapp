@@ -142,7 +142,6 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.findYearRange = function() {
             var currentYear = new Date().getFullYear(), years = ['YY'];
             var endYear = currentYear + 20;
-            console.log(currentYear);
 
             while ( currentYear < endYear ) {
                     years.push(currentYear++);
@@ -278,6 +277,10 @@ app.config(['$routeProvider',// '$locationProvider',
 					$scope.closeModal();
 				}
 			});
+			
+			if (tray.length == 0) {
+				$location.path('/menu');
+			};
 		};
 
 	});
@@ -302,7 +305,11 @@ app.config(['$routeProvider',// '$locationProvider',
 	app.controller('TipCtrl', function($scope, $location){
 
 		$scope.updateTip = function(){
-			$scope.storage.tip = $scope.tipUpdate || 0;
+			// Update if Tip Given
+			if ($scope.tipUpdate && $scope.tipUpdate >= 0) { $scope.storage.tip = parseFloat($scope.tipUpdate).toFixed(2); }
+			// Otherwise remove Tip
+			else { $scope.storage.removeItem('tip'); };
+			 
 			$scope.closeModal();
 		};
 
@@ -722,23 +729,29 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('ReviewCtrl', function($scope, $location){
 
+		// Reset on Page Load
+		$scope.storage.removeItem('editItem');
+		$scope.storage.removeItem('tip');
+
 		$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
 		$scope.optionsDisp = [];
-		// if we're on the review page, we don't need the marker for an item being edited any longer
-		$scope.storage.removeItem('editItem');
-		
-		$scope.getSubtotal = function() {
-			$scope.price = 0;
-			angular.forEach($scope.tray, function(obj, trayItemKey) {
-				$scope.price += parseFloat(obj.price);
-			});
-
-			$scope.storage.price = $scope.price.toFixed(2);
-		}
 
 		$scope.getTotal = function() {
-			var tip = $scope.storage.tip ? $scope.storage.tip : 0;
-			$scope.priceTotal = (parseFloat($scope.storage.price) + parseFloat(tip) ).toFixed(2);
+			var price = 0; // Calc SubTotal
+			angular.forEach($scope.tray, function(obj, trayItemKey) {
+				price += (parseFloat(obj.price) * obj.amount);
+			});
+
+			// Set SubTotal
+			$scope.subTotal = price.toFixed(2);
+
+			// Set Tip & Price Total
+			var tip = $scope.storage.tip ? $scope.storage.tip : parseFloat(0).toFixed(2);
+			$scope.storage.priceTotal = parseFloat(parseFloat($scope.subTotal) + parseFloat(tip)).toFixed(2);
+
+			// Determine if Minimum Order is met
+			if (parseFloat($scope.storage.priceTotal) >= parseFloat($scope.storage.mino)) { $scope.minimum = true; }
+			else {$scope.minimum = false;};
 		};
 
 		// Filter Out and Add Selected Options to optionDisplay object
@@ -756,25 +769,19 @@ app.config(['$routeProvider',// '$locationProvider',
 		};
 
 		$scope.updateDisplay();
-		$scope.getSubtotal();
 		$scope.getTotal();
 
+		// Recalc Values if Item Removed from Tray
 		$scope.$watch('storage.tray', function() {
-			$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
+			$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage(); // if empty, delete storage tray
 
 			$scope.updateDisplay();
-			$scope.getSubtotal();
 			$scope.getTotal();
 		});
 
+		// Watch for New Tip
 		$scope.$watch('storage.tip', function() {
 			$scope.getTotal();
-		});
-
-		$scope.$watch('priceTotal', function() {
-			if ($scope.storage.mino <= $scope.priceTotal) {
-				$scope.minimum = true;
-			} else {$scope.minimum = false;};
 		});
 
 		$scope.editOption = function(item, iidx){
@@ -796,36 +803,42 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		$scope.showLoader();
 
-		// Make Fee Call
-		var address = JSON.parse($scope.storage.deliveryAddress);
-		var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
-			+ $scope.storage.activeRest + '/'
-			+ $scope.price + '/'
-			+  $scope.storage.tip + '/'
-			+ 'ASAP/'
-			+ address.zipcode + '/'
-			+ address.city + '/'
-			+ address.addressLine;
-		$http.get( feeUrl )
-			.success( function( data, status, header, config ) {
-				// save gotten data (to then display it)
-				$scope.hideLoader();
-				console.log(data);
-				$scope.taxes = parseFloat(data.fee).toFixed(2);
-				$scope.taxes = data.tax != NaN ? parseFloat(data.tax).toFixed(2) : parseFloat(0).toFixed(2);
-				console.log($scope.taxes);
-			})
-			.error( function( data, status, header, config ) {
-				console.log(status);
-				$scope.hideLoader();
-			});
-
 		$scope.customer = {};
 		$scope.orderObject = {};
     	$scope.yearRange = $scope.findYearRange();
+    	$scope.fee = '0.00';
 
     	// @TODO validate form fields
 		$scope.allFieldsFilled = true;
+
+		// Make Fee Call
+		$scope.feeCall = function() {
+
+			var address = JSON.parse($scope.storage.deliveryAddress);
+			var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
+				+ $scope.storage.activeRest + '/'
+				+ $scope.price + '/'
+				+  $scope.storage.tip + '/'
+				+ 'ASAP/'
+				+ address.zipcode + '/'
+				+ address.city + '/'
+				+ address.addressLine;
+
+			$http.get( feeUrl )
+				.success( function( data, status, header, config ) {
+					$scope.fee = data.fee;
+					$scope.taxes = data.tax;
+					$scope.hideLoader();
+					console.log(data);
+				})
+				.error( function( data, status, header, config ) {
+					console.log(status);
+					$scope.hideLoader();
+				});
+
+		};
+
+		$scope.feeCall(); // Do we need to do a fee call again, or only if it causes a fail?
 
 		// Keep Filtered Display Updated
 		$scope.$watch('storage.deliveryAddress', function() {
@@ -838,6 +851,11 @@ app.config(['$routeProvider',// '$locationProvider',
 				$scope.addressDisplay = ':(';
 			};
 		});
+
+		// Add Taxes to Fees if they exists
+		if (!isNaN($scope.taxes)) { $scope.fee += $scope.taxes; }
+		// Calc Grand Total
+		$scope.grandTotal = parseFloat($scope.storage.priceTotal + $scope.fee).toFixed(2);
 
 		$scope.orderFood = function() {
 
@@ -858,7 +876,7 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.orderObject.rid = $scope.storage.orderRest;
 			$scope.orderObject.em = $scope.customer.email;
 			$scope.orderObject.tray = tray;
-			$scope.orderObject.tip = $scope.customer.tip || 0;
+			$scope.orderObject.tip = $scope.storage.tip || 0;
 			$scope.orderObject.first_name = 'Jeremy';
 			$scope.orderObject.last_name = 'Letto';
 			$scope.orderObject.delivery_date = 'ASAP';
@@ -894,7 +912,7 @@ app.config(['$routeProvider',// '$locationProvider',
 						$location.path('/receipt');
 					} else {
 						// Show Error Msg
-						$scope.hideLoader();
+						$scope.hideLoader(); // Instead, hideLoader() thru another feeCall() ???
 						console.log(data);
 					};
 					
