@@ -141,7 +141,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		$scope.findYearRange = function() {
             var currentYear = new Date().getFullYear(), years = ['YY'];
-            var endYear = currentYear + 100;
+            var endYear = currentYear + 20;
             console.log(currentYear);
 
             while ( currentYear < endYear ) {
@@ -253,10 +253,6 @@ app.config(['$routeProvider',// '$locationProvider',
 			else { return 'checkbox'; }
 		};
 
-	});
-
-	app.controller('QuantityCtrl', function($scope, $location){
-		// do we still need this?
 	});
 
 	app.controller('EditItemCtrl', function($scope, $location){
@@ -425,26 +421,58 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('MenuCtrl', function($scope, $location){
 
+		//$scope.getSubtotal = function() {
+		$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
+		$scope.price = 0;
+
+		angular.forEach($scope.tray, function(obj, trayItemKey) {
+			$scope.price += parseFloat(obj.price);
+		});
+
+		$scope.price = $scope.price.toFixed(2);
+		//};
+
+		// Get Menu data if not set or Restaurant Changed
+		if (!$scope.storage.menu || $scope.storage.activeRest != $scope.storage.newRest) {
+			$scope.showLoader();
+			$http.get( 'http://jay.craftinc.co/Slim/rd/' + $scope.storage.newRest )
+				.success( function( data, status, header, config ) {
+					$scope.storage.menu = JSON.stringify(data);
+					$scope.hideLoader();
+					$scope.storageSpace();
+				})
+				.error( function( data, status, header, config ) {
+					// lol
+					console.log(status+'damn'+$scope.storage.newRest);
+					$scope.hideLoader();
+					$location.path('/blank');
+				});
+		}
+
+		// Update activeRest to newRest
+		$scope.storage.activeRest = $scope.storage.newRest;
+
 		$scope.hideLoader();
 					
 		// @TODO make fee call on restaurant list page?
 		// @TODO always make fee call when reaching this page
-		// var address = JSON.parse($scope.storage.deliveryAddress);
-		// var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
-		// 	+ $scope.storage.activeRest + '/'
-		// 	+ $scope.storage.subtotalPrice + '/' // @TODO store / get subtotal
-		// 	+ $scope.storage.tip + '/' // @TODO store tip (or make it 0 at this stage?)
-		// 	+ 'ASAP/' // default for ASAP delivery for v1
-		// 	+ address.zipcode + '/'
-		// 	+ address.city + '/'
-		// 	+ address.addressLine;
-		// $http.get( feeUrl )
-		// 	.success( function( data, status, header, config ) {
-		// 		// save gotten data (to then display it)
-		// 	})
-		// 	.error( function( data, status, header, config ) {
-		// 		console.log(status);
-		// 	});
+		var address = JSON.parse($scope.storage.deliveryAddress);
+		var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
+			+ $scope.storage.activeRest + '/'
+			+ $scope.price + '/'
+			+  '0/'
+			+ 'ASAP/' // default for ASAP delivery for v1
+			+ address.zipcode + '/'
+			+ address.city + '/'
+			+ address.addressLine;
+		$http.get( feeUrl )
+			.success( function( data, status, header, config ) {
+				// save gotten data (to then display it)
+				console.log(data);
+			})
+			.error( function( data, status, header, config ) {
+				console.log(status);
+			});
 
 
 		$scope.menu = JSON.parse($scope.storage.menu);
@@ -738,23 +766,8 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		$scope.getSubtotal = function() {
 			$scope.price = 0;
-			// @TODO greatly simplify since price is now being saved
 			angular.forEach($scope.tray, function(obj, trayItemKey) {
-
-				var itemPrice = parseFloat(obj.item.price);
-
-				angular.forEach(obj.cid, function(cidVal, cidKey) {
-					angular.forEach(obj.item.children, function(optCatVal, optCatKey) {
-						angular.forEach(obj.item.children[optCatKey].children, function(optVal, optKey) {
-							if( cidVal === optVal.id ) {
-								itemPrice += parseFloat(optVal.price);
-							}
-						});
-					});
-				});
-
-				itemPrice *= parseFloat(obj.amount);
-				$scope.price += parseFloat(itemPrice);
+				$scope.price += parseFloat(obj.price);
 			});
 
 			$scope.price = $scope.price.toFixed(2);
