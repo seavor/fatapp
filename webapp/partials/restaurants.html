@@ -16,14 +16,14 @@
 
 	<div ng-repeat="restaurant in restaurantList | filter: restFilter ">
 
-		<div class="restaurantListingItem" ng-click="viewMenu(restaurant.id)" ng-show="restaurant.is_delivering==1" >
+		<div class="restaurantListingItem" ng-click="viewMenu(restaurant.id, restaurant.mino)" ng-show="restaurant.is_delivering==1" >
 			<div class="topBox clearfix">
 				<h5>{{restaurant.na}}</h5>
 				<p class="distanceAway">{{distance}}</p>
 			</div>
 			<div class="bottomBox clearfix">
 				<div class="feeWrapper">
-					<p>Minimum Order: ${{restaurant.services.deliver.mino}}</p>
+					<p>Minimum Order: ${{restaurant.mino}}</p>
 					<p><span ng-repeat="filter in restaurant.filters">{{filter}}, </p>
 				</div>
 				<div class="appleRating">

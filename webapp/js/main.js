@@ -299,6 +299,15 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	});
 
+	app.controller('TipCtrl', function($scope, $location){
+
+		$scope.updateTip = function(){
+			$scope.storage.tip = $scope.tipUpdate || 0;
+			$scope.closeModal();
+		};
+
+	});
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
     // Page Controllers
@@ -395,7 +404,7 @@ app.config(['$routeProvider',// '$locationProvider',
 		};
 
 
-		$scope.viewMenu = function(rid){
+		$scope.viewMenu = function(rid, mino){
 			$scope.newRest = rid;
 
 			// Get Menu data if not set or Restaurant Changed
@@ -405,6 +414,7 @@ app.config(['$routeProvider',// '$locationProvider',
 					.success( function( data, status, header, config ) {
 						$scope.storage.menu = JSON.stringify(data);
 						$scope.storage.activeRest = $scope.newRest;
+						$scope.storage.mino = mino;
 						$scope.storageSpace();
 						$location.path('/menu');
 					})
@@ -419,64 +429,12 @@ app.config(['$routeProvider',// '$locationProvider',
 		
 	});
 
-	app.controller('MenuCtrl', function($scope, $location){
-
-		//$scope.getSubtotal = function() {
-		$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
-		$scope.price = 0;
-
-		angular.forEach($scope.tray, function(obj, trayItemKey) {
-			$scope.price += parseFloat(obj.price);
-		});
-
-		$scope.price = $scope.price.toFixed(2);
-		//};
-
-		// Get Menu data if not set or Restaurant Changed
-		if (!$scope.storage.menu || $scope.storage.activeRest != $scope.storage.newRest) {
-			$scope.showLoader();
-			$http.get( 'http://jay.craftinc.co/Slim/rd/' + $scope.storage.newRest )
-				.success( function( data, status, header, config ) {
-					$scope.storage.menu = JSON.stringify(data);
-					$scope.hideLoader();
-					$scope.storageSpace();
-				})
-				.error( function( data, status, header, config ) {
-					// lol
-					console.log(status+'damn'+$scope.storage.newRest);
-					$scope.hideLoader();
-					$location.path('/blank');
-				});
-		}
-
-		// Update activeRest to newRest
-		$scope.storage.activeRest = $scope.storage.newRest;
+	app.controller('MenuCtrl', function($scope, $http, $location){
 
 		$scope.hideLoader();
-					
-		// @TODO make fee call on restaurant list page?
-		// @TODO always make fee call when reaching this page
-		var address = JSON.parse($scope.storage.deliveryAddress);
-		var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
-			+ $scope.storage.activeRest + '/'
-			+ $scope.price + '/'
-			+  '0/'
-			+ 'ASAP/' // default for ASAP delivery for v1
-			+ address.zipcode + '/'
-			+ address.city + '/'
-			+ address.addressLine;
-		$http.get( feeUrl )
-			.success( function( data, status, header, config ) {
-				// save gotten data (to then display it)
-				console.log(data);
-			})
-			.error( function( data, status, header, config ) {
-				console.log(status);
-			});
-
 
 		$scope.menu = JSON.parse($scope.storage.menu);
-		$scope.menu.mino = '15.00';
+		$scope.menu.mino = $scope.storage.mino;
 
 		// Menu Accordion Logic
 		$scope.mainTip = true;
@@ -764,35 +722,24 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('ReviewCtrl', function($scope, $location){
 
+		$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
+		$scope.optionsDisp = [];
+		// if we're on the review page, we don't need the marker for an item being edited any longer
+		$scope.storage.removeItem('editItem');
+		
 		$scope.getSubtotal = function() {
 			$scope.price = 0;
 			angular.forEach($scope.tray, function(obj, trayItemKey) {
 				$scope.price += parseFloat(obj.price);
 			});
 
-			$scope.price = $scope.price.toFixed(2);
+			$scope.storage.price = $scope.price.toFixed(2);
 		}
 
-		$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
-
-		$scope.$watch('storage.tray', function() {
-			$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
-
-			$scope.getSubtotal();
-			$scope.updateDisplay();
-			// @TODO : make Fee call
-			$scope.taxes = '3.50';
-
-			$scope.priceTotal = (parseFloat($scope.price) + parseFloat($scope.taxes) ).toFixed(2);
-
-		});
-
-
-		$scope.optionsDisp = [];
-
-		// if we're on the review page, we don't need the marker for an item being edited any longer
-		$scope.storage.removeItem('editItem');
-
+		$scope.getTotal = function() {
+			var tip = $scope.storage.tip ? $scope.storage.tip : 0;
+			$scope.priceTotal = (parseFloat($scope.storage.price) + parseFloat(tip) ).toFixed(2);
+		};
 
 		// Filter Out and Add Selected Options to optionDisplay object
 		$scope.updateDisplay = function(){
@@ -808,6 +755,27 @@ app.config(['$routeProvider',// '$locationProvider',
 			}	}	}	}	} 
 		};
 
+		$scope.updateDisplay();
+		$scope.getSubtotal();
+		$scope.getTotal();
+
+		$scope.$watch('storage.tray', function() {
+			$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
+
+			$scope.updateDisplay();
+			$scope.getSubtotal();
+			$scope.getTotal();
+		});
+
+		$scope.$watch('storage.tip', function() {
+			$scope.getTotal();
+		});
+
+		$scope.$watch('priceTotal', function() {
+			if ($scope.storage.mino <= $scope.priceTotal) {
+				$scope.minimum = true;
+			} else {$scope.minimum = false;};
+		});
 
 		$scope.editOption = function(item, iidx){
 
@@ -818,8 +786,6 @@ app.config(['$routeProvider',// '$locationProvider',
 			$location.path('/item');
 		};
 
-		$scope.fee = true;
-
 		$scope.proceedToCheckout = function(){
 			$location.path('/checkout');
 		};
@@ -827,6 +793,32 @@ app.config(['$routeProvider',// '$locationProvider',
 	});
 
 	app.controller('CheckoutCtrl', function($scope, $http, $location){
+
+		$scope.showLoader();
+
+		// Make Fee Call
+		var address = JSON.parse($scope.storage.deliveryAddress);
+		var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
+			+ $scope.storage.activeRest + '/'
+			+ $scope.price + '/'
+			+  $scope.storage.tip + '/'
+			+ 'ASAP/'
+			+ address.zipcode + '/'
+			+ address.city + '/'
+			+ address.addressLine;
+		$http.get( feeUrl )
+			.success( function( data, status, header, config ) {
+				// save gotten data (to then display it)
+				$scope.hideLoader();
+				console.log(data);
+				$scope.taxes = parseFloat(data.fee).toFixed(2);
+				$scope.taxes = data.tax != NaN ? parseFloat(data.tax).toFixed(2) : parseFloat(0).toFixed(2);
+				console.log($scope.taxes);
+			})
+			.error( function( data, status, header, config ) {
+				console.log(status);
+				$scope.hideLoader();
+			});
 
 		$scope.customer = {};
 		$scope.orderObject = {};
@@ -846,11 +838,6 @@ app.config(['$routeProvider',// '$locationProvider',
 				$scope.addressDisplay = ':(';
 			};
 		});
-
-		$scope.updateTip = function(){
-			$scope.customer.tip = $scope.customer.tipUpdate;
-			$scope.closeModal();
-		};
 
 		$scope.orderFood = function() {
 

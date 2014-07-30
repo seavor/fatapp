@@ -10,9 +10,8 @@
 		<h6>Subtotal</h6>
 		<p>${{price}}</p>
 	</div>
-	<div class="itemPriceInfo">
-		<h6>Taxes/Fees</h6>
-		<p>${{taxes}}</p>
+	<div class="itemPriceInfo inputBox">
+		<input id="tipButton" class="popupButton" ng-model="storage.tip" placeholder="Give a tip?" ng-click="popupModal('tip')" readonly>
 	</div>
 	<div class="itemPriceInfo">
 		<h6>TOTAL</h6>
@@ -24,7 +23,7 @@
 	id="checkout"
 	class="actionButton"
 	type="button"
-	ng-show="fee == true"
+	ng-show="minimum"
 	ng-click="proceedToCheckout()" >
 	<!-- @TODO: change to if mino is satisfied -->
 		Proceed to Checkout
