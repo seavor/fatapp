@@ -400,34 +400,34 @@ app.config(['$routeProvider',// '$locationProvider',
 
 
 		$scope.viewMenu = function(rid){
-			$scope.storage.newRest = rid;
-			$location.path('/menu');
+			$scope.newRest = rid;
+
+			// Get Menu data if not set or Restaurant Changed
+			if ($scope.storage.activeRest != $scope.newRest) {
+				$scope.showLoader();
+				$http.get( 'http://jay.craftinc.co/Slim/rd/' + $scope.newRest )
+					.success( function( data, status, header, config ) {
+						$scope.storage.menu = JSON.stringify(data);
+						$scope.storage.activeRest = $scope.newRest;
+						$scope.storageSpace();
+						$location.path('/menu');
+					})
+					.error( function( data, status, header, config ) {
+						console.log(status+'damn'+$scope.storage.newRest);
+						$scope.hideLoader();
+					});
+			// Otherwise, redirect to Menu page
+			} else { $location.path('/menu'); }
+
 		}
 		
 	});
 
-	app.controller('MenuCtrl', function($scope, $http, $location){
+	app.controller('MenuCtrl', function($scope, $location){
 
-		// Get Menu data if not set or Restaurant Changed
-		if (!$scope.storage.menu || $scope.storage.activeRest != $scope.storage.newRest) {
-			$scope.showLoader();
-			$http.get( 'http://jay.craftinc.co/Slim/rd/' + $scope.storage.newRest )
-				.success( function( data, status, header, config ) {
-					$scope.storage.menu = JSON.stringify(data);
-					$scope.hideLoader();
-					$scope.storageSpace();
-				})
-				.error( function( data, status, header, config ) {
-					// lol
-					console.log(status+'damn'+$scope.storage.newRest);
-					$scope.hideLoader();
-					$location.path('/blank');
-				});
-		}
-
-		// Update activeRest to newRest
-		$scope.storage.activeRest = $scope.storage.newRest;
-
+		$scope.hideLoader();
+					
+		// @TODO make fee call on restaurant list page?
 		// @TODO always make fee call when reaching this page
 		// var address = JSON.parse($scope.storage.deliveryAddress);
 		// var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
@@ -446,11 +446,9 @@ app.config(['$routeProvider',// '$locationProvider',
 		// 		console.log(status);
 		// 	});
 
-		// Update Menu when changed
-		$scope.$watch('storage.menu', function() {
-			$scope.menu = $scope.storage.menu ? JSON.parse($scope.storage.menu) : {};
-			$scope.menu.mino = '15.00';
-		});
+
+		$scope.menu = JSON.parse($scope.storage.menu);
+		$scope.menu.mino = '15.00';
 
 		// Menu Accordion Logic
 		$scope.mainTip = true;
@@ -478,7 +476,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	});
 
-	app.controller('ItemCtrl', function($scope, $http, $location){
+	app.controller('ItemCtrl', function($scope, $location){
 
 		$scope.itemOrderable = true;
 
@@ -736,7 +734,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	});
 
-	app.controller('ReviewCtrl', function($scope, $http, $location){
+	app.controller('ReviewCtrl', function($scope, $location){
 
 		$scope.getSubtotal = function() {
 			$scope.price = 0;
@@ -911,7 +909,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	});
 
-	app.controller('ReceiptCtrl', function($scope, $http, $location){
+	app.controller('ReceiptCtrl', function($scope, $location){
 
 		$scope.hideLoader();
 
