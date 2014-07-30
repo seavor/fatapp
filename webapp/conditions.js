@@ -1,20 +1,33 @@
+* APP Wide *
+
+	- Login State
+
+	- Online Status
+
+	- Authentication
+
+	- Page Redirection Animation
+
+
+
 * Home Page (search) *
 
 	- Guest
 
 	- LoggedIn
 
-	- Address Not Valid
+	$ Valid Address 
+ 		- Check on Modals
+ 		- Confirm on Save/Enter (AJAX) (loading/saving)
+ 		- Enable Save Button when all fields are entered
 
 
 
 * Restaurant Listing *
 
-	- New Address Search
+	$ Show message if Filter removes all Restaurants
 
-	- Repeat Search (close/open check)
-
-	- Ajax menu-call if New Restaurant is clicked
+	$ Show Message if No Restaurants delivering to that address
 
 
 
@@ -22,24 +35,39 @@
 
 	- Accordion Menu Animation
 
-	- View Menu Item
+	$ Ajax call for Minimum/Fee (done once here, once more at checkout)
 
-	- Continue to Review Order page once cart != empty
+
+
+* Item Screen *
+
+	- Radio Button functionality
+
+	$ Jays Choices
+
+		- Preselect Check Buttons even if Modals never opened
+
+	$ Required options Selected
 
 
 
 * Review Page *
 
 	- Edit/Remove Item
+		$ Route Back to Menu Page all items removed
 
-	- Proceed to Checkout if Restaurant Minimum is met
+	$ Proceed to Checkout if Restaurant Minimum is met
 
 
 
 * Checkout Page *
 
-	- Show "Send Me Food!" button once all fields are filled
+	$ Show "Send Me Food!" button once all fields are filled
 
-	- Validate Form Fields before processing order
+	$ Validate Form Fields before processing order
 
-	- Route to Review Page upon successful order
+	$ Save Credit Card if Order Successful
+
+	$ Only show Saved Addresses that are within delivery range
+
+	- Route to Receipt Page upon successful order
