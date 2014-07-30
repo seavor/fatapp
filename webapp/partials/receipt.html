@@ -1,10 +1,10 @@
 <h2 class="screenHeader highHeader">Your Food is on the Way!</h2>
 
-<p class="centerSubheader">Estimated time of Delivery: {{deliveryTime}}</p>
+<p class="centerSubheader">Estimated time of Delivery: {{est}}</p>
 
 <div class="restaurantListingItem restaurantHead clearfix">
 	<h5>{{restName}}</h5>
-	<p class="distanceAway">{{distance}}</p>
+	<p class="distanceAway">{{distance}}m</p>
 </div>
 
 <h2 id="yourOrder" class="mainHeader underLine">Your Order:</h2>
@@ -12,7 +12,22 @@
 <div class="itemReview clearfix">
 	<h6>{{itemName}}</h6>
 	<p class="itemTotal">${{itemPrice}}</p>
-	<p class="itemAmount">x {{itemQuantity}}</p>
+	<p class="itemAmount">x {{itemAmount}}</p>
 </div>
 
-<button id="backToHome" class="actionButton" type="button">Back to Home</button>
+<div id="orderReceiptAmount" class="actionInfo">
+	<div class="itemPriceInfo">
+		<h6>Subtotal</h6>
+		<p>${{subtotal}}</p>
+	</div>
+	<div class="itemPriceInfo">
+		<h6>Tip</h6>
+		<p>${{tip}}</p>
+	</div>
+	<div class="itemPriceInfo">
+		<h6>TOTAL</h6>
+		<p>${{total}}</p>
+	</div>
+</div>
+
+<button id="backToHome" class="actionButton" type="button" ng-click="console.log('Go Home!')">Back to Home</button>

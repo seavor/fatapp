@@ -183,8 +183,6 @@ $app->post('/order/:rid', function($rid) use ($app) {
 
     $parsed = json_decode($body);
 
-    print_r($parsed);
-
     // manually taking each value, just in case.
     $fields = array(
         'rid'             => $parsed->rid,

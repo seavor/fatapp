@@ -51,6 +51,10 @@ app.config(['$routeProvider',// '$locationProvider',
         templateUrl: 'partials/checkout.html',
         controller: 'CheckoutCtrl'
       }).
+      when('/receipt', {
+        templateUrl: 'partials/receipt.html',
+        controller: 'ReceiptCtrl'
+      }).
       // Reroute to Home Sceen
       otherwise({
         redirectTo: '/search'
@@ -750,7 +754,7 @@ app.config(['$routeProvider',// '$locationProvider',
 							if( cidVal === optVal.id ) {
 								itemPrice += parseFloat(optVal.price);
 							}
-						})
+						});
 					});
 				});
 
@@ -816,6 +820,11 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('CheckoutCtrl', function($scope, $http, $location){
 
+		$scope.customer = {};
+		$scope.orderObject = {};
+    	$scope.yearRange = $scope.findYearRange();
+
+    	// @TODO validate form fields
 		$scope.allFieldsFilled = true;
 
 		// Keep Filtered Display Updated
@@ -830,10 +839,6 @@ app.config(['$routeProvider',// '$locationProvider',
 			};
 		});
 
-		$scope.customer = {};
-		$scope.orderObject = {};
-    	$scope.yearRange = $scope.findYearRange();
-
 		$scope.updateTip = function(){
 			$scope.customer.tip = $scope.customer.tipUpdate;
 			$scope.closeModal();
@@ -841,11 +846,23 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		$scope.orderFood = function() {
 
-			// var deliveryAddress = JSON.parse($scope.storage.deliveryAddress);
+			$scope.showLoader();
 
+			var tray = '';
+			// Format Tray Object to proper string
+			angular.forEach(JSON.parse($scope.storage.tray), function(item, key) {
+				tray += '+' + item.iid + '/' + item.amount;
+				angular.forEach(item.cid, function(option, index) {
+					tray += ',' + option;
+				});
+			});
+			// Remove leading '+'
+			tray = tray.substring(1);
+
+			// Populate http.post object
 			$scope.orderObject.rid = $scope.storage.orderRest;
 			$scope.orderObject.em = $scope.customer.email;
-			$scope.orderObject.tray = $scope.storage.tray;
+			$scope.orderObject.tray = tray;
 			$scope.orderObject.tip = $scope.customer.tip || 0;
 			$scope.orderObject.first_name = 'Jeremy';
 			$scope.orderObject.last_name = 'Letto';
@@ -867,10 +884,7 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.orderObject.card_bill_zip = $scope.customer.billZip;
 			$scope.orderObject.card_bill_phone = $scope.customer.phone; // not asked for
 
-
-
-			console.dir($scope.orderObject);
-
+			// Save Credit Card if checkbox selected
 			if ($scope.orderObject.saveCard == true) {
 				console.log('saveCard!');
 			};
@@ -879,17 +893,45 @@ app.config(['$routeProvider',// '$locationProvider',
 
 			$http.post( reqURL, $scope.orderObject )
 				.success( function( data, status, header, config ) {
-					console.dir(data);
-
-
+					$scope.hideLoader();
+					if (data.msg == 'Success') {
+						$scope.storage.receipt = JSON.stringify(data.custserv);
+						$location.path('/receipt');
+					} else {
+						// Show Error Msg
+						$scope.hideLoader();
+						console.log(data);
+					};
+					
 				})
-				.error( function( data, status, header, config ) {
-				
-
-
-				});
+			.error( function( data, status, header, config ) {
+				// Show Error Msg
+				$scope.hideLoader();
+				console.log('JCORE Backend failed:', data);
+			});
 
 		};
+
+	});
+
+	app.controller('ReceiptCtrl', function($scope, $http, $location){
+
+		$scope.hideLoader();
+
+		$scope.restDetails = JSON.parse($scope.storage.menu);
+
+		// Define Model Variables
+		$scope.est = '12:00pm'; // will be a geo-function
+		$scope.restName = $scope.restDetails.name;
+		$scope.distance = '0.3'; // also a geo-function
+
+		$scope.itemName = 'itemName';
+		$scope.itemPrice = '8.99';
+		$scope.itemAmount = '2';
+
+		$scope.subtotal = '16.98';
+		$scope.tip = '2.00';
+		$scope.total = '18.98';
 
 
 	});
