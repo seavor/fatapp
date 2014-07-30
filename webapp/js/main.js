@@ -159,9 +159,9 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		$scope.addressList = [
 			// @TODO ajax call for address info (aid)
-		    {"aid":"001", "addressName":"Home", "addressLine":"392 Broadway", "city":"New York", "state":"NY", "zipcode":"10013"}, 
-		    {"aid":"002", "addressName":"Work", "addressLine":"920 Broadway", "city":"New York", "state":"NY", "zipcode":"10010"}, 
-		    {"aid":"003", "addressName":"School", "addressLine":"1480 Broadway", "city":"New York", "state":"NY", "zipcode":"10036"}
+		    {"aid":"001", "addressName":"Chinatown", "addressLine":"392 Broadway", "city":"New York", "state":"NY", "zipcode":"10013"}, 
+		    {"aid":"002", "addressName":"Jeffries", "addressLine":"520 Madison Ave", "city":"New York", "state":"NY", "zipcode":"10022"}, 
+		    {"aid":"003", "addressName":"Midtown", "addressLine":"1480 Broadway", "city":"New York", "state":"NY", "zipcode":"10036"}
 		];
 		
 		$scope.chooseAddress = function(aid){
