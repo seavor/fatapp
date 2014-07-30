@@ -159,9 +159,9 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		$scope.addressList = [
 			// @TODO ajax call for address info (aid)
-		    {"aid":"001", "addressName":"Home", "addressLine":"392 Broadway", "city":"New York", "state":"NY", "zipcode":"10013"}, 
-		    {"aid":"002", "addressName":"Work", "addressLine":"920 Broadway", "city":"New York", "state":"NY", "zipcode":"10010"}, 
-		    {"aid":"003", "addressName":"School", "addressLine":"1480 Broadway", "city":"New York", "state":"NY", "zipcode":"10036"}
+		    {"aid":"001", "addressName":"Chinatown", "addressLine":"392 Broadway", "city":"New York", "state":"NY", "zipcode":"10013"}, 
+		    {"aid":"002", "addressName":"Jeffries", "addressLine":"520 Madison Ave", "city":"New York", "state":"NY", "zipcode":"10022"}, 
+		    {"aid":"003", "addressName":"Midtown", "addressLine":"1480 Broadway", "city":"New York", "state":"NY", "zipcode":"10036"}
 		];
 		
 		$scope.chooseAddress = function(aid){
@@ -314,8 +314,8 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.storage.filter = JSON.stringify($scope.filterForm);
 
 		// Reveal 'Find Restaurants' button upon Address Selection
-		$scope.$watch('storage.deliveryAddressDisplay', function() {
-			if ($scope.storage.deliveryAddressDisplay) { $scope.storage.findRestButtonState = true; }
+		$scope.$watch('storage.deliveryAddress', function() {
+			if ($scope.storage.deliveryAddress) { $scope.storage.findRestButtonState = true; }
 			else { $scope.storage.findRestButtonState = false; }
 		});
 
@@ -327,33 +327,54 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		// Find restaurants @TODO
 		$scope.restListQuery = function(){
+
+			$scope.showLoader();
+
 			var address = JSON.parse($scope.storage.deliveryAddress);
 
 			var reqUrl = 'http://jay.craftinc.co/Slim/rl/' + address.zipcode + '/' + address.city + '/' + address.addressLine;
-			$scope.storage.restListQuery = encodeURI(reqUrl);
+			$scope.storage.reqUrl = reqUrl;
 
-			$location.path('/restaurants');
+			$http.get( reqUrl )
+				.success( function( data, status, header, config ) {
+					$scope.storage.restaurantList = JSON.stringify(data);
+					$scope.storage.newSearch = true;
+					$location.path('/restaurants');
+				})
+				.error( function( data, status, header, config ) {
+					console.log('Invalid Address: ', data);
+					$scope.hideLoader();
+					// $scope.storage.errorMsg = 'Invalid Address';
+					// $scope.flashError();
+				});
+
 		};
 
 	});
 
 	app.controller('RestaurantsCtrl', function($scope, $http, $location){
 
-		$scope.showLoader();
+		// Check if not a newSearch, refresh restaurantList if so
+		if ($scope.storage.newSearch != 'true') {
+			$scope.showLoader();
+			var promise = $http.get( $scope.storage.reqUrl )
+				.success( function( data, status, header, config ) {
+					$scope.restaurantList = data;
+					$scope.hideLoader();
+				})
+				.error( function( data, status, header, config ) {
+					console.log('Invalid Address: ', data);
+					$scope.hideLoader();
+					// $scope.storage.errorMsg = 'Invalid Address';
+					// $scope.flashError();
+				});
+		// Otherwise, show page
+		} else { $scope.hideLoader(); };
 
-		$http.get( $scope.storage.restListQuery )
-			.success( function( data, status, header, config ) {
-				$scope.restaurantList = data;
-				$scope.hideLoader();
-			})
-			.error( function( data, status, header, config ) {
-				console.log(status);
-				$scope.hideLoader();
-				$location.path('/blank');
-				// $scope.storage.errorMsg = 'test';
-				// $scope.flashError();
-			});
+		// Turn off newSearch param after check
+		$scope.storage.newSearch = false;
 
+		$scope.restaurantList = JSON.parse($scope.storage.restaurantList);
 		$scope.showAddress = $scope.storage.addressLineDisplay;
 
 		// Initialize Filter Display/Checkbox/Storage
@@ -375,13 +396,30 @@ app.config(['$routeProvider',// '$locationProvider',
 
 
 		$scope.viewMenu = function(rid){
-			$scope.storage.newRest = rid;
-			$location.path('/menu');
+			$scope.newRest = rid;
+
+			// Get Menu data if not set or Restaurant Changed
+			if ($scope.storage.activeRest != $scope.newRest) {
+				$scope.showLoader();
+				$http.get( 'http://jay.craftinc.co/Slim/rd/' + $scope.newRest )
+					.success( function( data, status, header, config ) {
+						$scope.storage.menu = JSON.stringify(data);
+						$scope.storage.activeRest = $scope.newRest;
+						$scope.storageSpace();
+						$location.path('/menu');
+					})
+					.error( function( data, status, header, config ) {
+						console.log(status+'damn'+$scope.storage.newRest);
+						$scope.hideLoader();
+					});
+			// Otherwise, redirect to Menu page
+			} else { $location.path('/menu'); }
+
 		}
 		
 	});
 
-	app.controller('MenuCtrl', function($scope, $http, $location){
+	app.controller('MenuCtrl', function($scope, $location){
 
 		//$scope.getSubtotal = function() {
 		$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
@@ -393,8 +431,6 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		$scope.price = $scope.price.toFixed(2);
 		//};
-
-
 
 		// Get Menu data if not set or Restaurant Changed
 		if (!$scope.storage.menu || $scope.storage.activeRest != $scope.storage.newRest) {
@@ -416,6 +452,9 @@ app.config(['$routeProvider',// '$locationProvider',
 		// Update activeRest to newRest
 		$scope.storage.activeRest = $scope.storage.newRest;
 
+		$scope.hideLoader();
+					
+		// @TODO make fee call on restaurant list page?
 		// @TODO always make fee call when reaching this page
 		var address = JSON.parse($scope.storage.deliveryAddress);
 		var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
@@ -435,11 +474,9 @@ app.config(['$routeProvider',// '$locationProvider',
 				console.log(status);
 			});
 
-		// Update Menu when changed
-		$scope.$watch('storage.menu', function() {
-			$scope.menu = $scope.storage.menu ? JSON.parse($scope.storage.menu) : {};
-			$scope.menu.mino = '15.00';
-		});
+
+		$scope.menu = JSON.parse($scope.storage.menu);
+		$scope.menu.mino = '15.00';
 
 		// Menu Accordion Logic
 		$scope.mainTip = true;
@@ -467,7 +504,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	});
 
-	app.controller('ItemCtrl', function($scope, $http, $location){
+	app.controller('ItemCtrl', function($scope, $location){
 
 		$scope.itemOrderable = true;
 
@@ -725,7 +762,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	});
 
-	app.controller('ReviewCtrl', function($scope, $http, $location){
+	app.controller('ReviewCtrl', function($scope, $location){
 
 		$scope.getSubtotal = function() {
 			$scope.price = 0;
@@ -885,7 +922,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	});
 
-	app.controller('ReceiptCtrl', function($scope, $http, $location){
+	app.controller('ReceiptCtrl', function($scope, $location){
 
 		$scope.hideLoader();
 
