@@ -8,6 +8,8 @@
 
 	- Page Redirection Animation
 
+	- Input Fields (number, email, placeholders, etc) <= not currently looking good
+
 
 
 * Home Page (search) *

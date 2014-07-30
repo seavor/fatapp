@@ -200,7 +200,7 @@ $app->post('/order/:rid', function($rid) use ($app) {
         'zip'             => $parsed->zip,
         'card_name'       => $parsed->card_name,
         'card_number'     => $parsed->card_number,
-        'card_cvc'        => $parsed->cvv,
+        'card_cvc'        => $parsed->card_cvc,
         'card_expiry'     => $parsed->card_expiry,
         'card_bill_addr'  => $parsed->card_bill_addr,
         'card_bill_addr2' => $parsed->card_bill_addr2,

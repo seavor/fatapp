@@ -750,7 +750,7 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.storage.priceTotal = parseFloat(parseFloat($scope.subTotal) + parseFloat(tip)).toFixed(2);
 
 			// Determine if Minimum Order is met
-			if (parseFloat($scope.storage.priceTotal) >= parseFloat($scope.storage.mino)) { $scope.minimum = true; }
+			if (parseFloat($scope.subTotal) >= parseFloat($scope.storage.mino)) { $scope.minimum = true; }
 			else {$scope.minimum = false;};
 		};
 
@@ -802,17 +802,18 @@ app.config(['$routeProvider',// '$locationProvider',
 	app.controller('CheckoutCtrl', function($scope, $http, $location){
 
 		$scope.showLoader();
-
+		// Set Defaults
 		$scope.customer = {};
 		$scope.orderObject = {};
     	$scope.yearRange = $scope.findYearRange();
     	$scope.fee = '0.00';
+    	$scope.grandTotal = $scope.storage.priceTotal;
 
     	// @TODO validate form fields
 		$scope.allFieldsFilled = true;
 
 		// Make Fee Call
-		$scope.feeCall = function() {
+		// $scope.feeCall = function() {
 
 			var address = JSON.parse($scope.storage.deliveryAddress);
 			var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
@@ -830,15 +831,20 @@ app.config(['$routeProvider',// '$locationProvider',
 					$scope.taxes = data.tax;
 					$scope.hideLoader();
 					console.log(data);
+
+					// Add Taxes to Fees if they exists
+					if (!isNaN($scope.taxes)) { $scope.fee += $scope.taxes; }
+					// Calc Grand Total
+					$scope.grandTotal = parseFloat(parseFloat($scope.storage.priceTotal) + parseFloat($scope.fee)).toFixed(2);
 				})
 				.error( function( data, status, header, config ) {
 					console.log(status);
 					$scope.hideLoader();
 				});
 
-		};
+		// };
 
-		$scope.feeCall(); // Do we need to do a fee call again, or only if it causes a fail?
+		// $scope.feeCall(); // Do we need to do a fee call again, or only if it causes a fail?
 
 		// Keep Filtered Display Updated
 		$scope.$watch('storage.deliveryAddress', function() {
@@ -852,10 +858,7 @@ app.config(['$routeProvider',// '$locationProvider',
 			};
 		});
 
-		// Add Taxes to Fees if they exists
-		if (!isNaN($scope.taxes)) { $scope.fee += $scope.taxes; }
-		// Calc Grand Total
-		$scope.grandTotal = parseFloat($scope.storage.priceTotal + $scope.fee).toFixed(2);
+				
 
 		$scope.orderFood = function() {
 
@@ -889,7 +892,7 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.orderObject.card_name = $scope.customer.cardName;
 			$scope.orderObject.card_number = $scope.customer.cardNumber;
 			$scope.orderObject.card_expiry = $scope.customer.cardMonth + '/' + $scope.customer.cardYear;
-			$scope.orderObject.cvv = $scope.customer.cvv;
+			$scope.orderObject.card_cvc = $scope.customer.cvc;
 			$scope.orderObject.card_bill_addr = $scope.customer.billAddr;
 			$scope.orderObject.card_bill_addr2 = $scope.customer.billAddr2 || '';
 			$scope.orderObject.card_bill_city = $scope.customer.billCity;
@@ -897,8 +900,10 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.orderObject.card_bill_zip = $scope.customer.billZip;
 			$scope.orderObject.card_bill_phone = $scope.customer.phone; // not asked for
 
+			console.log($scope.orderObject);
+
 			// Save Credit Card if checkbox selected
-			if ($scope.orderObject.saveCard == true) {
+			if ($scope.customer.saveCard == true) {
 				console.log('saveCard!');
 			};
 
@@ -931,16 +936,15 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		$scope.hideLoader();
 
-		$scope.restDetails = JSON.parse($scope.storage.menu);
+		$scope.menu = JSON.parse($scope.storage.menu);
+		$scope.tray = JSON.parse($scope.storage.tray);
+		console.log($scope.tray);
+		// var receipt = JSON.parse($scope.storage.receipt);
 
 		// Define Model Variables
-		$scope.est = '12:00pm'; // will be a geo-function
-		$scope.restName = $scope.restDetails.name;
-		$scope.distance = '0.3'; // also a geo-function
-
-		$scope.itemName = 'itemName';
-		$scope.itemPrice = '8.99';
-		$scope.itemAmount = '2';
+		$scope.est = '12:00pm'; // currentTime + receipt.time
+		// $scope.restName = $scope.menu.name;
+		$scope.distance = '0.3'; // geo-function
 
 		$scope.subtotal = '16.98';
 		$scope.tip = '2.00';

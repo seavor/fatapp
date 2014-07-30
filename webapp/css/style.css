@@ -577,10 +577,10 @@ body.home #appContent {
 	font-size: 16px;
 }
 
-	.itemReview:hover {
-		cursor: pointer;
+	.itemReview.popupButton:hover {
 		background: lightgrey;
 	}
+
 
 	.itemReview h6 {
 		float: left;
