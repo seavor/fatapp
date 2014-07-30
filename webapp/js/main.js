@@ -27,38 +27,14 @@ app.config(['$routeProvider',// '$locationProvider',
   function($routeProvider /*, $locationProvider*/) {
     $routeProvider.
       // Home Sceen
-      when('/search', {
-        templateUrl: 'partials/search.html',
-        controller: 'SearchCtrl'
-      }).
-      when('/restaurants', {
-        templateUrl: 'partials/restaurants.html',
-        controller: 'RestaurantsCtrl'
-      }).
-      when('/menu', {
-        templateUrl: 'partials/menu.html',
-        controller: 'MenuCtrl'
-      }).
-      when('/item', {
-        templateUrl: 'partials/item.html',
-        controller: 'ItemCtrl'
-      }).
-      when('/review', {
-        templateUrl: 'partials/review.html',
-        controller: 'ReviewCtrl'
-      }).
-      when('/checkout', {
-        templateUrl: 'partials/checkout.html',
-        controller: 'CheckoutCtrl'
-      }).
-      when('/receipt', {
-        templateUrl: 'partials/receipt.html',
-        controller: 'ReceiptCtrl'
-      }).
-      // Reroute to Home Sceen
-      otherwise({
-        redirectTo: '/search'
-      });
+      when('/search', { templateUrl: 'partials/search.html', controller: 'SearchCtrl' }).
+      when('/restaurants', { templateUrl: 'partials/restaurants.html', controller: 'RestaurantsCtrl' }).
+      when('/menu', { templateUrl: 'partials/menu.html', controller: 'MenuCtrl' }).
+      when('/item', { templateUrl: 'partials/item.html', controller: 'ItemCtrl' }).
+      when('/review', { templateUrl: 'partials/review.html', controller: 'ReviewCtrl' }).
+      when('/checkout', { templateUrl: 'partials/checkout.html', controller: 'CheckoutCtrl' }).
+      when('/receipt', { templateUrl: 'partials/receipt.html', controller: 'ReceiptCtrl' }).
+      otherwise({ redirectTo: '/search' });
 
       //$locationProvider.html5Mode(true);
   }
@@ -82,6 +58,10 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.selectAddress = function(){
 			if ($scope.userLoggedIn() == true ) { return 'savedAddresses'; }
 			else { return 'enterAddress'; }
+		};
+
+		$scope.homeScreen = function(){
+			$location.path('/search');
 		};
 
 		// Modal Activation Controls
@@ -139,10 +119,6 @@ app.config(['$routeProvider',// '$locationProvider',
 		// initialize service to bind its data (+ share across controllers)
 		$scope.storage = ControllerStorage;
 
-		$scope.storeObject = function(obj) {
-			return JSON.stringify(obj);
-		};
-
 		$scope.formattedFilter = function(){
 			var fil = '';
 			return JSON.parse($scope.storage.filter, function(k, v){
@@ -191,7 +167,7 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.chooseAddress = function(aid){
 			$scope.addressList.forEach(function(addr) {
 			    if (aid == addr.aid) {
-			    	$scope.storage.deliveryAddress = $scope.storeObject(addr);
+			    	$scope.storage.deliveryAddress = JSON.stringify(addr);
 					$scope.storage.deliveryAddressDisplay = addr.addressLine + ', ' + addr.city + ', ' + addr.zipcode;
 					$scope.closeModal();
 				}
@@ -212,7 +188,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		// Store New Address
 		$scope.storeAddress = function() {
-			$scope.storage.deliveryAddress = $scope.storeObject($scope.addrForm);
+			$scope.storage.deliveryAddress = JSON.stringify($scope.addrForm);
 			// TODO: AJAX save store if user logged in & Checked Save
 			$scope.storage.deliveryAddressDisplay = $scope.addrForm.addressLine + ', ' + $scope.addrForm.city + ', ' + $scope.addrForm.zipcode;
 			$scope.closeModal();
@@ -339,7 +315,7 @@ app.config(['$routeProvider',// '$locationProvider',
 		// Initialize Filter Display/Checkbox/Storage
 		$scope.filterForm = { "all" : true };
 		$scope.storage.filterDisplay = "All Menus";
-		$scope.storage.filter = $scope.storeObject($scope.filterForm);
+		$scope.storage.filter = JSON.stringify($scope.filterForm);
 
 		// Reveal 'Find Restaurants' button upon Address Selection
 		$scope.$watch('storage.deliveryAddressDisplay', function() {
