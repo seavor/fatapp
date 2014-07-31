@@ -190,7 +190,7 @@ $app->post('/order/:rid', function($rid) use ($app) {
         'tray'            => $parsed->tray,
         'tip'             => $parsed->tip,
         'first_name'      => $parsed->first_name,
-        'last_name'       => $parsed->first_name,
+        'last_name'       => $parsed->last_name,
         'delivery_date'   => $parsed->delivery_date,
         'phone'           => $parsed->phone,
         'addr'            => $parsed->addr,

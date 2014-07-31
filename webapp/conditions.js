@@ -60,6 +60,8 @@
 
 	$ Proceed to Checkout if Restaurant Minimum is met
 
+	$ Restaurant Is delivering
+
 
 
 * Checkout Page *
