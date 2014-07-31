@@ -45,7 +45,7 @@
 
 	<div ng-repeat="restaurant in restaurantList | filter: restFilter ">
 
-		<div class="restaurantListingItem" ng-click="viewMenu(restaurant.id)" ng-show="restaurant.is_delivering==0" >
+		<div class="restaurantListingItem" ng-click="viewMenu(restaurant.id, restaurant.mino)" ng-show="restaurant.is_delivering==0" >
 			<div class="topBox clearfix">
 				<h5>{{restaurant.na}}</h5>
 				<p class="distanceAway">{{distance}}</p>

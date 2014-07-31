@@ -785,7 +785,6 @@ app.config(['$routeProvider',// '$locationProvider',
 		});
 
 		$scope.editOption = function(item, iidx){
-
 			$scope.storage.editItem = item.iid;
 			$scope.storage.editItemCids = JSON.stringify(item.cid);
 			$scope.storage.editItemIndex = iidx;
@@ -813,38 +812,34 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.allFieldsFilled = true;
 
 		// Make Fee Call
-		// $scope.feeCall = function() {
 
-			var address = JSON.parse($scope.storage.deliveryAddress);
-			var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
-				+ $scope.storage.activeRest + '/'
-				+ $scope.price + '/'
-				+  $scope.storage.tip + '/'
-				+ 'ASAP/'
-				+ address.zipcode + '/'
-				+ address.city + '/'
-				+ address.addressLine;
+		var address = JSON.parse($scope.storage.deliveryAddress);
+		var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
+			+ $scope.storage.activeRest + '/'
+			+ $scope.price + '/'
+			+  $scope.storage.tip + '/'
+			+ 'ASAP/'
+			+ address.zipcode + '/'
+			+ address.city + '/'
+			+ address.addressLine;
 
-			$http.get( feeUrl )
-				.success( function( data, status, header, config ) {
-					$scope.fee = data.fee;
-					$scope.taxes = data.tax;
-					$scope.hideLoader();
-					console.log(data);
+		$http.get( feeUrl )
+			.success( function( data, status, header, config ) {
+				$scope.fee = data.fee;
+				$scope.taxes = data.tax;
+				$scope.hideLoader();
+				console.log(data);
 
-					// Add Taxes to Fees if they exists
-					if (!isNaN($scope.taxes)) { $scope.fee += $scope.taxes; }
-					// Calc Grand Total
-					$scope.grandTotal = parseFloat(parseFloat($scope.storage.priceTotal) + parseFloat($scope.fee)).toFixed(2);
-				})
-				.error( function( data, status, header, config ) {
-					console.log(status);
-					$scope.hideLoader();
-				});
-
-		// };
-
-		// $scope.feeCall(); // Do we need to do a fee call again, or only if it causes a fail?
+				// Add Taxes to Fees if they exists
+				if (!isNaN($scope.taxes)) { $scope.fee += $scope.taxes; }
+				if (isNaN($scope.fee)) { $scope.fee = 0; }
+				// Calc Grand Total
+				$scope.grandTotal = parseFloat(parseFloat($scope.storage.priceTotal) + parseFloat($scope.fee)).toFixed(2);
+			})
+			.error( function( data, status, header, config ) {
+				console.log(data);
+				$scope.hideLoader();
+			});
 
 		// Keep Filtered Display Updated
 		$scope.$watch('storage.deliveryAddress', function() {
@@ -914,6 +909,7 @@ app.config(['$routeProvider',// '$locationProvider',
 					$scope.hideLoader();
 					if (data.msg == 'Success') {
 						$scope.storage.receipt = JSON.stringify(data.custserv);
+						console.log(data);
 						$location.path('/receipt');
 					} else {
 						// Show Error Msg
