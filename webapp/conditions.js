@@ -20,8 +20,7 @@
 
 	$ Valid Address 
  		- Check on Modals
- 		- Confirm on Save/Enter (AJAX) (loading/saving)
- 		- Enable Save Button when all fields are entered
+ 		+ Save on Success Call (AJAX) (loading/saving)
 
 
 
