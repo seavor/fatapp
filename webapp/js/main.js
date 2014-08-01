@@ -179,29 +179,29 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.addrForm = {};
 		$scope.cantSave = true;
 
-		$scope.isSavable = function(){
-			// Check if Card can be saved (all fields filled)
-			if ($scope.storeAddress.$valid && $scope.addrForm.addressName && $scope.addrForm.addressName.length) {
-				$scope.cantSave = false;
-				$scope.saveDisabled = false;
-			// If Unsavable, saveDisabled on checkbox = true
-			} else { $scope.cantSave = true; $scope.saveDisabled = true; }
-			$scope.cantSave = true; $scope.saveDisabled = true; // Enable save later (just remove this line)
-		};
+		// $scope.isSavable = function(){
+		// 	// Check if Card can be saved (all fields filled)
+		// 	if ($scope.storeAddress.$valid && $scope.addrForm.addressName && $scope.addrForm.addressName.length) {
+		// 		$scope.cantSave = false;
+		// 		$scope.saveDisabled = false;
+		// 	// If Unsavable, saveDisabled on checkbox = true
+		// 	} else { $scope.cantSave = true; $scope.saveDisabled = true; }
+		// 	$scope.cantSave = true; $scope.saveDisabled = true; // Enable save later (just remove this line)
+		// };
 
-		$scope.validateZipcode = function() {
-			// Hack to Maxlength = 5 (overrides ng-maxlength restriction)
-			if ($scope.addrForm.zipcode && $scope.addrForm.zipcode.toString().length > 5) {
-				$scope.addrForm.zipcode = parseInt($scope.addrForm.zipcode.toString().substring(0, 5));
-				// Call Check for Savability
-			}	$scope.isSavable();
-		};
+		// $scope.validateZipcode = function() {
+		// 	// Hack to Maxlength = 5 (overrides ng-maxlength restriction)
+		// 	if ($scope.addrForm.zipcode && $scope.addrForm.zipcode.toString().length > 5) {
+		// 		$scope.addrForm.zipcode = parseInt($scope.addrForm.zipcode.toString().substring(0, 5));
+		// 		// Call Check for Savability
+		// 	}	$scope.isSavable();
+		// };
 
-		$scope.$watch("addrForm.addressName+addrForm.addressLine+addrForm.city", function(v, i){
-			console.log('form validating');
-			$scope.validateZipcode();
+		// $scope.$watch("addrForm.addressName+addrForm.addressLine+addrForm.city", function(v, i){
+		// 	console.log('form validating');
+		// 	$scope.validateZipcode();
 			
-		});
+		// });
 
 		// Store New Address
 		$scope.storeAddress = function() {
