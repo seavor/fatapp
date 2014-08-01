@@ -82,6 +82,10 @@ form .inputField {
 	height: inherit;
 }
 
+input.invalidFormField {
+	border: 1px solid red;
+}
+
 /******************************************************
 /* Button Styles
 /*****************************************************/

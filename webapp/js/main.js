@@ -111,8 +111,6 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.errorMsg = $scope.storage.errorMsg;
 		}); // $scope.errorMsg = ''; // Default
 
-
-
 		// Storage & Display Controls
 		////////////////////////////////////////////////////////////////
 
@@ -140,7 +138,7 @@ app.config(['$routeProvider',// '$locationProvider',
 		};
 
 		$scope.findYearRange = function() {
-            var currentYear = new Date().getFullYear(), years = ['YY'];
+            var currentYear = new Date().getFullYear(), years = [];
             var endYear = currentYear + 20;
 
             while ( currentYear < endYear ) {
@@ -157,7 +155,7 @@ app.config(['$routeProvider',// '$locationProvider',
 	app.controller('SavedAddressesCtrl', function($scope, $http, $location){
 
 		$scope.addressList = [
-			// @TODO ajax call for address info (aid)
+			// @TODO ajax call for address info (aid) (run this onload in background)
 		    {"aid":"001", "addressName":"Chinatown", "addressLine":"392 Broadway", "city":"New York", "state":"NY", "zipcode":"10013"}, 
 		    {"aid":"002", "addressName":"Jeffries", "addressLine":"520 Madison Ave", "city":"New York", "state":"NY", "zipcode":"10022"}, 
 		    {"aid":"003", "addressName":"Midtown", "addressLine":"1480 Broadway", "city":"New York", "state":"NY", "zipcode":"10036"}
@@ -173,24 +171,45 @@ app.config(['$routeProvider',// '$locationProvider',
 			});
 		};
 
-		// @TODO Save Address when Checkbox Selected
-		$scope.saveAddress = function(){
-
-		};
-
 	});
 
 	app.controller('EnterAddressCtrl', function($scope, $http){
 
 		// need this initialization, new address isn't picked up otherwise!
 		$scope.addrForm = {};
+		$scope.cantSave = true;
+
+		// $scope.isSavable = function(){
+		// 	// Check if Card can be saved (all fields filled)
+		// 	if ($scope.storeAddress.$valid && $scope.addrForm.addressName && $scope.addrForm.addressName.length) {
+		// 		$scope.cantSave = false;
+		// 		$scope.saveDisabled = false;
+		// 	// If Unsavable, saveDisabled on checkbox = true
+		// 	} else { $scope.cantSave = true; $scope.saveDisabled = true; }
+		// 	$scope.cantSave = true; $scope.saveDisabled = true; // Enable save later (just remove this line)
+		// };
+
+		// $scope.validateZipcode = function() {
+		// 	// Hack to Maxlength = 5 (overrides ng-maxlength restriction)
+		// 	if ($scope.addrForm.zipcode && $scope.addrForm.zipcode.toString().length > 5) {
+		// 		$scope.addrForm.zipcode = parseInt($scope.addrForm.zipcode.toString().substring(0, 5));
+		// 		// Call Check for Savability
+		// 	}	$scope.isSavable();
+		// };
+
+		// $scope.$watch("addrForm.addressName+addrForm.addressLine+addrForm.city", function(v, i){
+		// 	console.log('form validating');
+		// 	$scope.validateZipcode();
+			
+		// });
 
 		// Store New Address
 		$scope.storeAddress = function() {
 			$scope.storage.deliveryAddress = JSON.stringify($scope.addrForm);
-			// TODO: AJAX save store if user logged in & Checked Save
 			$scope.storage.deliveryAddressDisplay = $scope.addrForm.addressLine + ', ' + $scope.addrForm.city + ', ' + $scope.addrForm.zipcode;
 			$scope.closeModal();
+			// TODO: AJAX save store if user logged in & Checked Save
+			if ($scope.storeAddress.saveAddress) { console.log('saved'); }
 		};
 
 	});
@@ -853,7 +872,52 @@ app.config(['$routeProvider',// '$locationProvider',
 			};
 		});
 
-				
+
+
+		$scope.validateZipcode = function() {
+			if ($scope.customer.billZip && $scope.customer.billZip.toString().length > 5) {
+				$scope.customer.billZip = parseInt($scope.customer.billZip.toString().substring(0, 5));
+			}
+		};
+
+		$scope.validateCreditCard = function(){
+			if (!! $scope.customer.cardNumber && $scope.customer.cardNumber.toString().length > 16) {
+				$scope.customer.cardNumber = parseInt($scope.customer.cardNumber.toString().substring(0, 16));
+			}
+		};
+
+		$scope.validateCVC = function(){
+			if (!! $scope.customer.cvc && $scope.customer.cvc.toString().length > 4) {
+				$scope.customer.cvc = parseInt($scope.customer.cvc.toString().substring(0, 4));
+			}
+		};
+
+		$scope.validatePhone = function(){
+			if (!! $scope.customer.phone && $scope.customer.phone.toString().length > 10) {
+				$scope.customer.phone = parseInt($scope.customer.phone.toString().substring(0, 10));
+			}
+		};
+
+		
+	
+		$scope.$watch(field, function() {
+			console.log(key +'/'+ field);
+		});
+
+
+		
+
+		$scope.validateCheckout = function(){
+			console.dir($scope.customer);
+	
+
+
+
+
+
+			// $scope.orderFood();
+
+		};
 
 		$scope.orderFood = function() {
 
