@@ -70,6 +70,10 @@
 	padding-left: 5px;
 }
 
+.inputField.ng-invalid.ng-dirty {
+	border: 1px solid red;
+}
+
 .inputField:focus {
 	outline: 0;
 }
@@ -84,6 +88,11 @@ form .inputField {
 
 	button:focus {
 		outline: 0;
+	}
+
+	button[disabled=disabled], button:disabled {
+		background: lightgrey;
+		color: #C0C0C0;
 	}
 
 	.popupButton:hover {
