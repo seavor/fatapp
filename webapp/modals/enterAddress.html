@@ -16,11 +16,11 @@
 			</label>
 			<div class="saveField disabledText" ng-show="userLoggedIn()">
 				<label for="saveAddress">Save this Address
-					<input id="saveAddress" name="saveAddress" type="checkbox" ng-model="addrForm.saveAddress" ng-disabled="!storeAddress.$valid && addrForm.addressName">
+					<input id="saveAddress" name="saveAddress" type="checkbox" ng-model="addrForm.saveAddress" ng-disabled="storeAddress.$invalid || storeAddress.addressName.$pristine || (storeAddress.addressName.$dirty && addrForm.addressName.length === 0)">
 				</label>
 			</div>
 			<button class="popupCancel smallButton cancelButton" ng-click="closeModal()" type="button">Cancel</button>
-			<button type="submit" class="popupOk smallButton okButton" ng-class="{badFormButton: !storeAddress.$valid}" ng-disabled="!storeAddress.$valid" >Ok</button>
+			<button type="submit" class="popupOk smallButton okButton" ng-disabled="storeAddress.$invalid" >Ok</button>
 		</form>
 	</div>
 </div>
