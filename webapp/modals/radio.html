@@ -11,13 +11,12 @@
 						<input
 							id="_{{choice.id}}"
 							name="{{ option.id }}"
-							type="{{isType(option.min_child_select, option.max_child_select)}}"
+							type="radio"
 							class=""
-							ng-model="optionData[ option.id +'/'+ choice.id]"
-							ng-true-value="{{ choice }}"
+							ng-model="optionData[choice.id]"
 							ng-value="{{ choice }}"
 							value="{{ choice }}"
-							ng-click="checkRadio(option.min_child_select, option.max_child_select, option, choice)"
+							ng-click="saveRadio(option, choice)"
 						>
 						<p class="popupItemPrice">(${{choice.price}})</p>
 					</label> 

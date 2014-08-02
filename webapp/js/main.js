@@ -179,29 +179,12 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.addrForm = {};
 		$scope.cantSave = true;
 
-		// $scope.isSavable = function(){
-		// 	// Check if Card can be saved (all fields filled)
-		// 	if ($scope.storeAddress.$valid && $scope.addrForm.addressName && $scope.addrForm.addressName.length) {
-		// 		$scope.cantSave = false;
-		// 		$scope.saveDisabled = false;
-		// 	// If Unsavable, saveDisabled on checkbox = true
-		// 	} else { $scope.cantSave = true; $scope.saveDisabled = true; }
-		// 	$scope.cantSave = true; $scope.saveDisabled = true; // Enable save later (just remove this line)
-		// };
-
-		// $scope.validateZipcode = function() {
-		// 	// Hack to Maxlength = 5 (overrides ng-maxlength restriction)
-		// 	if ($scope.addrForm.zipcode && $scope.addrForm.zipcode.toString().length > 5) {
-		// 		$scope.addrForm.zipcode = parseInt($scope.addrForm.zipcode.toString().substring(0, 5));
-		// 		// Call Check for Savability
-		// 	}	$scope.isSavable();
-		// };
-
-		// $scope.$watch("addrForm.addressName+addrForm.addressLine+addrForm.city", function(v, i){
-		// 	console.log('form validating');
-		// 	$scope.validateZipcode();
-			
-		// });
+		$scope.validateZipcode = function() {
+			// Hack to Maxlength = 5 (overrides ng-maxlength restriction)
+			if ($scope.addrForm.zipcode && $scope.addrForm.zipcode.toString().length > 5) {
+				$scope.addrForm.zipcode = parseInt($scope.addrForm.zipcode.toString().substring(0, 5));
+			}
+		};
 
 		// Store New Address
 		$scope.storeAddress = function() {
@@ -265,11 +248,11 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.option = JSON.parse($scope.storage.activeOption);
 		});
 
-		// Return if Radio Button
-		$scope.isType = function(min, max){
-			if (min == 1 && max == 1) { return 'radio'; }
-			else { return 'checkbox'; }
-		};
+		// // Return if Radio Button
+		// $scope.isType = function(min, max){
+		// 	if (min == 1 && max == 1) { return 'radio'; }
+		// 	else { return 'checkbox'; }
+		// };
 
 	});
 
@@ -372,6 +355,11 @@ app.config(['$routeProvider',// '$locationProvider',
 
 			$http.get( reqUrl )
 				.success( function( data, status, header, config ) {
+					if (data.error) {
+						console.log(data.error);
+						$scope.hideLoader();
+						return;
+					};
 					$scope.storage.restaurantList = JSON.stringify(data);
 					$scope.storage.newSearch = true;
 					$location.path('/restaurants');
@@ -590,6 +578,8 @@ app.config(['$routeProvider',// '$locationProvider',
 	    	// if radio, JSON.parse 2 levels deep (is this rly necessary?)
 	    	// @TODO see if JSON.parse 2 lvls deep should be done
 			if( option.min_child_select == option.max_child_select == 1 ) {
+				
+				$scope.isType = 'radio';
 
 				var currentItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
 
@@ -602,20 +592,19 @@ app.config(['$routeProvider',// '$locationProvider',
 				$scope.optionData = currentItem;
 
 			} else { // if checkbox, just parse.
+				$scope.isType = 'checkbox';
 				$scope.optionData = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
 			}
 
 	    	$scope.storage.activeOption = JSON.stringify(option);
-	    	$scope.popupModal('options');
+	    	$scope.popupModal($scope.isType);
 	    };
 
 
 	    // hack necessary to make sure radio buttons work: send the last clicked
 	    // ratio button key to the orderRadio array
-		$scope.checkRadio = function(min, max, option, choice){
-			if (min == max == 1) {
+		$scope.saveRadio = function(option, choice){
 				$scope.orderRadio.push(option.id + '/' + choice.id);
-			};
 		};
 
 

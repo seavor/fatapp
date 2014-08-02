@@ -1,7 +1,7 @@
 <div id="addressInputFields" class="popupMenu" ng-controller="EnterAddressCtrl">
 	<div class="popupBox clearfix">
 		<h5>Enter Address:</h5>
-		<form ng-submit="storeAddress()" name="storeAddress">
+		<form ng-submit="storeAddress()" novalidate>
 			<label class="inputBox">
 				<input
 					id="addressLineInput"
@@ -35,22 +35,37 @@
 					required
 					>
 			</label>
-			<label class="inputBox" ng-show="userLoggedIn()">
+			<!-- <label class="inputBox" ng-show="userLoggedIn()">
 				<input
 					id="nicknameInput"
 					class="inputField"
 					name="addressName" 
 					type="text"
 					ng-model="addrForm.addressName"
-					placeholder="Nickname (optional)">
-			</label>
-			<div class="saveField disabledText" ng-show="userLoggedIn()">
+					placeholder="Nickname (to save)">
+			</label> -->
+			<!-- <div
+				class="saveField"
+				ng-class="{disabledText:
+						 	storeAddress.$invalid ||
+							storeAddress.addressName.$pristine ||
+							(storeAddress.addressName.$dirty && addrForm.addressName.length === 0)}"
+				ng-show="userLoggedIn()"
+			>
 				<label for="saveAddress">Save this Address
-					<input id="saveAddress" name="saveAddress" type="checkbox" ng-model="addrForm.saveAddress" ng-disabled="storeAddress.$invalid || storeAddress.addressName.$pristine || (storeAddress.addressName.$dirty && addrForm.addressName.length === 0)">
+					<input
+						id="saveAddress"
+						name="saveAddress"
+						type="checkbox"
+						ng-model="addrForm.saveAddress"
+						ng-disabled="storeAddress.$invalid ||
+									 storeAddress.addressName.$pristine ||
+									 (storeAddress.addressName.$dirty && addrForm.addressName.length === 0)"
+					>
 				</label>
-			</div>
+			</div> -->
 			<button class="popupCancel smallButton cancelButton" ng-click="closeModal()" type="button">Cancel</button>
-			<button type="submit" class="popupOk smallButton okButton" ng-disabled="storeAddress.$invalid" >Ok</button>
+			<button type="submit" name="submit" class="popupOk smallButton okButton" ng-disabled="storeAddress.$invalid" >Ok</button>
 		</form>
 	</div>
 </div>
