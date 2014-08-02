@@ -42,6 +42,8 @@ $app->get('/rl/:zip/:city/:addr', function($zip, $city, $addr) {
     $query = "SELECT * FROM Restaurants WHERE rest_activated = 1";
     $rests = mysqli_query($db, $query);
 
+    $restaurants = [];
+
     while ($row = mysqli_fetch_assoc($rests)) {
         foreach ($data as $key => $value) {
             if ($row['rest_id'] == $value['id']) {
@@ -49,6 +51,10 @@ $app->get('/rl/:zip/:city/:addr', function($zip, $city, $addr) {
                 $value['filters'] = json_decode($row['filters']);
                 $restaurants[] = $value;
     }   }   }
+
+    if (count($restaurants) == 0 ) {
+        $restaurants['error'] = 'no restaurants found for this address';
+    }
 
     mysqli_free_result($rests);
     mysqli_close($db);

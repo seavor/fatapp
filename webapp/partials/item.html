@@ -38,7 +38,8 @@
 	class="actionButton"
 	type="button"
 	ng-click="popupModal('quantity')"
-	ng-show="itemOrderable">
+	ng-show="itemOrderable"
+	ng-disabled="item.is_orderable == 0">
 		{{orderButton}}
 </button>
 
