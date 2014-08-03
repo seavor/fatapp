@@ -7,11 +7,13 @@
 
 <div id="userChoices" class="itemOptionsBox">
 
-	<h3 ng-show="item.children.length">Choose your options:</h3>
+	<h3 ng-show="item.extras.length">Choose your options:</h3>
 
-	<div class="itemOptions popupButton" ng-repeat="option in item.children" ng-click="optionPopup(option)">
-		<h4>{{option.name}}<span class="required" ng-show="option.min_child_select > 0">*</span></h4>
-		<p class="itemOptionSelections">{{ optionsDisp[ option.id ] }}</p>
+	<div class="itemOptions popupButton" ng-repeat="option in item.extras" ng-click="optionPopup(option.id)">
+		<h4>{{option.name}}<span class="required" ng-show="option.min > 0">*</span></h4>
+		<p class="itemOptionSelections">
+			<span ng-repeat="choice in option" ng-if="choice.selected">{{choice.name}}&nbsp;</span>
+		</p>
 	</div>
 
 </div>
@@ -23,7 +25,7 @@
 	</div>
 	<div class="itemPriceInfo">
 		<h6>Extras</h6>
-		<p>${{extraPrice}}</p>
+		<p>${{item.extra_price}}</p>
 	</div>
 	<div class="itemPriceInfo">
 		<h6>TOTAL</h6>
@@ -31,14 +33,11 @@
 	</div>
 </div>
 
-<button class="actionButton" type="button" ng-show="fee == 1">(Restaurant Closed)</button>
-
 <button 
 	id="addToOrder"
 	class="actionButton"
 	type="button"
 	ng-click="popupModal('quantity')"
-	ng-show="item.is_orderable == 1"
 	ng-disabled="item.is_orderable == 0">
 		{{orderButton}}
 </button>

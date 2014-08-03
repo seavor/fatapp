@@ -2,10 +2,10 @@
 	<div class="popupBox clearfix>">
 		<h5>{{option.name}}</h5>
 		<p class="itemDescription">{{option.descrip}}</p>
-		<p class="error">{{optionErrMsg}}</p>
-		<form ng-submit="storeOptions( option.min_child_select, option.max_child_select, option.id )">
+		<p class="error">{{option.error}}</p>
+		<form ng-submit="storeOptions( option.min, option.max, option.id )">
 			<ul class="dataItems">
-				<li ng-repeat="choice in option.children">
+				<li ng-repeat="choice in option.choices">
 					<label for="_{{choice.id}}">
 						<span class="name">{{choice.name}}</span>
 						<input
@@ -13,9 +13,10 @@
 							name="{{ option.id }}"
 							type="checkbox"
 							class=""
-							ng-model="chosenOptions[ option.id +'/'+ choice.id]"
-							ng-true-value="{{ choice }}"
-							value="{{ choice }}"
+
+							ng-model="$parent.chosenOptions[choice.id]"
+							ng-true-value="{{ choice.id }}"
+							value="{{ choice.id }}"
 						>
 						<p class="popupItemPrice">(${{choice.price}})</p>
 					</label> 
