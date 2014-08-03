@@ -262,15 +262,12 @@ app.config(['$routeProvider',// '$locationProvider',
 				angular.forEach($scope.chosenOptions, function(option, id) {
 					$scope.chosenRadio = id;
 				});	
-				// $scope.chosenRadio = "19025904";
 			}
 		} 
 		
     	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$scope.storeOptions = function() { // take a break, lets think about this
-
-			console.log($scope.chosenOptions);
+		$scope.storeOptions = function() {
 
 			// If a Radio is Being Stored
 			if ($scope.option.min == $scope.option.max == 1) {
@@ -280,7 +277,6 @@ app.config(['$routeProvider',// '$locationProvider',
 				});
 				// Set New Radio Option to True
 				$scope.option.choices[$scope.chosenRadio].selected = true;
-
 			// If a Checkbox List is Being Stored
 			} else {
 				angular.forEach($scope.chosenOptions, function(choice, id) {
@@ -288,13 +284,12 @@ app.config(['$routeProvider',// '$locationProvider',
 					if (choice) { $scope.option.choices[id].selected = true; }
 					else { $scope.option.choices[id].selected = false; };
 				});
-
 			}
 
 			// Merge Updated Option Object back into Item Object
 			$scope.item.extras[$scope.option.id] = $scope.option;
+			$scope.updatePrice();
 			$scope.closeModal();
-
 
 		};
 
@@ -307,10 +302,9 @@ app.config(['$routeProvider',// '$locationProvider',
 		// Find the Targeted Item in the Tray and Set Variables for EditOption()
 		tray.forEach(function(v, i){
 			if (i == $scope.storage.popupParam) {
-				$scope.name = v.item.name;
+				$scope.name = v.name;
 				$scope.iidx = i;
 				$scope.item = v;
-
 			}
 		});
 
@@ -325,8 +319,9 @@ app.config(['$routeProvider',// '$locationProvider',
 			});
 			
 			if (tray.length == 0) {
+				$scope.storage.removeItem('tray');
 				$location.path('/menu');
-			};
+			}
 		};
 
 	});
@@ -526,7 +521,8 @@ app.config(['$routeProvider',// '$locationProvider',
 		// Initialize Page View
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$scope.menu = JSON.parse($scope.storage.menu);
+		$scope.menu = JSON.parse($scope.storage.menu);// Set Quantity Limit ( @TODO try to move to quantity controller)
+	    $scope.amountRange = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 		// if we are editing an item, set that item ID to be the active item ID
 		if( $scope.storage.editItem ) { $scope.storage.activeItem = $scope.storage.editItem; }
@@ -546,15 +542,17 @@ app.config(['$routeProvider',// '$locationProvider',
 			'descrip' : $scope.itemObj.descrip,
 			'price' : $scope.itemObj.price,
 			'extra_price' : '0.00',
-			'amount' : 0,
+			'amount' : 1,
 			'is_orderable' : $scope.itemObj.is_orderable,
 			'edit_idx' : null,
 			'extras' : {}
 		};
 
+
+
 		// Initialize Items Object w/ Extras & their Choices
 		if (!$scope.storage.editItemObj) {
-			var extras = $scope.itemObj.children;
+			var extras = $scope.itemObj.children ? $scope.itemObj.children : [];
 			// For All Options of the Item
 			for(var option = 0; option < extras.length; option++ ) {
 				var optionId = extras[option].id;
@@ -588,8 +586,26 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		// Update Total Price on change to Item Object's extra_price
 		$scope.$watch('item.extra_price', function() {
-			$scope.totalPrice = parseFloat($scope.item.price + $scope.item.extra_price).toFixed(2);
+			console.log('watched');
+			$scope.totalPrice = (parseFloat($scope.item.price) + parseFloat($scope.item.extra_price)).toFixed(2);
 		});
+
+    	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Function to Update Item Object's extra_price
+		$scope.updatePrice = function(){
+			var price = 0;
+			angular.forEach($scope.item.extras, function(option, id) {
+				angular.forEach(option.choices, function(choice, id) {
+					if (choice.selected == true) {
+						price += parseFloat(choice.price);
+					};
+				});
+			});
+			$scope.item.extra_price = price.toFixed(2);
+		};
+
+		$scope.updatePrice();
 
     	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Display Option Popup
@@ -608,29 +624,72 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	    };
 
+	    $scope.checkRequirements = function(){
+
+	    	// check to make sure all necessary options have been selected
+	    	var notEnough = false;
+	    	angular.forEach($scope.item.extras, function(choices, id) {
+	    		var selectedCounter = 0;
+		    	angular.forEach(choices.choices, function(choice, id) {
+					if (choice.selected == true) { selectedCounter++; }
+				});
+
+				if (selectedCounter < choices.min) {
+					notEnough = true;
+					console.log('need at least ' + choices.min + ' choices for ' + choices.name);
+				} 
+			});	
+	    	// If any items have been found to need selections, return
+			if( notEnough ) { $scope.closeModal(); return; }
+			else { $scope.popupModal('quantity'); }
+
+	    };
+
+	    $scope.addItem = function() {
 
 
+	    	// orderRest exists only if there's a tray
+	    	if ($scope.storage.orderRest && $scope.storage.activeRest != $scope.storage.orderRest) {
+	    		$scope.closeModal();
+				$scope.popupModal('emptyTray');
+				return;
+			}
 
+			// Set Active Restaurant and Init Tray
+	    	$scope.storage.orderRest = $scope.storage.activeRest;
+	    	var tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : [];
 
+	    	if( $scope.storage.editItem ) { tray[$scope.item.edit_idx] = $scope.item; }
+	    	else { tray.push($scope.item); }
+	    	
+	    	$scope.storage.tray = JSON.stringify(tray);
+	    	$scope.closeModal();
 
+	    	$location.path( $scope.storage.editItem ? '/review' : '/menu' );
 
-
+	    };
 
 	});
 
 	app.controller('ReviewCtrl', function($scope, $location){
 
-		// Reset on Page Load
 		$scope.storage.removeItem('editItem');
-		$scope.storage.removeItem('tip');
-
+		$scope.storage.removeItem('editItemObj');
+		$scope.storage.removeItem('editItemIndex');
 		$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
-		$scope.optionsDisp = [];
+
+		$scope.editOption = function(item, iidx){
+			$scope.storage.editItem = item.id;
+			$scope.storage.editItemObj = JSON.stringify(item);
+			$scope.storage.editItemIndex = iidx;
+			$scope.closeModal();
+			$location.path('/item');
+		};
 
 		$scope.getTotal = function() {
 			var price = 0; // Calc SubTotal
-			angular.forEach($scope.tray, function(obj, trayItemKey) {
-				price += (parseFloat(obj.price) * obj.amount);
+			angular.forEach($scope.tray, function(item, trayIdx) {
+				price += (parseFloat(item.price) * item.amount);
 			});
 
 			// Set SubTotal
@@ -638,36 +697,26 @@ app.config(['$routeProvider',// '$locationProvider',
 
 			// Set Tip & Price Total
 			var tip = $scope.storage.tip ? $scope.storage.tip : parseFloat(0).toFixed(2);
-			$scope.storage.priceTotal = parseFloat(parseFloat($scope.subTotal) + parseFloat(tip)).toFixed(2);
+			$scope.priceTotal = parseFloat(parseFloat($scope.subTotal) + parseFloat(tip)).toFixed(2);
 
 			// Determine if Minimum Order is met
 			if (parseFloat($scope.subTotal) >= parseFloat($scope.storage.mino)) { $scope.minimum = true; }
 			else {$scope.minimum = false;};
 		};
 
-		// Filter Out and Add Selected Options to optionDisplay object
-		$scope.updateDisplay = function(){
-			for(var iidx = 0; iidx < $scope.tray.length; iidx++ ) {
-				var item = $scope.tray[iidx];
-				$scope.optionsDisp[ iidx ] = '';
-				for(var cid = 0; cid < item.cid.length; cid++ ) {
-					for(var optCat = 0; optCat < item.item.children.length; optCat++ ) {
-						for(var opt = 0; opt < item.item.children[optCat].children.length; opt++ ) {
-							var option = item.item.children[optCat].children[opt]
-							if( option.id === item.cid[cid] ) {
-								$scope.optionsDisp[ iidx ] += option.name + ', ';
-			}	}	}	}	} 
+		$scope.proceedToCheckout = function(){
+			$scope.storage.priceTotal = $scope.priceTotal;
+			$location.path('/checkout');
 		};
 
-		$scope.updateDisplay();
 		$scope.getTotal();
-
-		// Recalc Values if Item Removed from Tray
-		$scope.$watch('storage.tray', function() {
-			$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage(); // if empty, delete storage tray
-
-			$scope.updateDisplay();
-			$scope.getTotal();
+		
+		// Update Tray & Display when Item Removed
+		$scope.$watch('storage.tray', function(){
+			if ($scope.storage.tray) {
+				$scope.tray = JSON.parse($scope.storage.tray);
+				$scope.getTotal();
+			}
 		});
 
 		// Watch for New Tip
@@ -675,23 +724,10 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.getTotal();
 		});
 
-		$scope.editOption = function(item, iidx){
-			$scope.storage.editItem = item.iid;
-			$scope.storage.editItemCids = JSON.stringify(item.cid);
-			$scope.storage.editItemIndex = iidx;
-			$scope.closeModal();
-			$location.path('/item');
-		};
-
-		$scope.proceedToCheckout = function(){
-			$location.path('/checkout');
-		};
-
 	});
 
 	app.controller('CheckoutCtrl', function($scope, $http, $location){
 
-		$scope.showLoader();
 		// Set Defaults
 		$scope.customer = {};
 		$scope.orderObject = {};
@@ -704,7 +740,34 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		// Make Fee Call
 
+
+		$scope.checkAddress = function(url){
+			$scope.showLoader();
+			$http.get( url )
+				.success( function( data, status, header, config ) {
+					// If Error is returned
+					if (false) {
+						console.log('Address Out of Range');
+					} else {
+						// Set Fee field for View
+						$scope.fee = parseFloat(data.fee).toFixed(2);
+						// Add Taxes to Fees if they exists
+						if (!isNaN(data.tax)) { $scope.fee = (parseFloat($scope.fee) + parseFloat(data.tax)).toFixed(2); }
+						// Calc Grand Total
+						$scope.grandTotal = parseFloat(parseFloat($scope.storage.priceTotal) + parseFloat($scope.fee)).toFixed(2);
+						$scope.storage.fee = $scope.fee;
+						$scope.storage.grandTotal = $scope.grandTotal;
+						$scope.hideLoader();
+					}
+				})
+				.error( function( data, status, header, config ) {
+					console.log(data);
+					$scope.hideLoader();
+				});
+		};
+
 		var address = JSON.parse($scope.storage.deliveryAddress);
+
 		var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
 			+ $scope.storage.activeRest + '/'
 			+ $scope.price + '/'
@@ -714,23 +777,7 @@ app.config(['$routeProvider',// '$locationProvider',
 			+ address.city + '/'
 			+ address.addressLine;
 
-		$http.get( feeUrl )
-			.success( function( data, status, header, config ) {
-				$scope.fee = data.fee;
-				$scope.taxes = data.tax;
-				$scope.hideLoader();
-				console.log(data);
-
-				// Add Taxes to Fees if they exists
-				if (!isNaN($scope.taxes)) { $scope.fee += $scope.taxes; }
-				if (isNaN($scope.fee)) { $scope.fee = 0; }
-				// Calc Grand Total
-				$scope.grandTotal = parseFloat(parseFloat($scope.storage.priceTotal) + parseFloat($scope.fee)).toFixed(2);
-			})
-			.error( function( data, status, header, config ) {
-				console.log(data);
-				$scope.hideLoader();
-			});
+		$scope.checkAddress(feeUrl);
 
 		// Keep Filtered Display Updated
 		$scope.$watch('storage.deliveryAddress', function() {
@@ -738,58 +785,23 @@ app.config(['$routeProvider',// '$locationProvider',
 				$scope.deliveryAddress = JSON.parse($scope.storage.deliveryAddress);
 				$scope.addressDisplay = $scope.storage.deliveryAddressDisplay;
 				$scope.addressName = $scope.deliveryAddress.addressName;
+				// Make New Fee Call for Address Change
+				feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
+					+ $scope.storage.activeRest + '/'
+					+ $scope.price + '/'
+					+  $scope.storage.tip + '/'
+					+ 'ASAP/'
+					+ $scope.deliveryAddress.zipcode + '/'
+					+ $scope.deliveryAddress.city + '/'
+					+ $scope.deliveryAddress.addressLine;
+
+				$scope.checkAddress(feeUrl);
+
 			} else {
 				$scope.addressName = 'Please Select';
 				$scope.addressDisplay = ':(';
 			};
 		});
-
-
-
-		$scope.validateZipcode = function() {
-			if ($scope.customer.billZip && $scope.customer.billZip.toString().length > 5) {
-				$scope.customer.billZip = parseInt($scope.customer.billZip.toString().substring(0, 5));
-			}
-		};
-
-		$scope.validateCreditCard = function(){
-			if (!! $scope.customer.cardNumber && $scope.customer.cardNumber.toString().length > 16) {
-				$scope.customer.cardNumber = parseInt($scope.customer.cardNumber.toString().substring(0, 16));
-			}
-		};
-
-		$scope.validateCVC = function(){
-			if (!! $scope.customer.cvc && $scope.customer.cvc.toString().length > 4) {
-				$scope.customer.cvc = parseInt($scope.customer.cvc.toString().substring(0, 4));
-			}
-		};
-
-		$scope.validatePhone = function(){
-			if (!! $scope.customer.phone && $scope.customer.phone.toString().length > 10) {
-				$scope.customer.phone = parseInt($scope.customer.phone.toString().substring(0, 10));
-			}
-		};
-
-		
-	
-		$scope.$watch(field, function() {
-			console.log(key +'/'+ field);
-		});
-
-
-		
-
-		$scope.validateCheckout = function(){
-			console.dir($scope.customer);
-	
-
-
-
-
-
-			// $scope.orderFood();
-
-		};
 
 		$scope.orderFood = function() {
 
@@ -798,9 +810,13 @@ app.config(['$routeProvider',// '$locationProvider',
 			var tray = '';
 			// Format Tray Object to proper string
 			angular.forEach(JSON.parse($scope.storage.tray), function(item, key) {
-				tray += '+' + item.iid + '/' + item.amount;
-				angular.forEach(item.cid, function(option, index) {
-					tray += ',' + option;
+				tray += '+' + item.id + '/' + item.amount;
+				angular.forEach(item.extras, function(option, index) {
+					angular.forEach(option.choices, function(choice, idx) {
+						if (choice.selected) {
+							tray += ',' + choice.id;
+						}
+					});
 				});
 			});
 			// Remove leading '+'
@@ -844,13 +860,13 @@ app.config(['$routeProvider',// '$locationProvider',
 				.success( function( data, status, header, config ) {
 					$scope.hideLoader();
 					if (data.msg == 'Success') {
-						$scope.storage.receipt = JSON.stringify(data.custserv);
 						console.log(data);
+						$scope.storage.receipt = JSON.stringify(data.custserv);
 						$location.path('/receipt');
 					} else {
 						// Show Error Msg
 						$scope.hideLoader(); // Instead, hideLoader() thru another feeCall() ???
-						console.log(data);
+						console.log('Ordr.in\'s Fault: '+data);
 					};
 					
 				})
@@ -875,12 +891,11 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		// Define Model Variables
 		$scope.est = '12:00pm'; // currentTime + receipt.time
-		// $scope.restName = $scope.menu.name;
 		$scope.distance = '0.3'; // geo-function
 
-		$scope.subtotal = '16.98';
-		$scope.tip = '2.00';
-		$scope.total = '18.98';
+		$scope.subtotal = $scope.storage.priceTotal;
+		$scope.fee = $scope.storage.fee;
+		$scope.total = $scope.storage.grandTotal;
 
 
 	});
