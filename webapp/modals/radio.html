@@ -13,7 +13,7 @@
 							name="{{ option.id }}"
 							type="radio"
 							class=""
-							ng-model="optionData[choice.id]"
+							ng-model="chosenOptions[ option.id +'/'+ choice.id ]"
 							ng-value="{{ choice }}"
 							value="{{ choice }}"
 							ng-click="saveRadio(option, choice)"

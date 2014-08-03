@@ -478,45 +478,27 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('ItemCtrl', function($scope, $location){
 
-		$scope.itemOrderable = true;
+	$scope.menu = JSON.parse($scope.storage.menu);
 
-		// @TODO disable add item to tray (css color-fade, ng-click disabled)
-		if ( false ) { // item.is_delivering != 1 || restaurant.not_deliverying == 1 
-			$scope.itemOrderable = false;
-		};
-
-		// method to display names of options chosen
-		$scope.displayNames = function(oid) {
-
-			var currentItem = JSON.parse($scope.storage.currentItem);
-
-			$scope.optionsDisp[oid] = '';
-
-    		for( var opt in currentItem ) {
-    			if (currentItem.hasOwnProperty(opt)) {
-		    		if( currentItem[opt] && opt.search(oid) !== -1 ) {
-		    			$scope.optionsDisp[oid] += JSON.parse(currentItem[opt]).name + ', ';
-		    		}
-		    	}
-	    	}
-
-	    	$scope.optionsDisp[oid].substring(0, $scope.optionsDisp[oid].length - 2);
-		}
-
-		$scope.menu = JSON.parse($scope.storage.menu);
-
-		$scope.optionData = {};
+		$scope.chosenOptions = {};
 		$scope.optionsDisp = {};
 		$scope.orderRadio = [];
 		$scope.optionErrMsg = '';
+		$scope.item = {};
+
+		// make the price stuff at the bottom of the page dynamically work
+		$scope.extraPrice = '0.00';
+		$scope.totalPrice = $scope.item.price;
 
 		// if we are editing an item, set that item ID to be the active item ID
-		if( $scope.storage.editItem ) {
-			$scope.storage.activeItem = $scope.storage.editItem;
-		}
+		if( $scope.storage.editItem ) { $scope.storage.activeItem = $scope.storage.editItem; }
 
-		// get the item data from the stored item ID & menu data
-		for( var category in $scope.menu.menu ) {
+	    $scope.orderButton = $scope.storage.editItem ? 'Edit Item' : 'Add to Order';
+
+		//////////////////////////////////////////////////////////////////////////////////
+
+		// Extract Current Item out of the Menu
+		for( var category in $scope.menu.menu ) { 
 			for( var item in $scope.menu.menu[category].children ) {
 				if( $scope.menu.menu[category].children[item].id === $scope.storage.activeItem ) {
 					$scope.item = $scope.menu.menu[category].children[item];
@@ -524,8 +506,41 @@ app.config(['$routeProvider',// '$locationProvider',
 			}
 		}
 
-		$scope.extraPrice = '0.00';
-		$scope.totalPrice = $scope.item.price;
+		// if editing item, recreate the storage.currentItem (w/ all chosen options)
+		if( $scope.storage.editItem ) {
+			var cids = JSON.parse($scope.storage.editItemCids);
+
+			var currentItem = {};
+
+			var oids = [];
+
+			// item -> option -> choice
+			for( var choiceId = 0; choiceId < cids.length; choiceId++ ) { // For Each Choice Chosen (previously chosen)
+				for(var optCat = 0; optCat < $scope.item.children.length; optCat++ ) { // For All Options of the Item
+					for(var opt = 0; opt < $scope.item.children[optCat].children.length; opt++ ) { // For All Choices of the Item
+						var option = $scope.item.children[optCat].children[opt]; // option is the Choice currently looped over
+
+						if( cids[choiceId] === option.id ) { // If the Chosen ID matches the currently Looped choice ID
+							oids.push($scope.item.children[optCat].id);  // push the option onto oids array (used for display only)
+							// put that choice object into structure from where all options are extracted
+							currentItem[ $scope.item.children[optCat].id + '/' + option.id ] = JSON.stringify(option);
+						}
+					}
+				}
+			}
+
+			// Store Old Selection of Options into into storage
+			$scope.storage.currentItem = JSON.stringify( currentItem );
+
+			for(var oid = 0; oid < oids.length; oid ++) {
+				$scope.displayNames(oids[oid]);
+			}
+
+		}
+
+		//////////////////////////////////////////////////////////////////////////////////
+
+		// Calculate new Total Price when selected options are stored
 		$scope.$watch('storage.currentItem', function() {
 
 			$scope.extraPrice = 0;
@@ -545,85 +560,73 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		});
 
-		// if editing item, recreate the storage.currentItem (w/ all chosen options)
-		if( $scope.storage.editItem ) {
-			var cids = JSON.parse($scope.storage.editItemCids);
+		// method to display names of options chosen
+		$scope.displayNames = function(oid) {
 
-			var currentItem = {};
+			var currentItem = JSON.parse($scope.storage.currentItem);
 
-			var oids = [];
+			$scope.optionsDisp[oid] = '';
 
-			for( var choiceId = 0; choiceId < cids.length; choiceId++ ) {
-				for(var optCat = 0; optCat < $scope.item.children.length; optCat++ ) {
-					for(var opt = 0; opt < $scope.item.children[optCat].children.length; opt++ ) {
-						var option = $scope.item.children[optCat].children[opt];
+    		for( var opt in currentItem ) {
+    			if (currentItem.hasOwnProperty(opt)) {
+		    		if( currentItem[opt] && opt.search(oid) !== -1 ) {
+		    			$scope.optionsDisp[oid] += JSON.parse(currentItem[opt]).name + ', ';
+		    		}
+		    	}
+	    	}
 
-						if( cids[choiceId] === option.id ) {
-							oids.push($scope.item.children[optCat].id);
-							currentItem[ $scope.item.children[optCat].id + '/' + option.id ] = JSON.stringify(option);
-						}
-					}
-				}
-			}
+	    	$scope.optionsDisp[oid] = $scope.optionsDisp[oid].substring(0, $scope.optionsDisp[oid].length - 2);
+		};
 
-			$scope.storage.currentItem = JSON.stringify( currentItem );
+	//////////////////////////////////////////////////////////////////////////////////////
 
-			for(var oid = 0; oid < oids.length; oid ++) {
-				$scope.displayNames(oids[oid]);
-			}
-
-		}
+		// Set Quantity Limit ( @TODO try to move to quantity controller)
+	    $scope.amountRange = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+	    $scope.amount = 1;
 
 	    $scope.optionPopup = function(option){
-	    	// if radio, JSON.parse 2 levels deep (is this rly necessary?)
-	    	// @TODO see if JSON.parse 2 lvls deep should be done
-			if( option.min_child_select == option.max_child_select == 1 ) {
-				
-				$scope.isType = 'radio';
 
-				var currentItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
+	    	// set the type of select depending on the child_selects
+			if( option.min_child_select == option.max_child_select == 1 ) { $scope.isType = 'radio'; } 
+			else { $scope.isType = 'checkbox'; }
 
-				for( var opt in currentItem ) {
-				 	if( currentItem.hasOwnProperty(opt) ) {
-						if( currentItem[opt] ) {
-				 			$scope.optionData[opt] = JSON.parse(currentItem[opt]);
-				}	}	}
 
-				$scope.optionData = currentItem;
-
-			} else { // if checkbox, just parse.
-				$scope.isType = 'checkbox';
-				$scope.optionData = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
-			}
-
+			$scope.chosenOptions = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
 	    	$scope.storage.activeOption = JSON.stringify(option);
+
 	    	$scope.popupModal($scope.isType);
 	    };
+
+
+
+
+
+
 
 
 	    // hack necessary to make sure radio buttons work: send the last clicked
 	    // ratio button key to the orderRadio array
 		$scope.saveRadio = function(option, choice){
-				$scope.orderRadio.push(option.id + '/' + choice.id);
+			$scope.orderRadio.push(option.id + '/' + choice.id);
 		};
 
 
 
 	    $scope.storeOptions = function(min, max, optionId) {
 
-	    	// if radio, put in the appropriate optionData from the last orderRadio elmnt
+	    	// if radio, put in the appropriate chosenOptions from the last orderRadio elmnt
 	    	if(min == max == 1) {
 	    		var lastSelectedKey = $scope.orderRadio[ $scope.orderRadio.length -1 ];
-	    		var newOptionData = {};
-	    		newOptionData[ lastSelectedKey ] = JSON.stringify($scope.optionData[ lastSelectedKey ]);
-	    		$scope.optionData = newOptionData;
+	    		var newchosenOptions = {};
+	    		newchosenOptions[ lastSelectedKey ] = JSON.stringify($scope.chosenOptions[ lastSelectedKey ]);
+	    		$scope.chosenOptions = newchosenOptions;
 	    	}
 
 	    	// get # of chosen options
 	    	var selectedNum = 0;
-	    	for( var opt in $scope.optionData ) {
-				if ($scope.optionData.hasOwnProperty(opt)) {
-					if( $scope.optionData[opt] ) {
+	    	for( var opt in $scope.chosenOptions ) {
+				if ($scope.chosenOptions.hasOwnProperty(opt)) {
+					if( $scope.chosenOptions[opt] && opt.search(optionId) !== -1 ) {
 						selectedNum += 1;
 					}
 	    		}
@@ -648,9 +651,9 @@ app.config(['$routeProvider',// '$locationProvider',
 	    			}
 	    		}
 
-	    		for(var opt in $scope.optionData) {
-	    			if( $scope.optionData.hasOwnProperty(opt)) {
-	    				combined[ opt ] = $scope.optionData[opt];
+	    		for(var opt in $scope.chosenOptions) {
+	    			if( $scope.chosenOptions.hasOwnProperty(opt)) {
+	    				combined[ opt ] = $scope.chosenOptions[opt];
 	    			}
 	    		}
 
@@ -660,28 +663,13 @@ app.config(['$routeProvider',// '$locationProvider',
 	    		$scope.displayNames(optOnly);
 
 		    	// clear stuff
-		    	$scope.optionData = {};
+		    	$scope.chosenOptions = {};
 		    	$scope.orderRadio = [];
 	    		$scope.optionErrMsg = '';
 	    		$scope.closeModal();
 	    	}
 
 	    };
-
-	    $scope.amountRange = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-	    $scope.amount = 1;
-
-	  //   $scope.checkForTray = function(view, dest){
-	  //   	// If Tray Exists, and about to order from new Restaurant
-			// if ($scope.storage.tray && $scope.storage.activeRest != $scope.storage.orderRest) {
-			// 	$scope.popupModal('emptyTray');
-			// } else {
-			// 	// Add item to new tray
-			// 	if (view == 'modal' {
-			// 		$scope.popupModal(dest);
-			// 	};
-			// };
-	  //   };
 
 	    $scope.addItem = function() {
 
@@ -730,8 +718,6 @@ app.config(['$routeProvider',// '$locationProvider',
 
 
 	    };
-
-	    $scope.orderButton = $scope.storage.editItem ? 'Edit Item' : 'Add to Order';
 
 	});
 
