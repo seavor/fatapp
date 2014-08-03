@@ -134,7 +134,7 @@ app.config(['$routeProvider',// '$locationProvider',
 			// Console Log remainingStorageSpace/totalStorageSpace
 			var limit = 1024 * 1024 * 5; // 5 MB
  			var remSpace = limit - unescape(encodeURIComponent(JSON.stringify($scope.storage))).length;
- 			console.log(remSpace+'/'+limit);
+ 			console.log('Storage: '+remSpace+'/'+limit);
 		};
 
 		$scope.findYearRange = function() {
@@ -245,10 +245,8 @@ app.config(['$routeProvider',// '$locationProvider',
     	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Initialize Popup Variables
-		$scope.option = JSON.parse($scope.storage.activeOption);
+		$scope.option = JSON.parse($scope.storage.activeOption); console.dir($scope.option);
 		$scope.chosenOptions = {}; $scope.chosenRadio = '';
-
-		console.dir($scope.option);
 
 		// Get List of Selected IDs, Default for Checkboxes
 		angular.forEach($scope.option.choices, function(choice, id) {
@@ -264,22 +262,31 @@ app.config(['$routeProvider',// '$locationProvider',
 				angular.forEach($scope.chosenOptions, function(option, id) {
 					$scope.chosenRadio = id;
 				});	
+				// $scope.chosenRadio = "19025904";
 			}
 		} 
 		
     	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		$scope.storeOptions = function() { // take a break, lets think about this
+
+			console.log($scope.chosenOptions);
+
 			// If a Radio is Being Stored
 			if ($scope.option.min == $scope.option.max == 1) {
+				// Reset Radio Options to False
+				angular.forEach($scope.option.choices, function(choice, id) {
+					$scope.option.choices[id].selected = false;
+				});
+				// Set New Radio Option to True
 				$scope.option.choices[$scope.chosenRadio].selected = true;
 
 			// If a Checkbox List is Being Stored
 			} else {
-				angular.forEach($scope.option.choices, function(choice, id) {
-					if ($scope.option.choices[id].selected == true) {
-						$scope.chosenOptions[id] = true;
-					}
+				angular.forEach($scope.chosenOptions, function(choice, id) {
+					// If choice is not set to false (checked then unchecked)
+					if (choice) { $scope.option.choices[id].selected = true; }
+					else { $scope.option.choices[id].selected = false; };
 				});
 
 			}
@@ -591,16 +598,14 @@ app.config(['$routeProvider',// '$locationProvider',
 	    $scope.optionPopup = function(option){
 
 	    	// set the type of select depending on the child_selects
-			if( $scope.item.extras[option].min == $scope.item.extras[option].min == 1 ) { $scope.isType = 'radio'; } 
+			if( $scope.item.extras[option].min == $scope.item.extras[option].max == 1 ) { $scope.isType = 'radio'; } 
 			else { $scope.isType = 'checkbox'; }
 
 			// Initialize and Store activeOption Object
 	    	$scope.storage.activeOption = JSON.stringify($scope.item.extras[option]);
 
-
-
-
 	    	$scope.popupModal($scope.isType);
+
 	    };
 
 
