@@ -1,8 +1,14 @@
 <div class="itemReview popupButton clearfix" ng-repeat="item in tray" ng-click="popupModal('editItem', $index)">
-	<h6>{{item.item.name}}</h6>
-	<p class="itemTotal">${{item.item.price}}</p>
+	<h6>{{item.name}}</h6>
+	<p class="itemTotal">{{item.price * item.amount | currency}}</p>
 	<p class="itemAmount">x {{item.amount}}</p>
-	<p class="itemOptionSelections">{{ optionsDisp[ $index ] }}</p>
+	<p class="itemOptionSelections">
+		<span ng-repeat="option in item.extras">
+			<span ng-repeat="choice in option.choices">
+				<span ng-show="choice.selected">{{choice.name}}&nbsp;</span>
+			</span>
+		</span>
+	</p>
 </div>
 
 <div id="orderTotal" class="actionInfo">
@@ -15,7 +21,7 @@
 	</div>
 	<div class="itemPriceInfo">
 		<h6>TOTAL</h6>
-		<p>${{storage.priceTotal}}</p>
+		<p>${{priceTotal}}</p>
 	</div>
 </div>
 

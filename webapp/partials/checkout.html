@@ -10,7 +10,7 @@
 
 <h2 id="paymentHeader" class="mainHeader">Payment</h2>
 
-<form ng-submit="validateCheckout()" name="validateCheckout">
+<form name="validateCheckout">
 
 	<div class="inputArea">
 		<ul class="inputItems">
@@ -34,8 +34,7 @@
 						name="cardNumberInput"
 						type="number"
 						ng-model="customer.cardNumber"
-						ng-minlength="16"
-						ng-change="validateCreditCard()"
+						ng-pattern="/^[0-9]{16,16}$/"
 						placeholder="Card Number"
 						required>
 				</li>
@@ -73,8 +72,7 @@
 					name="cvc"
 					type="password"
 					ng-model="customer.cvc"
-					ng-minlength="3"
-					ng-change="validateCVC()"
+					ng-pattern="/^[0-9]{3,4}$/"
 					placeholder="CVC"
 					required>
 				</li>
@@ -143,15 +141,6 @@
 						<option value="WV">West Virginia</option>
 						<option value="WI">Wisconsin</option>
 						<option value="WY">Wyoming</option>
-						<option value="AS">American Samoa</option>
-						<option value="GU">Guam</option>
-						<option value="MP">Northern Mariana Islands</option>
-						<option value="PR">Puerto Rico</option>
-						<option value="UM">United States Minor Outlying Islands</option>
-						<option value="VI">Virgin Islands</option>
-						<option value="AA">Armed Forces Americas</option>
-						<option value="AP">Armed Forces Pacific</option>
-						<option value="AE">Armed Forces Others</option>
 					</select>	
 				</li>
 				<li class="inputBox halfBox lastItem">
@@ -161,8 +150,7 @@
 						name="billZipcode"
 						type="number"
 						ng-model="customer.billZip"
-						ng-minlength="5"
-						ng-change="validateZipcode()"
+						ng-pattern="/^[0-9]{5,5}$/"
 						placeholder="Zip Code"
 						required>
 				</li>
@@ -176,7 +164,7 @@
 			<h5>Contact Info:</h5>
 
 			<li class="inputBox">
-				<input ng-model="customer.phone" id="phoneNumberInput" name="phonenumber" ng-minlength="10" type="number" class="inputField" ng-change="validatePhone()" placeholder="Phone" required>
+				<input ng-model="customer.phone" id="phoneNumberInput" name="phonenumber" ng-pattern="/^[0-9]{10,10}$/" type="tel" class="inputField" placeholder="Phone" required>
 			</li>
 			<li class="inputBox">
 				<input ng-model="customer.email" id="emailInput" name="email" type="email" class="inputField" placeholder="Email" required>
@@ -185,23 +173,23 @@
 		</ul>
 	</div>
 
-	<div id="orderTotal" class="actionInfo">
-		<div class="itemPriceInfo">
-			<h6>Subtotal</h6>
-			<p>${{storage.priceTotal}}</p>
-		</div>
-		<div class="itemPriceInfo">
-			<h6>Taxes/Fees</h6>
-			<p>${{fee}}</p>
-		</div>
-		<div class="itemPriceInfo">
-			<h6>TOTAL</h6>
-			<p>${{grandTotal}}</p>
-		</div>
-	</div>
-
-	<button id="purchase" class="actionButton actionRequired" type="submit"  ng-class="{badFormButton: !customer.$valid}" ng-disabled="!customer.$valid" >Send Me Food!</button>
-
 </form>
+
+<div id="orderTotal" class="actionInfo">
+	<div class="itemPriceInfo">
+		<h6>Subtotal</h6>
+		<p>${{storage.priceTotal}}</p>
+	</div>
+	<div class="itemPriceInfo">
+		<h6>Taxes/Fees</h6>
+		<p>${{fee}}</p>
+	</div>
+	<div class="itemPriceInfo">
+		<h6>TOTAL</h6>
+		<p>${{grandTotal}}</p>
+	</div>
+</div>
+
+<button id="purchase" class="actionButton actionRequired" type="submit" ng-disabled="validateCheckout.$invalid" ng-click="orderFood()">Send Me Food!</button>
 
 <div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>

@@ -12,7 +12,9 @@
 	<div class="itemOptions popupButton" ng-repeat="option in item.extras" ng-click="optionPopup(option.id)">
 		<h4>{{option.name}}<span class="required" ng-show="option.min > 0">*</span></h4>
 		<p class="itemOptionSelections">
-			<span ng-repeat="choice in option" ng-if="choice.selected">{{choice.name}}&nbsp;</span>
+			<span ng-repeat="choice in option.choices">
+				<span ng-show="choice.selected">{{choice.name}}&nbsp;</span>
+			</span>
 		</p>
 	</div>
 
@@ -37,7 +39,7 @@
 	id="addToOrder"
 	class="actionButton"
 	type="button"
-	ng-click="popupModal('quantity')"
+	ng-click="checkRequirements()"
 	ng-disabled="item.is_orderable == 0">
 		{{orderButton}}
 </button>
