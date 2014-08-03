@@ -478,13 +478,6 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('ItemCtrl', function($scope, $location){
 
-		$scope.itemOrderable = true;
-
-		// @TODO disable add item to tray (css color-fade, ng-click disabled)
-		if ( false ) { // item.is_delivering != 1 || restaurant.not_deliverying == 1 
-			$scope.itemOrderable = false;
-		};
-
 		// method to display names of options chosen
 		$scope.displayNames = function(oid) {
 
@@ -500,12 +493,12 @@ app.config(['$routeProvider',// '$locationProvider',
 		    	}
 	    	}
 
-	    	$scope.optionsDisp[oid].substring(0, $scope.optionsDisp[oid].length - 2);
-		}
+	    	$scope.optionsDisp[oid] = $scope.optionsDisp[oid].substring(0, $scope.optionsDisp[oid].length - 2);
+		};
 
 		$scope.menu = JSON.parse($scope.storage.menu);
 
-		$scope.optionData = {};
+		$scope.chosenOptions = {};
 		$scope.optionsDisp = {};
 		$scope.orderRadio = [];
 		$scope.optionErrMsg = '';
@@ -524,8 +517,10 @@ app.config(['$routeProvider',// '$locationProvider',
 			}
 		}
 
+		// make the price stuff at the bottom of the page dynamically work
 		$scope.extraPrice = '0.00';
 		$scope.totalPrice = $scope.item.price;
+		// Calculate new Total Price when selected options are stored
 		$scope.$watch('storage.currentItem', function() {
 
 			$scope.extraPrice = 0;
@@ -553,19 +548,22 @@ app.config(['$routeProvider',// '$locationProvider',
 
 			var oids = [];
 
-			for( var choiceId = 0; choiceId < cids.length; choiceId++ ) {
-				for(var optCat = 0; optCat < $scope.item.children.length; optCat++ ) {
-					for(var opt = 0; opt < $scope.item.children[optCat].children.length; opt++ ) {
-						var option = $scope.item.children[optCat].children[opt];
+			// item -> option -> choice
+			for( var choiceId = 0; choiceId < cids.length; choiceId++ ) { // For Each Choice Chosen (previously chosen)
+				for(var optCat = 0; optCat < $scope.item.children.length; optCat++ ) { // For All Options of the Item
+					for(var opt = 0; opt < $scope.item.children[optCat].children.length; opt++ ) { // For All Choices of the Item
+						var option = $scope.item.children[optCat].children[opt]; // option is the Choice currently looped over
 
-						if( cids[choiceId] === option.id ) {
-							oids.push($scope.item.children[optCat].id);
+						if( cids[choiceId] === option.id ) { // If the Chosen ID matches the currently Looped choice ID
+							oids.push($scope.item.children[optCat].id);  // push the option onto oids array (used for display only)
+							// put that choice object into structure from where all options are extracted
 							currentItem[ $scope.item.children[optCat].id + '/' + option.id ] = JSON.stringify(option);
 						}
 					}
 				}
 			}
 
+			// Store Old Selection of Options into into storage
 			$scope.storage.currentItem = JSON.stringify( currentItem );
 
 			for(var oid = 0; oid < oids.length; oid ++) {
@@ -581,19 +579,21 @@ app.config(['$routeProvider',// '$locationProvider',
 				
 				$scope.isType = 'radio';
 
+				// Take Item from Storage
 				var currentItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
 
-				for( var opt in currentItem ) {
+
+				for( var opt in currentItem ) { // For each option in ITem
 				 	if( currentItem.hasOwnProperty(opt) ) {
-						if( currentItem[opt] ) {
-				 			$scope.optionData[opt] = JSON.parse(currentItem[opt]);
+						if( currentItem[opt] ) {  // If Option has been actually Selected
+ 				 			$scope.chosenOptions[opt] = JSON.parse(currentItem[opt]); // Parse and Store
 				}	}	}
 
-				$scope.optionData = currentItem;
+				$scope.chosenOptions = currentItem;
 
 			} else { // if checkbox, just parse.
 				$scope.isType = 'checkbox';
-				$scope.optionData = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
+				$scope.chosenOptions = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
 			}
 
 	    	$scope.storage.activeOption = JSON.stringify(option);
@@ -604,26 +604,26 @@ app.config(['$routeProvider',// '$locationProvider',
 	    // hack necessary to make sure radio buttons work: send the last clicked
 	    // ratio button key to the orderRadio array
 		$scope.saveRadio = function(option, choice){
-				$scope.orderRadio.push(option.id + '/' + choice.id);
+			$scope.orderRadio.push(option.id + '/' + choice.id);
 		};
 
 
 
 	    $scope.storeOptions = function(min, max, optionId) {
 
-	    	// if radio, put in the appropriate optionData from the last orderRadio elmnt
+	    	// if radio, put in the appropriate chosenOptions from the last orderRadio elmnt
 	    	if(min == max == 1) {
 	    		var lastSelectedKey = $scope.orderRadio[ $scope.orderRadio.length -1 ];
-	    		var newOptionData = {};
-	    		newOptionData[ lastSelectedKey ] = JSON.stringify($scope.optionData[ lastSelectedKey ]);
-	    		$scope.optionData = newOptionData;
+	    		var newchosenOptions = {};
+	    		newchosenOptions[ lastSelectedKey ] = JSON.stringify($scope.chosenOptions[ lastSelectedKey ]);
+	    		$scope.chosenOptions = newchosenOptions;
 	    	}
 
 	    	// get # of chosen options
 	    	var selectedNum = 0;
-	    	for( var opt in $scope.optionData ) {
-				if ($scope.optionData.hasOwnProperty(opt)) {
-					if( $scope.optionData[opt] ) {
+	    	for( var opt in $scope.chosenOptions ) {
+				if ($scope.chosenOptions.hasOwnProperty(opt)) {
+					if( $scope.chosenOptions[opt] && opt.search(optionId) !== -1 ) {
 						selectedNum += 1;
 					}
 	    		}
@@ -648,9 +648,9 @@ app.config(['$routeProvider',// '$locationProvider',
 	    			}
 	    		}
 
-	    		for(var opt in $scope.optionData) {
-	    			if( $scope.optionData.hasOwnProperty(opt)) {
-	    				combined[ opt ] = $scope.optionData[opt];
+	    		for(var opt in $scope.chosenOptions) {
+	    			if( $scope.chosenOptions.hasOwnProperty(opt)) {
+	    				combined[ opt ] = $scope.chosenOptions[opt];
 	    			}
 	    		}
 
@@ -660,7 +660,7 @@ app.config(['$routeProvider',// '$locationProvider',
 	    		$scope.displayNames(optOnly);
 
 		    	// clear stuff
-		    	$scope.optionData = {};
+		    	$scope.chosenOptions = {};
 		    	$scope.orderRadio = [];
 	    		$scope.optionErrMsg = '';
 	    		$scope.closeModal();
