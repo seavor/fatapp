@@ -179,13 +179,6 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.addrForm = {};
 		$scope.cantSave = true;
 
-		$scope.validateZipcode = function() {
-			// Hack to Maxlength = 5 (overrides ng-maxlength restriction)
-			if ($scope.addrForm.zipcode && $scope.addrForm.zipcode.toString().length > 5) {
-				$scope.addrForm.zipcode = parseInt($scope.addrForm.zipcode.toString().substring(0, 5));
-			}
-		};
-
 		// Store New Address
 		$scope.storeAddress = function() {
 			$scope.storage.deliveryAddress = JSON.stringify($scope.addrForm);
@@ -729,26 +722,27 @@ app.config(['$routeProvider',// '$locationProvider',
 	app.controller('CheckoutCtrl', function($scope, $http, $location){
 
 		// Set Defaults
-		$scope.customer = {};
-		$scope.orderObject = {};
+		$scope.customer = {}; // Form Field ngModel
+		$scope.orderObject = {}; // Object Passed into Post request
+    	$scope.grandTotal = $scope.storage.priceTotal; // Init grandTotal to order's priceTotal
     	$scope.yearRange = $scope.findYearRange();
     	$scope.fee = '0.00';
-    	$scope.grandTotal = $scope.storage.priceTotal;
-
-    	// @TODO validate form fields
-		$scope.allFieldsFilled = true;
-
-		// Make Fee Call
-
 
 		$scope.checkAddress = function(url){
 			$scope.showLoader();
+			$scope.addressError = '';
 			$http.get( url )
 				.success( function( data, status, header, config ) {
 					// If Error is returned
-					if (false) {
-						console.log('Address Out of Range');
+					if (data['_err'] == 0) {
+						$scope.checkoutButton = 'Out of Range';
+						$scope.addressError = 'Address Out of Range';
+						$scope.grandTotal = 'n/a';
+						$scope.storage.fee = $scope.fee = 'n/a';
+						$scope.storage.grandTotal = 'n/a';
+						$scope.hideLoader();
 					} else {
+    					$scope.checkoutButton = 'Send Me Food!';
 						// Set Fee field for View
 						$scope.fee = parseFloat(data.fee).toFixed(2);
 						// Add Taxes to Fees if they exists
@@ -766,8 +760,8 @@ app.config(['$routeProvider',// '$locationProvider',
 				});
 		};
 
+		// Make Fee call on pageLoad for stored deliveryAddress
 		var address = JSON.parse($scope.storage.deliveryAddress);
-
 		var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
 			+ $scope.storage.activeRest + '/'
 			+ $scope.price + '/'
@@ -776,10 +770,9 @@ app.config(['$routeProvider',// '$locationProvider',
 			+ address.zipcode + '/'
 			+ address.city + '/'
 			+ address.addressLine;
-
 		$scope.checkAddress(feeUrl);
 
-		// Keep Filtered Display Updated
+		// Keep deliveryAddress Object Updated & make new Fee call
 		$scope.$watch('storage.deliveryAddress', function() {
 			if ($scope.storage.deliveryAddress) {
 				$scope.deliveryAddress = JSON.parse($scope.storage.deliveryAddress);
@@ -796,8 +789,7 @@ app.config(['$routeProvider',// '$locationProvider',
 					+ $scope.deliveryAddress.addressLine;
 
 				$scope.checkAddress(feeUrl);
-
-			} else {
+			} else { // If no deliveryAddress has been selected
 				$scope.addressName = 'Please Select';
 				$scope.addressDisplay = ':(';
 			};

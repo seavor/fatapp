@@ -3,13 +3,9 @@
 /////////////////////////////////////////////////////////////////////
 
 	- Form Validation
-		- EnterAddress
-		- Options(checkbox, radio)
-		- Checkout
 		- Error variable settings
-		$ Show "Send Me Food!" button once all fields are valid
 
-	$ Restaurant Is delivering
+	$ Restaurant Is Closed <= acionButton if True
 		- (error if closed when they view review screen)
 
 	$ Jays Choices
@@ -23,7 +19,7 @@
 	$ Show mini loaderwheel with an error P tag
 		- if selected address returns out of range
 
-	- Make sure everything displays absractly
+	- Make sure everything displays abstractly
 		- (loads/parses from storage/persistent data)
 
 	$ Promt before Overriding old order

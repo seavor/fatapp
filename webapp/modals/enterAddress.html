@@ -10,7 +10,6 @@
 					type="text"
 					ng-model="addrForm.addressLine"
 					placeholder="Address Line"
-					
 					required>
 			</label>
 			<label class="inputBox">
@@ -30,8 +29,7 @@
 					name="zipcode"
 					type="number"
 					ng-model="addrForm.zipcode"
-					ng-minlength="5"
-					ng-change="validateZipcode()"
+					ng-pattern="/^[0-9]{5,5}$/"
 					placeholder="Zip Code"
 					required
 					>
