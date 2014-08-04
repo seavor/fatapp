@@ -874,6 +874,12 @@ h5.headerDivide  {
 	text-align: center;
 }
 
+	.errorText {
+		color: red;
+		font-size: 10px;
+		text-transform: uppercase;
+	}
+
 #loading {
 	min-width: 100%;
 	min-height: 100%;

@@ -149,6 +149,7 @@ USE `jcore`;
 INSERT INTO `Restaurants` (`rest_id`, `filters`, `rest_rating`, `rest_tip`, `rest_activated`, `changed`) VALUES (23865, '[\"brunch\", \"lunch\"] ', 2, 'When you exercise hard for 90 minutes or more, especially if you\'re doing something at high intensity that takes a lot of endurance, you need a diet that can help you perform at your peak and recover quickly afterward.', 1, 0);
 INSERT INTO `Restaurants` (`rest_id`, `filters`, `rest_rating`, `rest_tip`, `rest_activated`, `changed`) VALUES (23938, '[\"lunch\", \"dinner\"] ', 1, 'When you exercise hard for 90 minutes or more, especially if you\'re doing something at high intensity that takes a lot of endurance, you need a diet that can help you perform at your peak and recover quickly afterward.', 1, 0);
 INSERT INTO `Restaurants` (`rest_id`, `filters`, `rest_rating`, `rest_tip`, `rest_activated`, `changed`) VALUES (23946, '[\"brunch\", \"lunch\", \"dinner\"] ', 3, 'When you exercise hard for 90 minutes or more, especially if you\'re doing something at high intensity that takes a lot of endurance, you need a diet that can help you perform at your peak and recover quickly afterward.', 1, 0);
+INSERT INTO `Restaurants` (`rest_id`, `filters`, `rest_rating`, `rest_tip`, `rest_activated`, `changed`) VALUES (31750, '[\"brunch\", \"lunch\"]', 2, 'When you exercise hard for 90 minutes or more, especially if you\'re doing something at high intensity that takes a lot of endurance, you need a diet that can help you perform at your peak and recover quickly afterward.', 1, 0);
 
 COMMIT;
 
@@ -167,6 +168,10 @@ INSERT INTO `Categories` (`cat_id`, `rest_id`, `name`, `cat_tip`) VALUES (NULL, 
 INSERT INTO `Categories` (`cat_id`, `rest_id`, `name`, `cat_tip`) VALUES (NULL, 23946, 'Salads', 'When you exercise hard for 90 minutes or more, especially if you\'re doing something at high intensity that takes a lot of endurance, you need a diet that can help you perform at your peak and recover quickly afterward.');
 INSERT INTO `Categories` (`cat_id`, `rest_id`, `name`, `cat_tip`) VALUES (NULL, 23946, 'Entrees', 'When you exercise hard for 90 minutes or more, especially if you\'re doing something at high intensity that takes a lot of endurance, you need a diet that can help you perform at your peak and recover quickly afterward.');
 INSERT INTO `Categories` (`cat_id`, `rest_id`, `name`, `cat_tip`) VALUES (NULL, 23946, 'Sides', 'When you exercise hard for 90 minutes or more, especially if you\'re doing something at high intensity that takes a lot of endurance, you need a diet that can help you perform at your peak and recover quickly afterward.');
+INSERT INTO `Categories` (`cat_id`, `rest_id`, `name`, `cat_tip`) VALUES (NULL, 31750, 'Brunch', 'When you exercise hard for 90 minutes or more, especially if you\'re doing something at high intensity that takes a lot of endurance, you need a diet that can help you perform at your peak and recover quickly afterward.');
+INSERT INTO `Categories` (`cat_id`, `rest_id`, `name`, `cat_tip`) VALUES (NULL, 31750, 'Entrees', 'When you exercise hard for 90 minutes or more, especially if you\'re doing something at high intensity that takes a lot of endurance, you need a diet that can help you perform at your peak and recover quickly afterward.');
+INSERT INTO `Categories` (`cat_id`, `rest_id`, `name`, `cat_tip`) VALUES (NULL, 31750, 'Sides', 'When you exercise hard for 90 minutes or more, especially if you\'re doing something at high intensity that takes a lot of endurance, you need a diet that can help you perform at your peak and recover quickly afterward.');
+INSERT INTO `Categories` (`cat_id`, `rest_id`, `name`, `cat_tip`) VALUES (NULL, 31750, 'Drinks', 'When you exercise hard for 90 minutes or more, especially if you\'re doing something at high intensity that takes a lot of endurance, you need a diet that can help you perform at your peak and recover quickly afterward.');
 
 COMMIT;
 
@@ -203,6 +208,18 @@ INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activa
 INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (19025848, 6, 1, NULL, 1);
 INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (19025850, 6, 3, NULL, 1);
 INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (19025854, 6, 2, NULL, 1);
+INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (28349719, 10, 2, '{\"28349720\":[28349722],\"28349726\":[28349731],\"28349732\":[32073217],\"28349741\":[28349743,28349748]}', 1);
+INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (28349771, 10, 1, '{\"28349774\":[28349775,28349778],\"28349789\":[32073244],\"28349798\":[28349800]}', 1);
+INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (28350672, 11, 2, '{\"28350673\":[28350683]}', 1);
+INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (28351212, 11, 3, '{\"28351213\":[28351215],\"28351219\":[28351220,28351221,28351225],\"28351237\":[28351242,28351244]}', 1);
+INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (28351314, 11, 3, NULL, 1);
+INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (28351472, 11, 1, '{\"28351473\":[28351474,28351475,28351479],\"28351490\":[28351492,28351493,28351495]}', 1);
+INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (28351572, 12, 1, '{\"28351573\":[28351575],\"28351582\":[28351589]}', 1);
+INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (28351795, 12, 2, NULL, 1);
+INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (28351810, 12, 2, NULL, 1);
+INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (28352430, 13, 3, NULL, 1);
+INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (28352427, 13, 3, NULL, 1);
+INSERT INTO `Items` (`item_id`, `cat_id`, `item_rating`, `options`, `item_activated`) VALUES (28352428, 13, 3, NULL, 1);
 
 COMMIT;
 

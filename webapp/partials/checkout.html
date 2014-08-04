@@ -3,6 +3,7 @@
 	<div id="chosenAddress" class="screenItem">
 		<h3>{{addressName}}</h3>
 		<p>{{addressDisplay}}</p>
+		<p class="errorText">{{addressError}}</p>
 	</div>
 </div>
 
@@ -175,7 +176,7 @@
 
 </form>
 
-<div id="orderTotal" class="actionInfo">
+<div id="orderTotal" class="actionInfo" ng-show="validateCheckout.$valid">
 	<div class="itemPriceInfo">
 		<h6>Subtotal</h6>
 		<p>${{storage.priceTotal}}</p>
@@ -190,6 +191,6 @@
 	</div>
 </div>
 
-<button id="purchase" class="actionButton actionRequired" type="submit" ng-disabled="validateCheckout.$invalid" ng-click="orderFood()">Send Me Food!</button>
+<button id="purchase" class="actionButton actionRequired" type="submit" ng-show="validateCheckout.$valid" ng-disabled="addressError" ng-click="orderFood()">{{checkoutButton}}</button>
 
 <div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
