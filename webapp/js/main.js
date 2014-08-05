@@ -559,20 +559,21 @@ app.config(['$routeProvider',// '$locationProvider',
 				};
 
 				// For All Choices of the Item
-				for(var choice = 0; choice < extras[option].children.length; choice++ ) {
-					var choiceId = extras[option].children[choice].id;
-					// Fill Item Object w/ values from Menu Obj
-					$scope.item.extras[optionId].choices[choiceId] = {
-						'id' : extras[option].children[choice].id,
-						'name' : extras[option].children[choice].name,
-						'price' : extras[option].children[choice].price,
-						'descrip' : extras[option].children[choice].descrip,
-						'selected' : false,
-						'jayChoice' : extras[option].children[choice].jay_choice
-					};
-			}	}
-
-			// unset extras from the Item Object if none
+				if (extras[option].children) {
+					for(var choice = 0; choice < extras[option].children.length; choice++ ) {
+						var choiceId = extras[option].children[choice].id;
+						// Fill Item Object w/ values from Menu Obj
+						$scope.item.extras[optionId].choices[choiceId] = {
+							'id' : extras[option].children[choice].id,
+							'name' : extras[option].children[choice].name,
+							'price' : extras[option].children[choice].price,
+							'descrip' : extras[option].children[choice].descrip,
+							'selected' : extras[option].children[choice].jay_choice,
+							'jayChoice' : extras[option].children[choice].jay_choice
+						};
+					} // Remove Choices Obj from array if empty
+				} else { delete $scope.item.extras[optionId].choices; }
+			} // unset extras from the Item Object if none
 			if (!extras) { delete $scope.item['extras']; }
 		// Set Edit Item Objects Tray Index if Exists
 		} else { $scope.item.edit_idx = $scope.storage.editItemIndex; }
@@ -607,7 +608,7 @@ app.config(['$routeProvider',// '$locationProvider',
 	    $scope.optionPopup = function(option){
 
 	    	// set the type of select depending on the child_selects
-			if( $scope.item.extras[option].min == $scope.item.extras[option].max == 1 ) { $scope.isType = 'radio'; } 
+			if( $scope.item.extras[option].min == 1 && $scope.item.extras[option].max == 1 ) { $scope.isType = 'radio'; } 
 			else { $scope.isType = 'checkbox'; }
 
 			// Initialize and Store activeOption Object

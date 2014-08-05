@@ -9,7 +9,12 @@
 
 	<h3 ng-show="item.extras.length">Choose your options:</h3>
 
-	<div class="itemOptions popupButton" ng-repeat="option in item.extras" ng-click="optionPopup(option.id)">
+	<div 
+		class="itemOptions popupButton"
+		ng-repeat="option in item.extras"
+		ng-click="optionPopup(option.id)"
+		ng-if="option.choices"
+	>
 		<h4>{{option.name}}<span class="required" ng-show="option.min > 0">*</span></h4>
 		<p class="itemOptionSelections">
 			<span ng-repeat="choice in option.choices">

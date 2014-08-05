@@ -5,7 +5,7 @@
 		<p class="error">{{option.error}}</p>
 		<form ng-submit="storeOptions( option.min, option.max, option.id )">
 			<ul class="dataItems">
-				<li ng-repeat="choice in option.choices">
+				<li ng-repeat="choice in option.choices" ng-class="{jayChoice : choice.jayChoice}">
 					<label for="_{{choice.id}}">
 						<span class="name">{{choice.name}}</span>
 						<input
