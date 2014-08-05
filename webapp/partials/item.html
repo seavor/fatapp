@@ -18,7 +18,7 @@
 		<h4>{{option.name}}<span class="required" ng-show="option.min > 0">*</span></h4>
 		<p class="itemOptionSelections">
 			<span ng-repeat="choice in option.choices">
-				<span ng-show="choice.selected">{{choice.name}}&nbsp;</span>
+				<span ng-show="choice.selected" ng-class="{jayChoice : choice.jayChoice}">{{choice.name}}&nbsp;</span>
 			</span>
 		</p>
 	</div>

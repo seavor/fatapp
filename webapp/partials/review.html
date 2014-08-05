@@ -5,7 +5,7 @@
 	<p class="itemOptionSelections">
 		<span ng-repeat="option in item.extras">
 			<span ng-repeat="choice in option.choices">
-				<span ng-show="choice.selected">{{choice.name}}&nbsp;</span>
+				<span ng-show="choice.selected" ng-class="{jayChoice : choice.jayChoice}">{{choice.name}}&nbsp;</span>
 			</span>
 		</span>
 	</p>
@@ -29,10 +29,9 @@
 	id="checkout"
 	class="actionButton"
 	type="button"
-	ng-show="minimum"
+	ng-disabled="!minimum"
 	ng-click="proceedToCheckout()" >
-	<!-- @TODO: change to if mino is satisfied -->
-		Proceed to Checkout
+	{{reviewButton}}
 </button>
 
 <div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>

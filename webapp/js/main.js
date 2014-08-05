@@ -68,6 +68,7 @@ app.config(['$routeProvider',// '$locationProvider',
 		////////////////////////////////////////////////////////////////
 
 		// Initialize Modal Variables
+		$scope.pageTitle = '';
 		$scope.displayModal = false;
 		$scope.displayLoader = false;
 		$scope.displayError = false;
@@ -121,7 +122,7 @@ app.config(['$routeProvider',// '$locationProvider',
 			var fil = '';
 			return JSON.parse($scope.storage.filter, function(k, v){
 				if ( v ) { fil += (k.charAt(0).toUpperCase() + k.slice(1)) + ', '; }
-				return fil.substring(0, fil.length - 4) + ' Menus';
+				return 'Filter: ' + fil.substring(0, fil.length - 4) + ' Menus';
 			});
 		};
 
@@ -221,7 +222,7 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.filterSelection = function(){
 			$scope.storage.filter = JSON.stringify($scope.filterForm);
 			$scope.closeModal();
-			if ($scope.filterForm.all) { $scope.storage.filterDisplay = "All Menus"; }
+			if ($scope.filterForm.all) { $scope.storage.filterDisplay = "Filter: All Menus"; }
 			else { $scope.storage.filterDisplay = $scope.formattedFilter(); }
 		};
 
@@ -325,10 +326,9 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.emptyTrayPrompt = function(bool){
 			if (bool) {
 				$scope.storage.orderRest = $scope.storage.activeRest;
-				$scope.closeModal();
-				$scope.storage.removeItem('menu');
 				$scope.storage.removeItem('tray');
-				$scope.addItem();
+				$scope.closeModal();
+				$scope.addItem(); // Add New Item after Emptying tray (function from ItemCtrl)
 			} else {
 				$scope.closeModal();
 			}
@@ -356,11 +356,13 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('SearchCtrl', function($scope, $http, $location){
 
+		$scope.$parent.pageTitle = 'Fat App';
+
 		$scope.storage.clear();
 
 		// Initialize Filter Display/Checkbox/Storage
 		$scope.filterForm = { "all" : true };
-		$scope.storage.filterDisplay = "All Menus";
+		$scope.storage.filterDisplay = "Filter: All Menus";
 		$scope.storage.filter = JSON.stringify($scope.filterForm);
 
 		// Reveal 'Find Restaurants' button upon Address Selection
@@ -408,6 +410,8 @@ app.config(['$routeProvider',// '$locationProvider',
 	});
 
 	app.controller('RestaurantsCtrl', function($scope, $http, $location){
+
+		$scope.$parent.pageTitle = 'Restaurants';
 
 		// Check if not a newSearch, refresh restaurantList if so
 		if ($scope.storage.newSearch != 'true') {
@@ -477,6 +481,8 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('MenuCtrl', function($scope, $http, $location){
 
+		$scope.$parent.pageTitle = 'Menu';
+
 		$scope.hideLoader();
 
 		$scope.menu = JSON.parse($scope.storage.menu);
@@ -509,6 +515,8 @@ app.config(['$routeProvider',// '$locationProvider',
 	});
 
 	app.controller('ItemCtrl', function($scope, $location){
+		
+		$scope.$parent.pageTitle = 'Add to Order';
 
     	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Initialize Page View
@@ -540,8 +548,6 @@ app.config(['$routeProvider',// '$locationProvider',
 			'edit_idx' : null,
 			'extras' : {}
 		};
-
-
 
 		// Initialize Items Object w/ Extras & their Choices
 		if (!$scope.storage.editItemObj) {
@@ -667,6 +673,9 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('ReviewCtrl', function($scope, $location){
 
+		$scope.$parent.pageTitle = 'Review Order';
+		$scope.reviewButton = 'Proceed to Checkout';
+
 		$scope.storage.removeItem('editItem');
 		$scope.storage.removeItem('editItemObj');
 		$scope.storage.removeItem('editItemIndex');
@@ -694,8 +703,8 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.priceTotal = parseFloat(parseFloat($scope.subTotal) + parseFloat(tip)).toFixed(2);
 
 			// Determine if Minimum Order is met
-			if (parseFloat($scope.subTotal) >= parseFloat($scope.storage.mino)) { $scope.minimum = true; }
-			else {$scope.minimum = false;};
+			if (parseFloat($scope.subTotal) >= parseFloat($scope.storage.mino)) { $scope.minimum = true; $scope.reviewButton = 'Proceed to Checkout'; }
+			else {$scope.minimum = false; $scope.reviewButton = 'Minimum Not Met'; };
 		};
 
 		$scope.proceedToCheckout = function(){
@@ -722,6 +731,8 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('CheckoutCtrl', function($scope, $http, $location){
 
+		$scope.$parent.pageTitle = 'Checkout';
+
 		// Set Defaults
 		$scope.customer = {}; // Form Field ngModel
 		$scope.orderObject = {}; // Object Passed into Post request
@@ -736,8 +747,8 @@ app.config(['$routeProvider',// '$locationProvider',
 				.success( function( data, status, header, config ) {
 					// If Error is returned
 					if (data['_err'] == 0) {
-						$scope.checkoutButton = 'Out of Range';
-						$scope.addressError = 'Address Out of Range';
+						$scope.checkoutButton = 'Uh-Oh! :(';
+						$scope.addressError = data.msg;
 						$scope.grandTotal = 'n/a';
 						$scope.storage.fee = $scope.fee = 'n/a';
 						$scope.storage.grandTotal = 'n/a';
@@ -874,6 +885,8 @@ app.config(['$routeProvider',// '$locationProvider',
 	});
 
 	app.controller('ReceiptCtrl', function($scope, $location){
+
+		$scope.$parent.pageTitle = 'Receipt';
 
 		$scope.hideLoader();
 
