@@ -147,31 +147,33 @@ $app->get('/rd/:rid', function($rid) {
 
         // @TODO add mino to restaurant menu
 
+
         // Loop thru Menu Categories & Items in Jcore structure
         foreach ($newData["menu"] as $catIdx => $cat) {
             foreach ($newData["menu"][$catIdx]['items'] as $itmIdx => $itm) {
 
                 //finding the right ordr.in item...
                 foreach ($data['menu'] as $oiCatIdx => $oiCat) {
-                    foreach ($data['menu'][$oiCatIdx]['children'] as $oiItmIdx => $oiItm) {
-                        if( $oiItm['id'] == $itm['item_id']) {
-                            $itemToInsert = $oiItm;
-                            $itemToInsert['rating'] = $itm['item_rating'];
+                    if( isset($data['menu'][$oiCatIdx]['children']) ) {
+                        foreach ($data['menu'][$oiCatIdx]['children'] as $oiItmIdx => $oiItm) {
+                            if( $oiItm['id'] == $itm['item_id']) {
+                                $itemToInsert = $oiItm;
+                                $itemToInsert['rating'] = $itm['item_rating'];
 
-                            // mark Jay's options as such
-                            if(array_key_exists('children', $itemToInsert)) {
-                                foreach ($itemToInsert['children'] as $iiOptIdx => $iiOpt) {
-                                    //if an option has jay's choices...
-                                    foreach ($itm['options'] as $jayOpt => $jayCh) {
-                                        if($jayOpt == $iiOpt['id']) {
-                                            foreach ($itemToInsert['children'][$iiOptIdx]['children'] as $iiChoiceIdx => $iiChoice) {
-                                                if(in_array($iiChoice['id'], $jayCh)) {
-                                                    $itemToInsert['children'][$iiOptIdx]['children'][$iiChoiceIdx]['jay_choice'] = true;
-                            }   }   }   }   }   }
+                                // mark Jay's options as such
+                                if(array_key_exists('children', $itemToInsert)) {
+                                    foreach ($itemToInsert['children'] as $iiOptIdx => $iiOpt) {
+                                        //if an option has jay's choices...
+                                        foreach ($itm['options'] as $jayOpt => $jayCh) {
+                                            if($jayOpt == $iiOpt['id']) {
+                                                foreach ($itemToInsert['children'][$iiOptIdx]['children'] as $iiChoiceIdx => $iiChoice) {
+                                                    if(in_array($iiChoice['id'], $jayCh)) {
+                                                        $itemToInsert['children'][$iiOptIdx]['children'][$iiChoiceIdx]['jay_choice'] = true;
+                                }   }   }   }   }   }
 
-                            break 2; // Break out back into $newData["menu"][$catIdx]['items']
+                                break 2; // Break out back into $newData["menu"][$catIdx]['items'] 
 
-                }   }   }
+                }   }   }   }
 
                 // add the ordr.in data + rating + options
                 $newData["menu"][$catIdx]['children'][] = $itemToInsert;//appropraite ordr.in item
