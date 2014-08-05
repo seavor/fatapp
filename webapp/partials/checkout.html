@@ -191,6 +191,6 @@
 	</div>
 </div>
 
-<button id="purchase" class="actionButton actionRequired" type="submit" ng-show="validateCheckout.$valid" ng-disabled="addressError" ng-click="orderFood()">{{checkoutButton}}</button>
+<button id="purchase" class="actionButton" type="submit" ng-show="validateCheckout.$valid" ng-disabled="addressError" ng-click="orderFood()">{{checkoutButton}}</button>
 
 <div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>

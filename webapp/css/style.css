@@ -113,10 +113,6 @@ input.invalidFormField {
 		background: orange;
         font-size: 20px;
 	}
-/*
-		.actionButton.actionRequired {
-			display: none !important;
-		}*/
 
 	.actionInfo {
 		position: fixed;
@@ -235,8 +231,8 @@ input.invalidFormField {
 		margin: 0;
 		margin-left: 50px;
 		float: left;
-		font-size: 24px;
-		line-height: 2;
+		font-size: 18px;
+		line-height: 2.7;
 		color: white;
 		font-weight: 300;
 	}
@@ -575,6 +571,7 @@ body.home #appContent {
 
 				p.itemOptionSelections {
 					font-size: 12px;
+					clear: both;
 				}
 
 #itemQuantity .inputBox {
@@ -602,6 +599,7 @@ body.home #appContent {
 	.itemReview h6 {
 		float: left;
 		font-size: inherit;
+		margin-bottom: 5px;
 	}
 
 		.itemReview p.itemTotal {
@@ -879,7 +877,7 @@ h5.headerDivide  {
 	.errorText {
 		color: red;
 		font-size: 10px;
-		text-transform: uppercase;
+		margin-top: 5px;
 	}
 
 #loading {
