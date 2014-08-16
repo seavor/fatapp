@@ -1,0 +1,835 @@
+/******************************************************
+/* Author: Jeremy Letto, Craft Inc Co
+/* Description: 
+/* Copyright 2014, All Rights Reserved
+/* Version: 1.0 Desktop
+/*****************************************************/
+
+.jayChoice {
+	color: green;
+}
+
+
+/******************************************************
+/* TABLE OF CONTENTS
+/******************************************************
+
+	1) Base Styles
+    2) Containers
+    3) Header
+    4) Footer
+    5) 
+
+******************************************************/
+
+
+#postReview {
+	position: absolute; top: 0; left: 500px;
+}
+
+
+
+/******************************************************
+/* Containers
+/*****************************************************/
+
+#appContent {
+	width: 100%;
+	min-height: 100%;
+	position: relative;
+	overflow: scroll;
+	margin-bottom: 75px;
+}
+
+/******************************************************
+/* Form Field Styles
+/*****************************************************/
+
+/******************************************************
+/* Button Styles
+/*****************************************************/
+
+	button:focus {
+		outline: 0;
+	}
+
+	button[disabled=disabled], button:disabled {
+		background: lightgrey;
+		color: #C0C0C0;
+	}
+
+	.popupButton:hover {
+		cursor: pointer;
+	}
+
+	.actionButton {
+		position: fixed;
+		bottom: 0; left: 0;
+		width: 100%;
+		height: 60px;
+		background: orange;
+        font-size: 20px;
+	}
+
+	.actionInfo {
+		position: fixed;
+		bottom: 60px; left: 0;
+		width: 100%;
+		height: 40px;
+		background: lightgrey;
+        font-size: 20px;
+
+	}
+
+		.actionInfo .itemPriceInfo {
+			float: left;
+			width: 33.3%;
+			text-align: center;
+		}
+
+			.actionInfo .itemPriceInfo h6 {
+				font-size: 14px;
+			}
+
+			.actionInfo .itemPriceInfo input {
+				font-size: 12px;
+			}
+
+	.bigButton {
+		width: 100%;
+		min-height: 40px;
+		margin-top: 20px;
+		padding-left: 10px;
+		background: white;
+		text-align: left;
+		font-size: 16px;
+		line-height: 1.6;
+		border: 1px solid lightgrey;
+	}
+
+	.mediumButton {
+		display: block;
+		width: 75%;
+		background: white;
+		padding: 10px 0px;
+		margin: 0 auto 20px;
+		border-radius: 5px;
+		border: 1px solid grey;
+	}
+
+		.mediumButton:hover {
+			background: lightgrey;
+		}
+
+	.smallButton {
+		width: 40%;
+		height: 30px;
+		border-radius: 5px;
+	}
+
+    .buttonCenter {
+        text-align: center;
+    }
+
+	.screenItem {
+		width: 100%;
+		padding: 0px 10px 10px;
+		border-bottom: 1px solid grey;
+	}
+
+		.screenItem h3 {
+			font-size: 16px;
+		}
+
+		.screenItem p {
+			font-size: 12px;
+		}
+
+		button.badFormButton {
+			background: lightgrey;
+		}
+
+	[data-redirect]:hover, [data-redirect]:active {
+		background: lightgrey;
+		cursor: pointer;
+	}
+
+
+/******************************************************
+/* Home Screen
+/*****************************************************/
+
+body.home #appContent {
+	background: rgba(118, 168, 77, .3);
+}
+
+	#restSearch {
+		margin: 50px 30px;
+	}
+
+            #addressSearch {
+                text-transform: capitalize;
+            }
+
+			#gpsButton {
+				width: 40px;
+				height: 40px;
+				display: inline-block;
+				border: 1px solid lightgrey;
+				background: white;
+				background-image: url('../images/gps.png');
+				background-repeat: no-repeat;
+				background-position: center;
+				background-size: 30px 30px;
+				float: right;
+
+			}
+
+				#gpsLabel:hover {
+					background-color: grey;
+					cursor: pointer;
+				}
+
+		#restFilterButton {
+			text-transform: capitalize;
+		}
+
+	#dailyFitTip {
+		display: block;
+		text-align: center;
+		color: #76A84D;
+		line-height: 1.5;
+		margin-top: 50px;
+	}
+
+		#dailyFitTip h3 {
+			font-size: 18px;
+		}
+
+			#dailyFitTips p {
+				font-size: 16px;
+			}
+
+/******************************************************
+/* Restaurant Search Screen
+/*****************************************************/
+
+.subHeader {
+	width: 100%;
+	height: 30px;
+	display: inline-block;
+	font-size: 14px;
+	line-height: 2;
+	cursor: pointer;
+}
+
+.restListing h6 {
+	display: block;
+	font-size: 16px;
+	width: 100%;
+	padding: 5px 0 5px 10px;
+	color: white;
+	border: 1px solid black;
+}
+
+	#openRestaurants h6 {
+		background: green;
+	}
+
+	#closedRestaurants h6 {
+		background: red;
+	}
+
+
+	.restaurantListingItem {
+		padding: 5px 10px;
+		border: 1px solid grey;
+	}
+
+		.restaurantListingItem.restaurantHead {
+			padding: 10px;
+		}
+
+			.restaurantListingItem.restaurantHead {
+				background: #76A84D;
+				color: white;
+			}
+
+		.restaurantListingItem .topBox {
+			margin-bottom: 10px;
+
+		}
+
+		.restaurantListingItem .topBox, .restaurantListingItem .bottomBox {
+			clear: both;
+		}
+
+			.restaurantListingItem h5 {
+				float: left;
+				font-size: 20px;
+			}
+
+			.distanceAway {
+				line-height: 1.5;
+				float: right;
+			}
+
+		.feeWrapper {
+			float: left;
+			height: 30px;
+			width: 140px;
+		}
+
+			.feeWrapper p {
+				display: block;
+				width: 100%;
+				font-size: 12px;
+			}
+
+		.appleWrapper {
+			float: right;
+		}
+			
+			.appleWrapper img {
+				height: 30px;
+				width: auto;
+
+			}
+
+/******************************************************
+/* Restaurant Menu Screen
+/*****************************************************/
+
+#menuHeader.restaurantListingItem {
+	background: lightgrey;
+	border: 0;
+	border-bottom: 1px solid black;
+}
+
+#menuCategories h3 {
+	width: 100%;
+	padding: 15px 10px;
+	border-bottom: 1px solid grey;
+}
+
+	#menuCategories h3:hover, .menuItem:hover {
+		cursor: pointer;
+		background: lightgrey;
+	}
+
+		/*.catItems {
+			display: none;
+		}*/
+
+			.menuItem {
+				width: 100%;
+				padding: 10px;
+				border-bottom: 1px solid grey;
+				border-left: 10px solid white;
+			}
+				.menuItem.itemGood { border-left-color: orange; }
+				.menuItem.itemBetter { border-left-color: yellow; }
+				.menuItem.itemBest { border-left-color: green; }
+
+				.menuItem h6 {
+					float: left;
+					font-size: 16px;
+					margin-bottom: 5px;
+				}
+
+				.menuItem p.itemPrice {
+					float: right;
+					font-size: 16px;
+				}
+
+				.menuItem p.itemDescription {
+					font-size: 14px;
+					display: block;
+					clear: both;
+				}
+
+
+
+		h3.activeHead {
+			background: lightgrey;
+		}
+
+
+/******************************************************
+/* Menu Item Screen (jQuery temp.)
+/*****************************************************/
+
+.options {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background: white;
+	display: none;
+}
+
+/******************************************************
+/* Menu Item Screen
+/*****************************************************/
+
+.menuItem.menuHead {
+	border-left: 0px;
+	background: lightgrey;
+}
+
+	#jaysChoices {
+		color: white;
+	}
+			
+		#jaysChoices h3 {
+			background: #76A84D;
+			border-bottom: 1px solid white;
+		}
+
+		#jaysChoices .itemOptions {
+			background: rgba(118, 168, 77, .5);
+			border-bottom: 1px solid white;
+			position: relative;
+		}
+
+			#jaysChoices .itemOptions .optionChosen {
+				width: 30px;
+				height: 28px;
+				position: absolute;
+				top: 10px;
+				right: 10px;
+				background-image: url('../images/checkOption.png');
+				background-position: 0 0px;
+			}
+
+		.optionChosen img {
+			float: right;
+		}
+
+		#userChoices h3 {
+			border-bottom: 1px solid lightgrey;
+		}
+
+		#userChoices .itemOptions {
+			border-bottom: 1px solid lightgrey;
+		}
+
+			#userChoices .itemOptions:hover {
+				background: lightgrey;
+			}
+
+		.itemOptionsBox h3 {
+			font-size: 16px;
+			padding: 10px;
+		}
+
+			.itemOptions {
+				width: 100%;
+				padding: 15px;
+			}
+
+				.itemOptions:hover {
+					cursor: pointer;
+				}
+
+				.itemOptions h4 {
+					font-size: 14px;
+				}
+
+				p.itemOptionSelections {
+					font-size: 12px;
+					clear: both;
+				}
+
+#itemQuantity .inputBox {
+	margin-top: 20px;
+	font-size: 30px;
+	height: 50px;
+}
+
+/******************************************************
+/* Review Order Screen
+/*****************************************************/
+
+.itemReview {
+	width: 100%;
+	padding: 15px;
+	border-bottom: 1px solid grey;
+	font-size: 16px;
+}
+
+	.itemReview.popupButton:hover {
+		background: lightgrey;
+	}
+
+
+	.itemReview h6 {
+		float: left;
+		font-size: inherit;
+		margin-bottom: 5px;
+	}
+
+		.itemReview p.itemTotal {
+			float: right;
+			font-size: inherit;
+			margin-left: 15px;
+		}
+
+		.itemReview p.itemAmount {
+			font-size: inherit;
+			float: right;
+		}
+
+/******************************************************
+/* Checkout Screen
+/*****************************************************/
+
+#deliveryAddressBox:hover {
+	background: lightgrey;
+}
+
+h2.mainHeader {
+	width: 100%;
+	display: inline-block;
+	font-size: 20px;
+	padding: 10px;
+}
+
+#tipButton {
+	background: white;
+	border: 1px solid lightgrey;
+	width: 150px;
+	height: 100%;
+	font-size: 20px;
+	text-align: center;
+}
+
+#tipMenu .inputBox {
+	margin-top: 20px;
+}
+
+/******************************************************
+/* Prompt/Receipt Screens
+/*****************************************************/
+
+body.prompt #appContent {
+	background: rgba(118, 168, 77, .3);
+}
+
+	h2.screenHeader {
+		font-size: 20px;
+		margin: 50px 0 30px;
+		text-align: center;
+		line-height: 2;
+	}
+
+		h2.screenHeader.highHeader {
+			margin: 20px 0 0;
+		}
+
+	p.centerSubheader {
+		text-align: center;
+		font-size: 12px;
+		margin: 10px 0 25px;
+	}
+
+	p.bottomLink {
+		font-size: 14px;
+		margin: 50px;
+		text-align: center;
+		color: blue;
+	}
+
+#newPasswordBox {
+	margin-bottom: 40px;
+}
+
+body.receipt .itemReview:hover {
+	background: inherit;
+}
+
+h5.headerDivide  {
+	font-size: 16px;
+	border-bottom: 1px solid black;
+	padding: 15px 10px;
+	background: rgba(118, 168, 77, .5);
+}
+
+/******************************************************
+/* Popup Styles
+/*****************************************************/
+
+.popupMenu {
+	position: absolute;
+	top: 0; left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.5);
+}
+
+	.screenBox {
+		width: 75%;
+		margin: 0 auto;
+	}
+	
+	.popupBox {
+		max-height: 75%;
+		overflow: scroll;
+		width: 80%;
+		padding: 10px;
+		margin: 75px auto 0;
+		background: white;
+		border-radius: 5px;
+	}
+
+		.popupBox h5 {
+			font-size: 16px;
+			border-bottom: 1px solid black;
+			padding-bottom: 3px;
+		}
+
+	ul li {
+		list-style: none;
+	}
+
+		ul.popupItems li label {
+			vertical-align: top;
+			display: block;
+			font-size: 14px;
+			padding: 15px 0;
+			border-bottom: 1px solid lightgrey;
+
+		}
+
+		ul.popupItems li input {			
+			float: right;
+			margin-top: 2px;
+		}
+
+			.popupItemPrice {
+				display: inline;
+				float: right;
+				margin-right: 10px;
+			}
+
+        ul.dataItems li label {
+			vertical-align: top;
+			display: block;
+			font-size: 14px;
+			padding: 15px 0;
+			border-bottom: 1px solid lightgrey;
+
+		}
+
+		ul.dataItems li input {			
+			float: right;
+			margin-top: 2px;
+		}
+
+        ul.lineItems li h4 {
+			vertical-align: top;
+			display: block;
+			font-size: 14px;
+			padding: 15px 0;
+			border-bottom: 1px solid lightgrey;
+
+		}
+
+	.popupBox ul.inputItems li {
+		margin-bottom: 10px;
+	}
+
+		.popupBox ul.inputItems li:first-child {
+			margin-top: 20px;
+		}
+
+
+	.popupOk {
+		margin-top: 20px;
+		display: inline-block;
+		float: right;
+		background: green;
+	}
+
+	.popupCancel {
+		margin-top: 20px;
+		display: inline-block;
+		float: left;
+		background: yellow;
+	}
+
+	.saveField {
+		text-align: right;
+		width: 100%;
+	}
+
+	.disabledText {
+		color: lightgrey;
+	}
+
+	p.afterLink {
+		margin: 20px 0 10px;
+		font-size: 14px;
+		text-align: center;
+		color: blue;
+	}
+
+/******************************************************
+/* Form Styles
+/*****************************************************/
+
+.inputArea {
+	padding: 10px;
+}
+
+	.inputArea h5 {
+		font-size: 16px;
+		margin: 20px 0 5px;
+	}
+
+	.inputArea ul li {
+		margin-bottom: 10px;
+	}
+
+		ul li.leftCheckbox {
+			text-align: left;
+		}
+
+		ul li.reverseLeftCheckbox {
+			text-align: left;
+		}
+
+			ul li.reverseLeftCheckbox input {
+				float: left;
+				margin-right: 5px;
+			}
+
+/******************************************************
+/* Curation Styles
+/*****************************************************/
+
+.healthTips {
+	width: 100%;
+	padding: 5px 10px;
+	background: rgba(118, 168, 77, .3);
+	font-size: 12px;
+	border: 1px solid black;
+	border-bottom: 2px solid black;
+}
+
+	.healthTips h4 {
+		border-bottom: 1px solid black;
+		margin-bottom: 10px;
+	}
+
+
+
+/******************************************************
+/* Support Styles
+/*****************************************************/
+
+#errorMsg {
+	width: 70%;
+	padding: 20px;
+	border: 2px solid rgba(255, 0, 0, 1);
+	border-radius: 10px;
+	background: rgba(200, 0, 0, 1);
+	position: absolute;
+	bottom: 30px; right: 15%;
+	font-size: 12px;
+	color: white;
+	text-align: center;
+}
+
+	.errorText {
+		color: red;
+		font-size: 10px;
+		margin-top: 5px;
+	}
+
+#loading {
+	min-width: 100%;
+	min-height: 100%;
+	position: absolute;
+	top: 0; left: 0;
+	background: rgba(0, 0, 0, .8);
+	background-image: url('../images/loading.gif');
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: 75px 75px;
+	z-index: 50;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+		.loader_ {
+		  position: relative;
+		  display: inline-block;
+		  margin: 0 12.5% 100px;
+		  width: 40px;
+		  height: 40px;
+		  border: 2px solid #0cf;
+		  border-radius: 50%;
+		  
+		  animation: spin 0.75s infinite linear;
+		}
+		.loader_::before,
+		.loader_::after {
+		  left: -2px;
+		  top: -2px;
+		  display: none;
+		  position: absolute;
+		  content: '';
+		  width: inherit;
+		  height: inherit;
+		  border: inherit;
+		  border-radius: inherit;
+		}
+
+
+		/*
+		 * LOADER 1
+		 */
+		.loader_ {
+		  border-top-width: 0;
+		}
+
+		@keyframes spin {
+		  from {
+		    transform: rotate(0deg);
+		  }
+		  to {
+		    transform: rotate(360deg);
+		  }
+		}
+
+
+
+.clearfix:after {
+   content: " ";
+   visibility: hidden;
+   display: block;
+   height: 0;
+   clear: both;
+}
+
+.hidden {
+	display: none;
+}
+
+.itemCenter {
+	display: block;
+	margin: 0 auto;
+}
+
+.underLine {
+	border-bottom: 1px solid black;
+}
+
+.inputBox.singleItem {
+	margin-top: 20px;
+}
