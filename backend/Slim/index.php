@@ -161,15 +161,16 @@ $app->get('/rd/:rid', function($rid) {
                                 $itemToInsert['rating'] = $itm['item_rating'];
 
                                 // mark Jay's options as such
-                                if(array_key_exists('children', $itemToInsert)) {
+                                if( isset($itemToInsert['children']) ) {
                                     foreach ($itemToInsert['children'] as $iiOptIdx => $iiOpt) {
                                         //if an option has jay's choices...
-                                        foreach ($itm['options'] as $jayOpt => $jayCh) {
-                                            if($jayOpt == $iiOpt['id']) {
-                                                foreach ($itemToInsert['children'][$iiOptIdx]['children'] as $iiChoiceIdx => $iiChoice) {
-                                                    if(in_array($iiChoice['id'], $jayCh)) {
-                                                        $itemToInsert['children'][$iiOptIdx]['children'][$iiChoiceIdx]['jay_choice'] = true;
-                                }   }   }   }   }   }
+                                        if( isset($itm['options']) ) {
+                                            foreach ($itm['options'] as $jayOpt => $jayCh) {
+                                                if($jayOpt == $iiOpt['id']) {
+                                                    foreach ($itemToInsert['children'][$iiOptIdx]['children'] as $iiChoiceIdx => $iiChoice) {
+                                                        if(in_array($iiChoice['id'], $jayCh)) {
+                                                            $itemToInsert['children'][$iiOptIdx]['children'][$iiChoiceIdx]['jay_choice'] = true;
+                                }   }   }   }   }   }   }
 
                                 break 2; // Break out back into $newData["menu"][$catIdx]['items'] 
 

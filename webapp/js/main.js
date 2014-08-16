@@ -48,6 +48,12 @@ app.config(['$routeProvider',// '$locationProvider',
 	////////////////////////////////////////////////////////////////////
 	
 	app.controller('AppCtrl', function($scope, $http, $location, $timeout, ControllerStorage){
+		
+		$scope.showHeader = true;
+
+		// Set HTML Window Height via Device Height
+		var deviceHeight = window.outerHeight;
+		document.getElementById("deviceScreen").style.minHeight = deviceHeight;
 
 		// Simulate User Loggin Status
 		$scope.userLoggedIn = function(){
@@ -148,6 +154,12 @@ app.config(['$routeProvider',// '$locationProvider',
 
             return years;
     	}
+
+	});
+
+	app.controller('HeaderCtrl', function($scope, $http, $location, $timeout, ControllerStorage){
+
+		
 
 	});
 
@@ -357,6 +369,7 @@ app.config(['$routeProvider',// '$locationProvider',
 	app.controller('SearchCtrl', function($scope, $http, $location){
 
 		$scope.$parent.pageTitle = 'Fat App';
+		$scope.$parent.showHeader = false;
 
 		$scope.storage.clear();
 
@@ -384,7 +397,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 			var address = JSON.parse($scope.storage.deliveryAddress);
 
-			var reqUrl = 'http://jay.craftinc.co/Slim/rl/' + address.zipcode + '/' + address.city + '/' + address.addressLine;
+			var reqUrl = 'http://localhost:8888/backend/Slim/rl/' + address.zipcode + '/' + address.city + '/' + address.addressLine;
 			$scope.storage.reqUrl = reqUrl;
 
 			$http.get( reqUrl )
@@ -412,21 +425,22 @@ app.config(['$routeProvider',// '$locationProvider',
 	app.controller('RestaurantsCtrl', function($scope, $http, $location){
 
 		$scope.$parent.pageTitle = 'Restaurants';
+		$scope.$parent.showHeader = true;
 
 		// Check if not a newSearch, refresh restaurantList if so
 		if ($scope.storage.newSearch != 'true') {
-			$scope.showLoader();
-			var promise = $http.get( $scope.storage.reqUrl )
-				.success( function( data, status, header, config ) {
-					$scope.restaurantList = data;
-					$scope.hideLoader();
-				})
-				.error( function( data, status, header, config ) {
-					console.log('Invalid Address: ', data);
-					$scope.hideLoader();
-					// $scope.storage.errorMsg = 'Invalid Address';
-					// $scope.flashError();
-				});
+			// $scope.showLoader();
+			// var promise = $http.get( $scope.storage.reqUrl )
+			// 	.success( function( data, status, header, config ) {
+			// 		$scope.restaurantList = data;
+			// 		$scope.hideLoader();
+			// 	})
+			// 	.error( function( data, status, header, config ) {
+			// 		console.log('Invalid Address: ', data);
+			// 		$scope.hideLoader();
+			// 		// $scope.storage.errorMsg = 'Invalid Address';
+			// 		// $scope.flashError();
+			// 	});
 		// Otherwise, show page
 		} else { $scope.hideLoader(); };
 
@@ -460,7 +474,7 @@ app.config(['$routeProvider',// '$locationProvider',
 			// Get Menu data if not set or Restaurant Changed
 			if ($scope.storage.activeRest != $scope.newRest) {
 				$scope.showLoader();
-				$http.get( 'http://jay.craftinc.co/Slim/rd/' + $scope.newRest )
+				$http.get( 'http://localhost:8888/backend/Slim/rd/' + $scope.newRest )
 					.success( function( data, status, header, config ) {
 						$scope.storage.menu = JSON.stringify(data);
 						$scope.storage.activeRest = $scope.newRest;
@@ -719,6 +733,8 @@ app.config(['$routeProvider',// '$locationProvider',
 			if ($scope.storage.tray) {
 				$scope.tray = JSON.parse($scope.storage.tray);
 				$scope.getTotal();
+
+				
 			}
 		});
 
@@ -774,7 +790,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		// Make Fee call on pageLoad for stored deliveryAddress
 		var address = JSON.parse($scope.storage.deliveryAddress);
-		var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
+		var feeUrl = 'http://localhost:8888/backend/Slim/fee/' 
 			+ $scope.storage.activeRest + '/'
 			+ $scope.price + '/'
 			+  $scope.storage.tip + '/'
@@ -791,7 +807,7 @@ app.config(['$routeProvider',// '$locationProvider',
 				$scope.addressDisplay = $scope.storage.deliveryAddressDisplay;
 				$scope.addressName = $scope.deliveryAddress.addressName;
 				// Make New Fee Call for Address Change
-				feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
+				feeUrl = 'http://localhost:8888/backend/Slim/fee/' 
 					+ $scope.storage.activeRest + '/'
 					+ $scope.price + '/'
 					+  $scope.storage.tip + '/'
@@ -858,7 +874,7 @@ app.config(['$routeProvider',// '$locationProvider',
 				console.log('saveCard!');
 			};
 
-			var reqURL = 'http://jay.craftinc.co/Slim/order/'+$scope.storage.orderRest	;
+			var reqURL = 'http://localhost:8888/backend/Slim/order/'+$scope.storage.orderRest	;
 
 			$http.post( reqURL, $scope.orderObject )
 				.success( function( data, status, header, config ) {
