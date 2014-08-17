@@ -3,25 +3,22 @@
 	<div id="menuHeader" class="restaurantListingItem">
 		<div class="topBox clearfix">
 			<h5>{{menu.name}}</h5>
-			<p class="distanceAway">{{distance}}</p>
+			<p class="distanceAway">0.3mi</p>
 		</div>
 		<div class="bottomBox clearfix">
 			<div class="feeWrapper">
 				<p>Minimum Order: ${{storage.mino}}</p> <!-- @TODO: use fee call -->
 				<p><span ng-repeat="filter in menu.filters">{{filter}}, </p> <!-- @TODO: use filter from rest info call -->
 			</div>
-			<div class="appleRating">
-				<div class="appleWrapper">
-					<img ng-src="images/apple{{menu.rating > 0 ? 1 : 0}}.png">
-					<img ng-src="images/apple{{menu.rating > 1 ? 1 : 0}}.png">
-					<img ng-src="images/apple{{menu.rating > 2 ? 1 : 0}}.png">
-				</div>
+			<div class="restRating">
+				<img ng-src="images/leaf_{{menu.rating > 2 ? 'green' : 'empty'}}.svg">
+				<img ng-src="images/leaf_{{menu.rating > 1 ? 'green' : 'empty'}}.svg">
+				<img ng-src="images/leaf_{{menu.rating > 0 ? 'green' : 'empty'}}.svg">
 			</div>
 		</div>
 	</div>
 
 	<div ng-show="mainTip" id='menuTip' class="healthTips">
-		<h4>Jay's Tips</h4>
 		<p>{{menu.tip}}</p>
 	</div>
 

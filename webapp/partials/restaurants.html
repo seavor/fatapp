@@ -1,12 +1,10 @@
-<div id="restFilterButton" class="subHeader popupButton">
+<div id="restFilterButton" class="popupButton" ng-click='popupModal("restFilters")'>
 	<input
-		id="filterSearch"
-		name="filterSearch"
+		id="filterButton"
+		name="filterButton"
 		type="text"
-		class="inputField popupButton"
+		class="inputButton popupButton"
 		ng-model="storage.filterDisplay"
-		ng-click='popupModal("restFilters")'
-		required readonly
 	>
 </div>
 
@@ -16,22 +14,20 @@
 
 	<div ng-repeat="restaurant in restaurantList | filter: restFilter ">
 
-		<div class="restaurantListingItem clearfix" ng-click="viewMenu(restaurant.id, restaurant.mino)" ng-show="restaurant.is_delivering==1" >
+		<div class="restaurantListingItem popupButton" ng-click="viewMenu(restaurant.id, restaurant.mino)" ng-show="restaurant.is_delivering==1" >
 			<div class="topBox">
 				<h5>{{restaurant.na}}</h5>
-				<p class="distanceAway">{{distance}}</p>
+				<p class="distanceAway">0.3mi</p>
 			</div>
 			<div class="bottomBox">
 				<div class="feeWrapper">
 					<p>Minimum Order: ${{restaurant.mino}}</p>
 					<p><span ng-repeat="filter in restaurant.filters">{{filter}}, </p>
 				</div>
-				<div class="appleRating">
-					<div class="appleWrapper">
-						<img ng-src="images/apple{{restaurant.rating > 0 ? 1 : 0}}.png">
-						<img ng-src="images/apple{{restaurant.rating > 1 ? 1 : 0}}.png">
-						<img ng-src="images/apple{{restaurant.rating > 2 ? 1 : 0}}.png">
-					</div>
+				<div class="restRating">
+					<img ng-src="images/leaf_{{restaurant.rating > 2 ? 'green' : 'empty'}}.svg">
+					<img ng-src="images/leaf_{{restaurant.rating > 1 ? 'green' : 'empty'}}.svg">
+					<img ng-src="images/leaf_{{restaurant.rating > 0 ? 'green' : 'empty'}}.svg">
 				</div>
 			</div>
 		</div>
@@ -45,7 +41,7 @@
 
 	<div ng-repeat="restaurant in restaurantList | filter: restFilter ">
 
-		<div class="restaurantListingItem" ng-click="viewMenu(restaurant.id, restaurant.mino)" ng-show="restaurant.is_delivering==0" >
+		<div class="restaurantListingItem popupButton" ng-click="viewMenu(restaurant.id, restaurant.mino)" ng-show="restaurant.is_delivering==0" >
 			<div class="topBox clearfix">
 				<h5>{{restaurant.na}}</h5>
 				<p class="distanceAway">{{distance}}</p>
@@ -55,11 +51,11 @@
 					<p>Minimum Order: ${{restaurant.services.deliver.mino}}</p>
 					<p><span ng-repeat="filter in restaurant.filters">{{filter}}, </p>
 				</div>
-				<div class="appleRating">
-					<div class="appleWrapper">
-						<img ng-src="images/apple{{restaurant.rating > 0 ? 1 : 0}}.png">
-						<img ng-src="images/apple{{restaurant.rating > 1 ? 1 : 0}}.png">
-						<img ng-src="images/apple{{restaurant.rating > 2 ? 1 : 0}}.png">
+				<div class="restRating">
+					<div class="ratingWrapper">
+						<img ng-src="images/leaf_{{restaurant.rating > 2 ? 'faded' : 'empty'}}.svg">
+						<img ng-src="images/leaf_{{restaurant.rating > 1 ? 'faded' : 'empty'}}.svg">
+						<img ng-src="images/leaf_{{restaurant.rating > 0 ? 'faded' : 'empty'}}.svg">
 					</div>
 				</div>
 			</div>
