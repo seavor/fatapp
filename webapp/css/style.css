@@ -57,7 +57,7 @@ a img {
   border: none;
 }
 
-article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
   display: block;
 }
 
@@ -184,6 +184,17 @@ button.actionButton {
   font-size: 1.6em;
   font-weight: 700;
   color: white;
+}
+
+.inputButton {
+  margin: 0;
+  border: 0;
+  padding: 15px 10px;
+  font-size: 12px;
+  background-image: url(../images/downArrow.svg);
+  background-repeat: no-repeat;
+  background-position: center right;
+  background-size: 15px;
 }
 
 .actionInfo {
@@ -353,6 +364,108 @@ button.actionButton {
   padding: 10px 20px 0;
 }
 
+/* Restaurant Listing
+**************************************************/
+.restListing h6 {
+  background-color: #bccdb5;
+  color: #1b3511;
+  padding: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.restaurantListingItem {
+  padding: 15px 10px;
+  border-bottom: 1px solid #cccccc;
+}
+.restaurantListingItem .topBox {
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.restaurantListingItem .topBox h5 {
+  display: inline-block;
+  font-size: 14px;
+}
+.restaurantListingItem .topBox p.distanceAway {
+  font-size: 12px;
+  float: right;
+  display: inline-block;
+}
+.restaurantListingItem .bottomBox .feeWrapper {
+  display: inline-block;
+}
+.restaurantListingItem .bottomBox .restRating {
+  display: inline-block;
+  float: right;
+  width: 40%;
+  text-align: right;
+}
+.restaurantListingItem .bottomBox .restRating img {
+  height: 20px;
+}
+
+/* Menu Page
+**************************************************/
+#menuContent .restaurantListingItem {
+  background: #f2f2f2;
+}
+#menuContent .healthTips p {
+  text-align: center;
+  color: #528540;
+  background: #bccdb5;
+  font-size: 12px;
+  font-style: italic;
+  padding: 10px 20px;
+}
+
+#menuCategories h3 {
+  width: 100%;
+  padding: 15px 10px;
+  border-bottom: 1px solid grey;
+}
+
+#menuCategories h3:hover, .menuItem:hover {
+  cursor: pointer;
+  background: lightgrey;
+}
+
+.menuItem {
+  width: 100%;
+  padding: 10px;
+  border-bottom: 1px solid grey;
+  border-left: 10px solid white;
+}
+
+.menuItem.itemGood {
+  border-left-color: orange;
+}
+
+.menuItem.itemBetter {
+  border-left-color: yellow;
+}
+
+.menuItem.itemBest {
+  border-left-color: green;
+}
+
+.menuItem h6 {
+  float: left;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.menuItem p.itemPrice {
+  float: right;
+  font-size: 16px;
+}
+
+.menuItem p.itemDescription {
+  font-size: 14px;
+  display: block;
+  clear: both;
+}
+
 /**************************************************
 /* Modals
 **************************************************/
@@ -440,12 +553,12 @@ button.actionButton {
   min-height: 40px;
   margin-top: 20px;
   padding-left: 10px;
-  background: white;
+  background: #1b3511;
   text-align: center;
   font-size: 16px;
   line-height: 1.6;
   border: 1px solid #cccccc;
-  color: black;
+  color: white;
 }
 .popupMenu .popupBox button.mediumButton {
   display: block;
