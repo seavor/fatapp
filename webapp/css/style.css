@@ -57,7 +57,7 @@ a img {
   border: none;
 }
 
-article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
   display: block;
 }
 
@@ -101,24 +101,51 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 /******************************************************
 /* Base Styles
 /*****************************************************/
+html {
+  min-height: 100%;
+  max-height: 100%;
+}
+
 body {
   font-size: 62.5%;
   font-family: Noto Sans, sans-serif;
   font-weight: 400;
+  background: black;
+}
+
+.evenBox {
+  background-color: #f2f2f2;
+}
+
+#appWrapper {
+  overflow: hidden;
+  *zoom: 1;
+  max-width: 640px;
+  overflow: none;
+  margin: 0 auto;
+  background: white;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+#appWrapper.withAction {
+  padding-bottom: 50px;
 }
 
 #appContent {
-  width: 100%;
-  position: relative;
+  height: 100%;
+  padding-bottom: 50px;
+  /* height of sticky action button */
+  overflow: scroll;
 }
 
 /* Form Fields
 **************************************************/
-input {
+input, select {
   margin: 0;
   padding: 0;
 }
-input:focus {
+input:focus, select:focus {
   outline: 0;
 }
 
@@ -140,29 +167,51 @@ input:focus {
   width: 30%;
 }
 
-.inputBox .ng-invalid::before {
-  border-bottom-color: #c14727;
-}
-
 .inputField {
   width: 100%;
   padding: 30px 0px 5px 15px;
+  margin-bottom: 1px;
   border: 0;
   border-bottom: 1px solid #cccccc;
-  background-image: url("../images/corner.png");
+  background-image: url("../images/corner_grey.png");
   background-position: bottom left;
   background-repeat: no-repeat;
   background-size: 10px 10px;
 }
 .inputField.ng-invalid.ng-dirty, .inputField.invalidFormField {
-  background-image: url("../images/badCorner.png");
+  background-image: url("../images/corner_red.png");
   border-bottom: 1px solid #c14727;
+}
+.inputField.ng-valid.ng-dirty, .inputField.validFormField {
+  background-image: url("../images/corner_green.png");
+  border-bottom: 1px solid #528540;
+}
+
+select.selectField {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  width: 100%;
+  background-color: white;
+  padding: 10px 20px;
+  margin-top: 20px;
+  font-size: 2em;
+  cursor: pointer;
+  border: 0;
+  border-bottom: 1px solid #cccccc;
+  background-image: url("../images/downArrow.png");
+  background-position: 90% 70%;
+  background-repeat: no-repeat;
+  background-size: 15px auto;
 }
 
 /* Button Styles
 *************************************************/
 button {
   border: 0;
+  cursor: pointer;
 }
 button:focus {
   outline: 0;
@@ -185,12 +234,17 @@ button.actionButton {
   font-weight: 700;
   color: white;
 }
+button.actionButton[disabled=disabled], button.actionButton:disabled {
+  display: none;
+}
 
 .inputButton {
+  cursor: pointer;
   margin: 0;
   border: 0;
-  padding: 15px 10px;
+  padding: 15px 30px 15px 15px;
   font-size: 12px;
+  background-color: transparent;
   background-image: url(../images/downArrow.svg);
   background-repeat: no-repeat;
   background-position: center right;
@@ -218,8 +272,11 @@ button.actionButton {
   font-size: 12px;
 }
 
-.popupButton:hover {
+.popupButton {
   cursor: pointer;
+}
+.popupButton:hover {
+  background-color: rgba(188, 205, 181, 0.5);
 }
 
 .buttonCenter {
@@ -229,7 +286,7 @@ button.actionButton {
 .screenItem {
   width: 100%;
   padding: 0px 10px 10px;
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid #cccccc;
 }
 .screenItem h3 {
   font-size: 16px;
@@ -238,12 +295,19 @@ button.actionButton {
   font-size: 12px;
 }
 
+#restFilterButton:hover {
+  cursor: pointer;
+  background-color: rgba(188, 205, 181, 0.5);
+}
+
 /******************************************************
 /* Header
 /*****************************************************/
 #appHeader {
+  max-width: 640px;
+  margin: 0 auto;
   width: 100%;
-  height: 40px;
+  height: 44px;
   background: #1b3511;
   /* NavBar
   /*************************************************/
@@ -320,8 +384,76 @@ button.actionButton {
 }
 
 /******************************************************
+/* Main Elements
+/*****************************************************/
+.sectionHead, .restListing h6 {
+  background-color: #bccdb5;
+  color: #1b3511;
+  padding: 10px;
+  font-size: 1em;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.header, #menuHeader {
+  background-color: #f2f2f2;
+}
+
+.block, .subBlock, .menuItem, .restaurantListingItem, #menuHeader {
+  width: 100%;
+  color: #1b3511;
+  padding: 15px 10px;
+  border-bottom: 1px solid #cccccc;
+}
+.block .topBox, .subBlock .topBox, .menuItem .topBox, .restaurantListingItem .topBox, #menuHeader .topBox {
+  font-weight: 600;
+  overflow: hidden;
+  *zoom: 1;
+}
+.block .topBox h5, .subBlock .topBox h5, .menuItem .topBox h5, .restaurantListingItem .topBox h5, #menuHeader .topBox h5 {
+  display: inline-block;
+  float: left;
+  font-size: 1.4em;
+  padding-right: 4em;
+}
+.block .topBox p, .subBlock .topBox p, .menuItem .topBox p, .restaurantListingItem .topBox p, #menuHeader .topBox p {
+  font-size: 1.2em;
+  float: right;
+  margin-left: -4em;
+  display: inline-block;
+}
+.block .bottomBox p, .subBlock .bottomBox p, .menuItem .bottomBox p, .restaurantListingItem .bottomBox p, #menuHeader .bottomBox p {
+  margin-top: 10px;
+}
+.block .bottomBox .feeWrapper, .subBlock .bottomBox .feeWrapper, .menuItem .bottomBox .feeWrapper, .restaurantListingItem .bottomBox .feeWrapper, #menuHeader .bottomBox .feeWrapper {
+  display: inline-block;
+  margin-top: 10px;
+}
+.block .bottomBox .feeWrapper p, .subBlock .bottomBox .feeWrapper p, .menuItem .bottomBox .feeWrapper p, .restaurantListingItem .bottomBox .feeWrapper p, #menuHeader .bottomBox .feeWrapper p {
+  margin-top: 0;
+}
+
+.subBlock .topBox, .menuItem .topBox {
+  font-weight: 400;
+}
+
+.unavailable, #closedRestaurants .restaurantListingItem {
+  color: #cccccc;
+}
+
+/******************************************************
 /* Page Views
 /*****************************************************/
+.warningBox p {
+  text-align: center;
+  font-size: 1em;
+  padding: 0 20px;
+  line-height: 2.5;
+  font-weight: 600;
+  background: #ffde8d;
+  color: #c14727;
+}
+
 /* Search Page
 **************************************************/
 #heroImage {
@@ -360,55 +492,19 @@ button.actionButton {
 
 #restSearch {
   width: 100%;
-  height: 40%;
+  margin-bottom: 40px;
   padding: 10px 20px 0;
+}
+#restSearch input {
+  cursor: pointer;
 }
 
 /* Restaurant Listing
 **************************************************/
-.restListing h6 {
-  background-color: #bccdb5;
-  color: #1b3511;
-  padding: 10px;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.restaurantListingItem {
-  padding: 15px 10px;
-  border-bottom: 1px solid #cccccc;
-}
-.restaurantListingItem .topBox {
-  margin-bottom: 10px;
-  font-weight: 600;
-}
-.restaurantListingItem .topBox h5 {
-  display: inline-block;
-  font-size: 14px;
-}
-.restaurantListingItem .topBox p.distanceAway {
-  font-size: 12px;
-  float: right;
-  display: inline-block;
-}
-.restaurantListingItem .bottomBox .feeWrapper {
-  display: inline-block;
-}
-.restaurantListingItem .bottomBox .restRating {
-  display: inline-block;
-  float: right;
-  width: 40%;
-  text-align: right;
-}
-.restaurantListingItem .bottomBox .restRating img {
-  height: 20px;
-}
-
 /* Menu Page
 **************************************************/
-#menuContent .restaurantListingItem {
-  background: #f2f2f2;
+#menuContent {
+  margin-bottom: 50px;
 }
 #menuContent .healthTips p {
   text-align: center;
@@ -419,56 +515,192 @@ button.actionButton {
   padding: 10px 20px;
 }
 
+#menuTip {
+  overflow: hidden;
+  max-height: 100px;
+  -webkit-transition: all;
+  -moz-transition: all 0.5s ease-out;
+  -o-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out;
+}
+
 #menuCategories h3 {
   width: 100%;
+  font-size: 1.4em;
+  font-weight: 600;
   padding: 15px 10px;
-  border-bottom: 1px solid grey;
-}
-
-#menuCategories h3:hover, .menuItem:hover {
   cursor: pointer;
-  background: lightgrey;
-}
-
-.menuItem {
-  width: 100%;
-  padding: 10px;
   border-bottom: 1px solid grey;
-  border-left: 10px solid white;
+}
+#menuCategories h3.selected {
+  background-color: #bccdb5;
+}
+#menuCategories .catItems {
+  overflow: hidden;
+  max-height: 0;
+  -webkit-transition: all;
+  -moz-transition: all 0.5s ease-out;
+  -o-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out;
+}
+#menuCategories .catItems .healthTips {
+  -webkit-box-shadow: 0px 10px 10px 0px gainsboro;
+  -moz-box-shadow: 0px 10px 10px 0px gainsboro;
+  box-shadow: 0px 10px 10px 0px gainsboro;
 }
 
-.menuItem.itemGood {
-  border-left-color: orange;
+.menuItem:last-child {
+  -webkit-box-shadow: 0px -10px 10px -7px #cccccc inset;
+  -moz-box-shadow: 0px -10px 10px -7px #cccccc inset;
+  box-shadow: 0px -10px 10px -7px #cccccc inset;
 }
 
-.menuItem.itemBetter {
-  border-left-color: yellow;
+/**************************************************
+/* Item Page
+**************************************************/
+.jayChoice {
+  color: #528540;
 }
-
-.menuItem.itemBest {
-  border-left-color: green;
+.jayChoice span {
+  background: url("../images/leaf_green.svg");
+  background-repeat: no-repeat;
+  background-size: 1em 1em;
+  background-position: 100% 50%;
+  padding-right: 1.5em;
 }
-
-.menuItem h6 {
-  float: left;
-  font-size: 16px;
-  margin-bottom: 5px;
+.jayChoice h3 {
+  background: #76A84D;
+  border-bottom: 1px solid white;
 }
-
-.menuItem p.itemPrice {
+.jayChoice .itemOptions {
+  background: rgba(118, 168, 77, 0.5);
+  border-bottom: 1px solid white;
+  position: relative;
+}
+.jayChoice .itemOptions .optionChosen {
+  width: 30px;
+  height: 28px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-image: url("../images/checkOption.png");
+  background-position: 0 0px;
+}
+.jayChoice .itemOptions .optionChosen img {
   float: right;
-  font-size: 16px;
 }
 
-.menuItem p.itemDescription {
+#userChoices h3 {
+  border-bottom: 1px solid lightgrey;
+}
+#userChoices .itemOptions {
+  border-bottom: 1px solid lightgrey;
+}
+
+.itemOptionsBox h3 {
+  font-size: 16px;
+  padding: 10px;
+}
+
+.itemOptions {
+  width: 100%;
+  padding: 15px;
+}
+.itemOptions h4 {
   font-size: 14px;
+}
+.itemOptions:hover {
+  cursor: pointer;
+}
+.itemOptions p.itemOptionSelections {
+  margin-top: 10px;
+  font-size: 12px;
+  font-style: italic;
+}
+
+ul.lineItems li h4 {
+  vertical-align: top;
   display: block;
-  clear: both;
+  font-size: 14px;
+  padding: 15px 0;
+  border-bottom: 1px solid lightgrey;
+  cursor: pointer;
+}
+
+p.itemAmount {
+  position: relative;
+  right: 5em;
+}
+
+.reviewItem .topBox h5 {
+  padding-right: 7em;
+}
+
+#tipObjects {
+  padding: 50px 10px;
+}
+#tipObjects h6 {
+  font-size: 1.2em;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+#tipObjects button {
+  width: 22%;
+  border: 1px solid #cccccc;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 0px 1.5%;
+  font-size: 1.2em;
+  font-weight: 300;
+  background-color: white;
+}
+#tipObjects button:first-of-type {
+  margin-left: 0;
+}
+#tipObjects button:last-of-type {
+  margin-right: 0;
+}
+#tipObjects button:hover {
+  background-color: rgba(188, 205, 181, 0.5);
+}
+#tipObjects button.selected {
+  background-color: #bccdb5;
+}
+
+#orderTotal {
+  margin-right: 20px;
+  width: 175px;
+  float: right;
+  text-align: right;
+}
+#orderTotal .itemPriceInfo {
+  position: relative;
+  overflow: hidden;
+  *zoom: 1;
+  margin-bottom: 10px;
+  font-size: 1.4em;
+}
+#orderTotal .itemPriceInfo h6, #orderTotal .itemPriceInfo p {
+  width: 40%;
+  display: inline-block;
+  text-align: right;
 }
 
 /**************************************************
 /* Modals
 **************************************************/
+#modalBox {
+  overflow: scroll;
+  min-height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .popupMenu {
   position: absolute;
   top: 0;
@@ -482,7 +714,7 @@ button.actionButton {
   overflow: scroll;
   width: 80%;
   padding: 10px;
-  margin: 75px auto 0;
+  margin: 75px auto;
   background: white;
   border-radius: 5px;
 }
@@ -490,6 +722,9 @@ button.actionButton {
   font-size: 16px;
   border-bottom: 1px solid black;
   padding-bottom: 3px;
+}
+.popupMenu .popupBox ul li label, .popupMenu .popupBox ul li input {
+  cursor: pointer;
 }
 .popupMenu .popupBox ul.dataItems li label {
   vertical-align: top;
@@ -574,6 +809,189 @@ button.actionButton {
 }
 
 /******************************************************
+/* CSS Ajax Spinner
+/*****************************************************/
+.ajaxLoaderWrapper {
+  display: inline-block;
+  position: absolute;
+  left: 2em;
+  top: -3px;
+}
+
+#floatingCirclesG {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  -moz-transform: scale(0.6);
+  -webkit-transform: scale(0.6);
+  -ms-transform: scale(0.6);
+  -o-transform: scale(0.6);
+  transform: scale(0.6);
+}
+
+.f_circleG {
+  position: absolute;
+  background-color: #FFFFFF;
+  height: 4px;
+  width: 4px;
+  -moz-border-radius: 2px;
+  -moz-animation-name: f_fadeG;
+  -moz-animation-duration: 0.72s;
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-direction: linear;
+  -webkit-border-radius: 2px;
+  -webkit-animation-name: f_fadeG;
+  -webkit-animation-duration: 0.72s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-direction: linear;
+  -ms-border-radius: 2px;
+  -ms-animation-name: f_fadeG;
+  -ms-animation-duration: 0.72s;
+  -ms-animation-iteration-count: infinite;
+  -ms-animation-direction: linear;
+  -o-border-radius: 2px;
+  -o-animation-name: f_fadeG;
+  -o-animation-duration: 0.72s;
+  -o-animation-iteration-count: infinite;
+  -o-animation-direction: linear;
+  border-radius: 2px;
+  animation-name: f_fadeG;
+  animation-duration: 0.72s;
+  animation-iteration-count: infinite;
+  animation-direction: linear;
+}
+
+#frotateG_01 {
+  left: 0;
+  top: 8px;
+  -moz-animation-delay: 0.27s;
+  -webkit-animation-delay: 0.27s;
+  -ms-animation-delay: 0.27s;
+  -o-animation-delay: 0.27s;
+  animation-delay: 0.27s;
+}
+
+#frotateG_02 {
+  left: 2px;
+  top: 2px;
+  -moz-animation-delay: 0.36s;
+  -webkit-animation-delay: 0.36s;
+  -ms-animation-delay: 0.36s;
+  -o-animation-delay: 0.36s;
+  animation-delay: 0.36s;
+}
+
+#frotateG_03 {
+  left: 8px;
+  top: 0;
+  -moz-animation-delay: 0.45s;
+  -webkit-animation-delay: 0.45s;
+  -ms-animation-delay: 0.45s;
+  -o-animation-delay: 0.45s;
+  animation-delay: 0.45s;
+}
+
+#frotateG_04 {
+  right: 2px;
+  top: 2px;
+  -moz-animation-delay: 0.54s;
+  -webkit-animation-delay: 0.54s;
+  -ms-animation-delay: 0.54s;
+  -o-animation-delay: 0.54s;
+  animation-delay: 0.54s;
+}
+
+#frotateG_05 {
+  right: 0;
+  top: 8px;
+  -moz-animation-delay: 0.63s;
+  -webkit-animation-delay: 0.63s;
+  -ms-animation-delay: 0.63s;
+  -o-animation-delay: 0.63s;
+  animation-delay: 0.63s;
+}
+
+#frotateG_06 {
+  right: 2px;
+  bottom: 2px;
+  -moz-animation-delay: 0.72s;
+  -webkit-animation-delay: 0.72s;
+  -ms-animation-delay: 0.72s;
+  -o-animation-delay: 0.72s;
+  animation-delay: 0.72s;
+}
+
+#frotateG_07 {
+  left: 8px;
+  bottom: 0;
+  -moz-animation-delay: 0.81s;
+  -webkit-animation-delay: 0.81s;
+  -ms-animation-delay: 0.81s;
+  -o-animation-delay: 0.81s;
+  animation-delay: 0.81s;
+}
+
+#frotateG_08 {
+  left: 2px;
+  bottom: 2px;
+  -moz-animation-delay: 0.9s;
+  -webkit-animation-delay: 0.9s;
+  -ms-animation-delay: 0.9s;
+  -o-animation-delay: 0.9s;
+  animation-delay: 0.9s;
+}
+
+@-moz-keyframes f_fadeG {
+  0% {
+    background-color: #000000;
+  }
+
+  100% {
+    background-color: #FFFFFF;
+  }
+}
+
+@-webkit-keyframes f_fadeG {
+  0% {
+    background-color: #000000;
+  }
+
+  100% {
+    background-color: #FFFFFF;
+  }
+}
+
+@-ms-keyframes f_fadeG {
+  0% {
+    background-color: #000000;
+  }
+
+  100% {
+    background-color: #FFFFFF;
+  }
+}
+
+@-o-keyframes f_fadeG {
+  0% {
+    background-color: #000000;
+  }
+
+  100% {
+    background-color: #FFFFFF;
+  }
+}
+
+@keyframes f_fadeG {
+  0% {
+    background-color: #000000;
+  }
+
+  100% {
+    background-color: #FFFFFF;
+  }
+}
+
+/******************************************************
 /* Support Styles
 /*****************************************************/
 #loading {
@@ -592,4 +1010,17 @@ button.actionButton {
 
 .disabledText {
   color: lightgrey;
+}
+
+.clearfix:after {
+  content: " ";
+  visibility: hidden;
+  display: block;
+  height: 0;
+  clear: both;
+}
+
+.borderBottom {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #cccccc;
 }

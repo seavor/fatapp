@@ -1,47 +1,55 @@
  <div id="menuContent">
 
-	<div id="menuHeader" class="restaurantListingItem">
-		<div class="topBox clearfix">
+	<div id="menuHeader">
+		<div class="topBox">
 			<h5>{{menu.name}}</h5>
 			<p class="distanceAway">0.3mi</p>
 		</div>
-		<div class="bottomBox clearfix">
+		<div class="bottomBox">
 			<div class="feeWrapper">
 				<p>Minimum Order: ${{storage.mino}}</p> <!-- @TODO: use fee call -->
 				<p><span ng-repeat="filter in menu.filters">{{filter}}, </p> <!-- @TODO: use filter from rest info call -->
 			</div>
-			<div class="restRating">
-				<img ng-src="images/leaf_{{menu.rating > 2 ? 'green' : 'empty'}}.svg">
-				<img ng-src="images/leaf_{{menu.rating > 1 ? 'green' : 'empty'}}.svg">
-				<img ng-src="images/leaf_{{menu.rating > 0 ? 'green' : 'empty'}}.svg">
-			</div>
 		</div>
 	</div>
 
-	<div ng-show="mainTip" id='menuTip' class="healthTips">
+	<div class="warningBox">
+		<p>This restaurant is closing in less than 15 minutes</p>
+
+	</div>
+
+	<div id='menuTip' class="healthTips">
 		<p>{{menu.tip}}</p>
 	</div>
 
 	<!-- Display each Category -->
 	<div id="menuCategories" ng-repeat="category in menu.menu">
 		<div class="catPanel">
-			<h3 ng-click="accordionSelect(category.cat_id)">{{category.name}}</h3>
-			<div ng-show="accordionShow == category.cat_id" class="catItems">
+			<h3
+			ng-click="accordionSelect(category.cat_id)"
+			ng-class-even="'evenBox'"
+			ng-class="{selected : selectedAccordion == category.cat_id}"
+			class="popupButton" >{{category.name}}</h3>
+			<div data-item='{{category.cat_id}}' class="catItems">
 				<div class="healthTips">
 					<p>{{category.cat_tip}}</p>
 				</div>
 
 				<!-- Display each Category's Menu Item -->
-				<div class="menuItem itemBest" ng-repeat="item in category.children" ng-click='viewItem(item.id)'>
-					<h6>{{item.name}}</h6>
-					<p class="itemPrice">${{item.price}}</p>
-					<p class="itemDescription">{{item.descrip}}</p>
+				<div class="menuItem popupButton" ng-repeat="item in category.children" ng-click='viewItem(item.id)'>
+					<div class="topBox">
+						<h5>{{item.name}}</h5>
+						<p class="itemPrice">${{item.price}}</p>
+					</div>
+					<div class="bottomBox">
+						<p class="itemDescription" ng-show="item.descrip">{{item.descrip}}</p>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
 	<!-- Show only once item has been added to order -->
-	<button id="reviewOrder" class="actionButton" type="button" ng-click="reviewOrder()" ng-show="storage.tray">Review Your Order</button>
+	<button id="reviewOrder" class="actionButton" type="button" ng-click="reviewOrder()" ng-show="showAction()">Review Your Order</button>
 
 </div>

@@ -9,12 +9,12 @@
 
 <div id="restSearch">
 
-	<div id="addressField" class="inputBox popupButton">
+	<div id="addressField" class="inputBox">
 		<input
 			id="addressSearch"
 			name="addressSearch"
 			type="text"
-			class="inputField popupButton"
+			class="inputField"
 			placeholder="Location"
 			ng-model="storage.deliveryAddressDisplay"
 			ng-click='popupModal(selectAddress())'
@@ -22,12 +22,12 @@
 		>
 	</div>
 
-	<div id="restFilterButton" class="inputBox popupButton">
+	<div id="restFilterButton" class="inputBox">
 		<input
 			id="filterSearch"
 			name="filterSearch"
 			type="text"
-			class="inputField popupButton"
+			class="inputField"
 			ng-model="storage.filterDisplay"
 			ng-click='popupModal("restFilters")'
 			required readonly
@@ -35,7 +35,7 @@
 	</div>
 
 	<!-- <button id="loginButton" class="existingUser actionButton" type="button" ng-hide="userLoggedIn()">Login</button> -->
-	<button id="searchRestaurants" class="actionButton" ng-click='restListQuery()' type="button" ng-show="displayRestButton()">Find Restraunts</button>
+	<button id="searchRestaurants" class="actionButton" ng-click='restListQuery()' type="button" ng-show="showAction()">Find Restraunts</button>
 
 </div>
 
