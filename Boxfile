@@ -4,4 +4,4 @@ web1:
 
 web2:
   name: api
-  document_root: backend/Slim
+  document_root: backend/Slim/
