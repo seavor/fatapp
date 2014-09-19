@@ -1,2 +1,6 @@
 web1:
 	document_root: webapp/
+
+web2:
+	name: api
+	document_root: backend/Slim
