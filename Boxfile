@@ -1,7 +1,7 @@
 web1:
-	document_root: webapp/
+  name: front-end
+  document_root: webapp/
 
 web2:
-	name: api
-	document_root: backend/Slim
-	
+  name: api
+  document_root: backend/Slim
