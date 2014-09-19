@@ -24,7 +24,15 @@
 
 
 
-	<div id="appHeader" ng-controller="HeaderCtrl" ng-if="showHeader">
+
+
+
+
+
+	
+
+	<div id="appWrapper">
+		<div id="appHeader" ng-controller="HeaderCtrl" ng-if="showHeader">
 
 		<!-- Left-handed nav button -->
 		<div id="navButton" ng-click="navButton()"></div>
@@ -44,13 +52,14 @@
 		</div>
 
 	</div>
+		<div id="appContent" ng-view></div>
+	</div>
 
 
 
 
-	
 
-	<div id="appContent" ng-view></div>
+
 	<div id="loading" ng-show="displayLoader"></div>
 	<div id="errorMsg" ng-show="displayError">{{errorMsg}}</div>
 	<script src="http://localhost:35729/livereload.js"></script> <!-- Grunt livereload command -->

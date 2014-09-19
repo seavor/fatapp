@@ -1,6 +1,8 @@
 // Angular Setup
 ////////////////////////////////////////////////////////////////////////
 
+var siteURL = /* 'http://jay.craftinc.co/'; */ 'http://localhost:8888/backend/';
+
 // Declare App Module
 var app = angular.module('app', ['ngRoute', 'ngAnimate']);
 
@@ -41,6 +43,32 @@ app.config(['$routeProvider',// '$locationProvider',
 
 ]);
 
+// Ordr.in API Calls
+app.factory('API', ['$http', function($http){
+	return {
+		'closingTime' : function(){
+
+						},
+		'checkAddress' : function(){
+
+						},
+		'checkAvailability' : function(){
+
+						},
+		'deffer' : function(url){
+			// Make Fee call on pageLoad for stored deliveryAddress
+			// $scope.showLoader();
+			// $scope.addressError = '';
+			console.log(url);
+			return $http.get( url );
+				
+		}
+	};
+
+
+
+}]);
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -52,8 +80,8 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.showHeader = true;
 
 		// Set HTML Window Height via Device Height
-		var deviceHeight = window.outerHeight;
-		document.getElementById("deviceScreen").style.minHeight = deviceHeight;
+		// var deviceHeight = window.outerHeight;
+		// document.getElementById("deviceScreen").style.minHeight = deviceHeight;
 
 		// Simulate User Loggin Status
 		$scope.userLoggedIn = function(){
@@ -79,6 +107,22 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.displayLoader = false;
 		$scope.displayError = false;
 		$scope.url = 'null';
+
+		$scope.actionState = false;
+		$scope.showAction = function() {
+			return $scope.actionState;
+		};
+
+		$scope.changeActionButton = function(state) {
+			
+			// Flip Values of display, or change via param
+			if (typeof state != 'undefined') { $scope.actionState = state; }
+			else { $scope.actionState = !$scope.actionState; }
+
+			// Add Padding class when actionButton displayed
+			if ($scope.actionState) { $("#appContent").addClass('withAction'); }
+			else { $("#appContent").removeClass('withAction'); }
+		};
 
 		$scope.popupModal = function(popup, param){
 			$scope.storage.popupParam = param;
@@ -273,7 +317,7 @@ app.config(['$routeProvider',// '$locationProvider',
 		
     	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		$scope.storeOptions = function() {
+		$scope.storeOptions = function() {	
 
 			// If a Radio is Being Stored
 			if ($scope.option.min == $scope.option.max == 1) {
@@ -350,15 +394,6 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('TipCtrl', function($scope, $location){
 
-		$scope.updateTip = function(){
-			// Update if Tip Given
-			if ($scope.tipUpdate && $scope.tipUpdate >= 0) { $scope.storage.tip = parseFloat($scope.tipUpdate).toFixed(2); }
-			// Otherwise remove Tip
-			else { $scope.storage.removeItem('tip'); };
-			 
-			$scope.closeModal();
-		};
-
 	});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -380,15 +415,9 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		// Reveal 'Find Restaurants' button upon Address Selection
 		$scope.$watch('storage.deliveryAddress', function() {
-			if ($scope.storage.deliveryAddress) { $scope.storage.findRestButtonState = true; }
-			else { $scope.storage.findRestButtonState = false; }
+			if ($scope.storage.deliveryAddress) { $scope.changeActionButton(true); }
+			else { $scope.changeActionButton(false); }
 		});
-
-		$scope.displayRestButton = function(){
-			// Change this to check against storage of search address
-			var state = $scope.storage.findRestButtonState;
-			return state;
-		};
 
 		// Find restaurants @TODO
 		$scope.restListQuery = function(){
@@ -397,7 +426,7 @@ app.config(['$routeProvider',// '$locationProvider',
 
 			var address = JSON.parse($scope.storage.deliveryAddress);
 
-			var reqUrl = 'http://localhost:8888/backend/Slim/rl/' + address.zipcode + '/' + address.city + '/' + address.addressLine;
+			var reqUrl = siteURL + 'Slim/rl/' + address.zipcode + '/' + address.city + '/' + address.addressLine;
 			$scope.storage.reqUrl = reqUrl;
 
 			$http.get( reqUrl )
@@ -474,7 +503,7 @@ app.config(['$routeProvider',// '$locationProvider',
 			// Get Menu data if not set or Restaurant Changed
 			if ($scope.storage.activeRest != $scope.newRest) {
 				$scope.showLoader();
-				$http.get( 'http://localhost:8888/backend/Slim/rd/' + $scope.newRest )
+				$http.get( siteURL + 'Slim/rd/' + $scope.newRest )
 					.success( function( data, status, header, config ) {
 						$scope.storage.menu = JSON.stringify(data);
 						$scope.storage.activeRest = $scope.newRest;
@@ -493,7 +522,7 @@ app.config(['$routeProvider',// '$locationProvider',
 		
 	});
 
-	app.controller('MenuCtrl', function($scope, $http, $location){
+	app.controller('MenuCtrl', function($scope, API, $timeout, $http, $location){
 
 		$scope.$parent.pageTitle = 'Menu';
 
@@ -505,22 +534,71 @@ app.config(['$routeProvider',// '$locationProvider',
 		// Menu Accordion Logic
 		$scope.mainTip = true;
 
+
+
+
+
+
+
+
+		$scope.setHeight = function(cid) {
+			// First, get Div array
+			var height = 0;
+			var section = $('.catItems[data-item='+cid+']')[0];
+			
+			$(section).each(function(k, v){
+				$(v.children).each(function(index, piece){
+					height += piece.offsetHeight;
+				});
+			});
+			
+			$('.catItems[data-item='+cid+']').css('max-height', height);
+		};
+
 		$scope.accordionSelect = function(cid){
 			// If Expanded Accordion is selected again, close all accordions
-			if ($scope.accordionShow == cid) { $scope.accordionShow = -1; }
-			// Else Expand Selected Accordion
-			else { $scope.accordionShow = cid; }
+			if ($scope.selectedAccordion == cid) {
+				$('.catItems[data-item='+cid+']').css('max-height', 0);
+				$('#menuTip').css('max-height', $('#menuTip p').outerHeight());
+				$scope.selectedAccordion = -1;
+			}
 
-			// If Accordion is open, close Main Tip
-			if ($scope.accordionShow > 0) { $scope.mainTip = false; }
-			// Otherwise, Show main tip
-			else { $scope.mainTip = true; }
+
+			// Else Expand Selected Accordion
+			else {
+				// Close Open Panels
+				$('.catItems').css('max-height', '0px');
+				$('#menuTip').css('max-height', '0px');
+				$scope.selectedAccordion = cid;
+
+				$scope.setHeight(cid);
+			}
+
 		};
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		$scope.viewItem = function(iid){
 			$scope.storage.activeItem = iid;
 			$location.path('/item');
 		};
+
+		// Reveal 'Review Order' button upon Item Addition to Tray
+		$scope.$watch('storage.tray', function() {
+			if ($scope.storage.tray) { $scope.changeActionButton(true); }
+			else { $scope.changeActionButton(false); }
+		});
 
 	    $scope.reviewOrder = function(){
 	    	$location.path('/review');
@@ -685,10 +763,13 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	});
 
-	app.controller('ReviewCtrl', function($scope, $location){
+	app.controller('ReviewCtrl', function($scope, API, $location, $http, $q){
 
 		$scope.$parent.pageTitle = 'Review Order';
 		$scope.reviewButton = 'Proceed to Checkout';
+		$scope.menu = JSON.parse($scope.storage.menu);
+
+		$scope.changeActionButton(true);
 
 		$scope.storage.removeItem('editItem');
 		$scope.storage.removeItem('editItemObj');
@@ -703,7 +784,57 @@ app.config(['$routeProvider',// '$locationProvider',
 			$location.path('/item');
 		};
 
-		$scope.getTotal = function() {
+		$scope.addTip = function(num, custom){
+			var isCustom = custom || false;
+			// If new tip amount is selected
+			if (num != $scope.tipAdded) {
+				// If custom tip amount has been entered
+				if (isCustom == true) {
+					if (num > 0) {
+
+						$scope.tipAdded = 'other';
+						$scope.storage.tip = parseFloat(num).toFixed(2);
+					// If 0 added, deselect
+					} else { $scope.tipAdded = 0; $scope.storage.tip = parseFloat(0).toFixed(2); }
+				// If a percentage tip amount has been chosen
+				} else {
+					$scope.tipAdded = num;
+					$scope.storage.tip = parseFloat($scope.subTotal * (num / 100)).toFixed(2);  // subTotal not yet set??
+					console.log($scope.subTotal);
+
+				}
+			// Deselect if tip amount button reselected
+			} else {
+				$scope.tipAdded = 0;
+				$scope.storage.tip = '0.00';
+			}
+
+
+			$scope.closeModal();
+		};
+
+		$scope.feeCall = function(){
+
+			var address = JSON.parse($scope.storage.deliveryAddress);
+			var feeUrl = 'Slim/fee/' 
+				+ $scope.storage.activeRest + '/'
+				+ $scope.subTotal + '/'
+				+  ($scope.storage.tip || 0) + '/'
+				+ 'ASAP/'
+				+ address.zipcode + '/'
+				+ address.city + '/'
+				+ address.addressLine;
+
+			feeUrl = siteURL + encodeURI(feeUrl);
+
+			var deferred = $q.defer();
+			deferred.resolve($http.get(feeUrl));
+
+			return deferred.promise;
+
+		};
+
+		$scope.getSubTotal = function() {
 			var price = 0; // Calc SubTotal
 			angular.forEach($scope.tray, function(item, trayIdx) {
 				price += (parseFloat(item.price) * item.amount);
@@ -711,35 +842,61 @@ app.config(['$routeProvider',// '$locationProvider',
 
 			// Set SubTotal
 			$scope.subTotal = price.toFixed(2);
-
-			// Set Tip & Price Total
-			var tip = $scope.storage.tip ? $scope.storage.tip : parseFloat(0).toFixed(2);
-			$scope.priceTotal = parseFloat(parseFloat($scope.subTotal) + parseFloat(tip)).toFixed(2);
+			$scope.priceTotal = parseFloat(parseFloat($scope.subTotal) + (parseFloat($scope.taxes) || 0) + (parseFloat($scope.storage.tip) || 0)).toFixed(2);
 
 			// Determine if Minimum Order is met
 			if (parseFloat($scope.subTotal) >= parseFloat($scope.storage.mino)) { $scope.minimum = true; $scope.reviewButton = 'Proceed to Checkout'; }
-			else {$scope.minimum = false; $scope.reviewButton = 'Minimum Not Met'; };
+			else {$scope.minimum = false; $scope.minimumError = 'Minimum order not met.'; };
 		};
+
+		$scope.getSubTotal();
+
+		$scope.getTotal = function(){
+			// Gets SubTotal, Adds Taxes/Fees and Tip
+			$scope.getSubTotal();
+
+			// Ajax Delivery Fee and Update values on return
+			$scope.calcFeeLoader = true;
+			var promise = $scope.feeCall();
+			promise.then(function(data){
+				console.log('returned');
+				if (data.status == 200) {
+					var details = data.data;
+					$scope.taxes = parseFloat(parseFloat(details.fee) + parseFloat(details.tax)).toFixed(2);
+					$scope.calcFeeLoader = false;
+					// Set Tip & Price Total
+					$scope.priceTotal = parseFloat(parseFloat($scope.subTotal) + (parseFloat($scope.taxes) || 0) + (parseFloat($scope.storage.tip) || 0)).toFixed(2);
+				} else {
+					// oops error
+					$scope.calcFeeLoader = false;
+					console.log(data);
+				}
+			});
+
+		};
+
+
+		$scope.storage.tip = parseFloat(0).toFixed(2);
+		
+		// Set default Tip
+		$scope.addTip(10);
 
 		$scope.proceedToCheckout = function(){
 			$scope.storage.priceTotal = $scope.priceTotal;
 			$location.path('/checkout');
 		};
-
-		$scope.getTotal();
 		
 		// Update Tray & Display when Item Removed
 		$scope.$watch('storage.tray', function(){
 			if ($scope.storage.tray) {
 				$scope.tray = JSON.parse($scope.storage.tray);
 				$scope.getTotal();
-
-				
 			}
 		});
 
 		// Watch for New Tip
 		$scope.$watch('storage.tip', function() {
+			$scope.tip = $scope.storage.tip || '0.00';
 			$scope.getTotal();
 		});
 
@@ -749,56 +906,14 @@ app.config(['$routeProvider',// '$locationProvider',
 
 		$scope.$parent.pageTitle = 'Checkout';
 
+		$scope.changeActionButton(true);
+
 		// Set Defaults
 		$scope.customer = {}; // Form Field ngModel
 		$scope.orderObject = {}; // Object Passed into Post request
     	$scope.grandTotal = $scope.storage.priceTotal; // Init grandTotal to order's priceTotal
     	$scope.yearRange = $scope.findYearRange();
     	$scope.fee = '0.00';
-
-		$scope.checkAddress = function(url){
-			$scope.showLoader();
-			$scope.addressError = '';
-			$http.get( url )
-				.success( function( data, status, header, config ) {
-					// If Error is returned
-					if (data['_err'] == 0) {
-						$scope.checkoutButton = 'Uh-Oh! :(';
-						$scope.addressError = data.msg;
-						$scope.grandTotal = 'n/a';
-						$scope.storage.fee = $scope.fee = 'n/a';
-						$scope.storage.grandTotal = 'n/a';
-						$scope.hideLoader();
-					} else {
-    					$scope.checkoutButton = 'Send Me Food!';
-						// Set Fee field for View
-						$scope.fee = parseFloat(data.fee).toFixed(2);
-						// Add Taxes to Fees if they exists
-						if (!isNaN(data.tax)) { $scope.fee = (parseFloat($scope.fee) + parseFloat(data.tax)).toFixed(2); }
-						// Calc Grand Total
-						$scope.grandTotal = parseFloat(parseFloat($scope.storage.priceTotal) + parseFloat($scope.fee)).toFixed(2);
-						$scope.storage.fee = $scope.fee;
-						$scope.storage.grandTotal = $scope.grandTotal;
-						$scope.hideLoader();
-					}
-				})
-				.error( function( data, status, header, config ) {
-					console.log(data);
-					$scope.hideLoader();
-				});
-		};
-
-		// Make Fee call on pageLoad for stored deliveryAddress
-		var address = JSON.parse($scope.storage.deliveryAddress);
-		var feeUrl = 'http://localhost:8888/backend/Slim/fee/' 
-			+ $scope.storage.activeRest + '/'
-			+ $scope.price + '/'
-			+  $scope.storage.tip + '/'
-			+ 'ASAP/'
-			+ address.zipcode + '/'
-			+ address.city + '/'
-			+ address.addressLine;
-		$scope.checkAddress(feeUrl);
 
 		// Keep deliveryAddress Object Updated & make new Fee call
 		$scope.$watch('storage.deliveryAddress', function() {
@@ -807,7 +922,7 @@ app.config(['$routeProvider',// '$locationProvider',
 				$scope.addressDisplay = $scope.storage.deliveryAddressDisplay;
 				$scope.addressName = $scope.deliveryAddress.addressName;
 				// Make New Fee Call for Address Change
-				feeUrl = 'http://localhost:8888/backend/Slim/fee/' 
+				feeUrl = siteURL + 'Slim/fee/' 
 					+ $scope.storage.activeRest + '/'
 					+ $scope.price + '/'
 					+  $scope.storage.tip + '/'
@@ -816,7 +931,7 @@ app.config(['$routeProvider',// '$locationProvider',
 					+ $scope.deliveryAddress.city + '/'
 					+ $scope.deliveryAddress.addressLine;
 
-				$scope.checkAddress(feeUrl);
+				// $scope.checkAddress(feeUrl);
 			} else { // If no deliveryAddress has been selected
 				$scope.addressName = 'Please Select';
 				$scope.addressDisplay = ':(';
@@ -847,8 +962,8 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.orderObject.em = $scope.customer.email;
 			$scope.orderObject.tray = tray;
 			$scope.orderObject.tip = $scope.storage.tip || 0;
-			$scope.orderObject.first_name = 'Jeremy';
-			$scope.orderObject.last_name = 'Letto';
+			$scope.orderObject.first_name = $scope.customer.name.substr(0, $scope.customer.name.indexOf(' '));
+			$scope.orderObject.last_name = $scope.customer.name.substr($scope.customer.name.indexOf(' ')+1);;
 			$scope.orderObject.delivery_date = 'ASAP';
 			$scope.orderObject.phone = $scope.customer.phone;
 			$scope.orderObject.addr = $scope.deliveryAddress.addressLine;
@@ -874,7 +989,7 @@ app.config(['$routeProvider',// '$locationProvider',
 				console.log('saveCard!');
 			};
 
-			var reqURL = 'http://localhost:8888/backend/Slim/order/'+$scope.storage.orderRest	;
+			var reqURL = siteURL + 'Slim/order/'+$scope.orderObject.rid	;
 
 			$http.post( reqURL, $scope.orderObject )
 				.success( function( data, status, header, config ) {
@@ -888,15 +1003,13 @@ app.config(['$routeProvider',// '$locationProvider',
 						$scope.hideLoader(); // Instead, hideLoader() thru another feeCall() ???
 						console.log('Ordr.in\'s Fault: '+data);
 					};
-					
 				})
-			.error( function( data, status, header, config ) {
-				// Show Error Msg
-				$scope.hideLoader();
-				console.log('JCORE Backend failed:', data);
-			});
-
-		};
+				.error( function( data, status, header, config ) {
+					// Show Error Msg
+					$scope.hideLoader();
+					console.log('JCORE Backend failed:', data);
+				});
+			};
 
 	});
 

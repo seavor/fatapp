@@ -1,25 +1,75 @@
-<div class="itemReview popupButton clearfix" ng-repeat="item in tray" ng-click="popupModal('editItem', $index)">
-	<h6>{{item.name}}</h6>
-	<p class="itemTotal">{{item.price * item.amount | currency}}</p>
-	<p class="itemAmount">x {{item.amount}}</p>
-	<p class="itemOptionSelections">
-		<span ng-repeat="option in item.extras">
-			<span ng-repeat="choice in option.choices">
-				<span ng-show="choice.selected" ng-class="{jayChoice : choice.jayChoice}">{{choice.name}}&nbsp;</span>
-			</span>
-		</span>
-	</p>
+<div id="menuHeader">
+	<div class="topBox">
+		<h5>{{menu.name}}</h5>
+		<p class="distanceAway">0.3mi</p>
+	</div>
+	<div class="bottomBox">
+		<div class="feeWrapper">
+			<p>Minimum Order: ${{storage.mino}}</p> <!-- @TODO: use fee call -->
+			<p><span ng-repeat="filter in menu.filters">{{filter}}, </p> <!-- @TODO: use filter from rest info call -->
+		</div>
+	</div>
 </div>
 
-<div id="orderTotal" class="actionInfo">
+<div class="warningBox">
+	<p>{{minimumError}}</p>
+</div>
+
+<div class="menuItem reviewItem popupButton" ng-repeat="item in tray" ng-click="popupModal('editItem', $index)">
+	<div class="topBox">
+		<h5>{{item.name}}</h5>
+		<p class="itemTotal">{{item.price * item.amount | currency}}</p>
+		<p class="itemAmount">x {{item.amount}}</p>
+	</div>
+	<div class="bottomBox">
+		<p class="itemOptionSelections">
+			<span ng-repeat="option in item.extras">
+				<span ng-repeat="choice in option.choices" ng-class="{jayChoice : choice.jayChoice}">
+					<span ng-show="choice.selected">{{choice.name}}&nbsp;</span>
+				</span>
+			</span>
+		</p>
+	</div>
+</div>
+
+<!-- @TODO Add Tip box array -->
+
+<div id="tipObjects">
+	<h6>Add a Tip</h6>
+	<button type="button" ng-class="{selected: tipAdded == 10}" ng-click="addTip(10)">10%</button>
+	<button type="button" ng-class="{selected: tipAdded == 15}" ng-click="addTip(15)">15%</button>
+	<button type="button" ng-class="{selected: tipAdded == 20}" ng-click="addTip(20)">20%</button>
+	<button type="button" ng-class="{selected: tipAdded == 'other'}" ng-click="popupModal('tip')">{{customTip || 'Other'}}</button>
+	<!-- <div class="inputBox">
+		<label for="cashTip">Tip in cash</label>
+		<input
+			id="cashTip"
+			name="cashTip"
+			ng-model="cashTip"
+			type="checkbox"
+			class="inputField" >
+	</div> -->
+</div>
+
+
+
+
+
+<div id="orderTotal">
 	<div class="itemPriceInfo">
 		<h6>Subtotal</h6>
 		<p>${{subTotal}}</p>
 	</div>
-	<div class="itemPriceInfo inputBox"> <!-- TODO Change this to a P tag with {{binding}} -->
-		<input id="tipButton" class="popupButton" ng-model="storage.tip" placeholder="Give a tip?" ng-click="popupModal('tip')" readonly>
+	<div class="itemPriceInfo">
+		<h6>Taxes/Fees</h6>
+		<p>${{taxes || '0.00'}}</p>
+	</div>
+	<div class="itemPriceInfo borderBottom">
+		<h6>Tip</h6>
+		<p>${{tip || '0.00'}}</p>
 	</div>
 	<div class="itemPriceInfo">
+		<div class="ajaxLoaderWrapper" ng-include="'pieces/ajax_spinner.html'" ng-show="calcFeeLoader"></div>
 		<h6>TOTAL</h6>
 		<p>${{priceTotal}}</p>
 	</div>
@@ -30,6 +80,7 @@
 	class="actionButton"
 	type="button"
 	ng-disabled="!minimum"
+	ng-show="showAction()"
 	ng-click="proceedToCheckout()" >
 	{{reviewButton}}
 </button>

@@ -3,8 +3,11 @@
 	<div id="chosenAddress" class="screenItem">
 		<h3>{{addressName}}</h3>
 		<p>{{addressDisplay}}</p>
-		<p class="errorText">{{addressError}}</p>
 	</div>
+</div>
+
+<div class="warningBox">
+	<p class="errorText">{{addressError}}</p>
 </div>
 
 <!-- insert enterAddress modal -->
@@ -165,6 +168,9 @@
 			<h5>Contact Info:</h5>
 
 			<li class="inputBox">
+				<input ng-model="customer.name" id="nameInput" name="name" type="text" class="inputField" placeholder="Name" required>
+			</li>
+			<li class="inputBox">
 				<input ng-model="customer.phone" id="phoneNumberInput" name="phonenumber" ng-pattern="/^[0-9]{10,10}$/" type="tel" class="inputField" placeholder="Phone" required>
 			</li>
 			<li class="inputBox">
@@ -191,6 +197,6 @@
 	</div>
 </div>
 
-<button id="purchase" class="actionButton" type="submit" ng-show="validateCheckout.$valid" ng-disabled="addressError" ng-click="orderFood()">{{checkoutButton}}</button>
+<button id="purchase" class="actionButton" type="submit" ng-show="showAction()" ng-disabled="addressError || !validateCheckout.$valid" ng-click="orderFood()">{{checkoutButton}}</button>
 
 <div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>
