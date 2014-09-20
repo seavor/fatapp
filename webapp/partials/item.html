@@ -1,21 +1,34 @@
-<div class="menuItem itemBest">
-	<h6>{{item.name}}</h6>
-	<p class="itemPrice">${{item.price}}</p>
-	<p class="itemDescription">{{item.descrip}}</p>
-	<p class="error itemError"></p>
+<div class="menuItem header">
+	<div class="topBox">
+		<h5>{{item.name}}</h5>
+		<p class="itemPrice">${{item.price}}</p>
+	</div>
+	<div class="bottomBox">
+		<p class="itemDescription">{{item.descrip}}</p>
+		<p class="error itemError" ng-show="item.error">{{item.error}}</p>
+	</div>
 </div>
 
 <div id="userChoices" class="itemOptionsBox">
 
-	<h3 ng-show="item.children.length">Choose your options:</h3>
+	<h3 ng-show="item.extras.length">Choose your options:</h3>
 
-	<div class="itemOptions popupButton" ng-repeat="option in item.children" ng-click="optionPopup(option)">
-		<h4>{{option.name}}<span class="required" ng-show="option.min_child_select > 0">*</span></h4>
-		<p class="itemOptionSelections">{{ optionsDisp[ option.id ] }}</p>
+	<div 
+		class="itemOptions popupButton"
+		ng-repeat="option in item.extras"
+		ng-click="optionPopup(option.id)"
+		ng-if="option.choices"
+	>
+		<h4>{{option.name}}<span class="required" ng-show="option.min > 0">*</span></h4>
+		<p class="itemOptionSelections">
+			<span ng-repeat="choice in option.choices" ng-class="{jayChoice : choice.jayChoice}">
+				<span ng-show="choice.selected">{{choice.name}}&nbsp;</span>
+			</span>
+		</p>
 	</div>
 
 </div>
-
+<!-- 
 <div id="orderTotal" class="actionInfo">
 	<div class="itemPriceInfo">
 		<h6>Item Price</h6>
@@ -23,22 +36,20 @@
 	</div>
 	<div class="itemPriceInfo">
 		<h6>Extras</h6>
-		<p>${{extraPrice}}</p>
+		<p>${{item.extra_price}}</p>
 	</div>
 	<div class="itemPriceInfo">
 		<h6>TOTAL</h6>
 		<p>${{totalPrice}}</p>
 	</div>
 </div>
-
-<button class="actionButton" type="button" ng-show="fee == 1">(Restaurant Closed)</button>
-
+ -->
 <button 
 	id="addToOrder"
 	class="actionButton"
 	type="button"
-	ng-click="popupModal('quantity')"
-	ng-show="itemOrderable">
+	ng-click="checkRequirements()"
+	ng-disabled="item.is_orderable == 0">
 		{{orderButton}}
 </button>
 

@@ -1,8 +1,8 @@
-<div id="itemQuantity" class="popupMenu" ng-controller="QuantityCtrl">
+<div id="itemQuantity" class="popupMenu">
 	<div class="popupBox clearfix">
 		<h5>Enter Quantity:</h5>
 		<div class="inputBox">
-			<select class="selectNumber inputField" name="itemAmount" ng-model="amount">
+			<select class="selectField" name="itemAmount" ng-model="$parent.item.amount">
 				<option
 					ng-repeat="i in amountRange"
 					ng-value="{{$index+1}}"

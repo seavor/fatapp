@@ -1,37 +1,41 @@
+<div id="heroImage">
+	<img src="images/noodles.png">
+	<div id="dailyFitTip">
+		<img src="images/leaf_white.svg">
+		<h3>Cardiello Fit Tip:</h3>
+		<p>An apple a day is a played out cliche. Do what I say, or fat you will stay.</p>
+    </div>
+</div>
+
 <div id="restSearch">
 
-	<div id="addressField" class="inputBox popupButton">
+	<div id="addressField" class="inputBox">
 		<input
 			id="addressSearch"
 			name="addressSearch"
 			type="text"
-			class="inputField popupButton"
-			placeholder="enter address"
+			class="inputField"
+			placeholder="Location"
 			ng-model="storage.deliveryAddressDisplay"
 			ng-click='popupModal(selectAddress())'
 			required readonly
 		>
 	</div>
 
-	<div id="restFilterButton" class="inputBox popupButton">
+	<div id="restFilterButton" class="inputBox">
 		<input
 			id="filterSearch"
 			name="filterSearch"
 			type="text"
-			class="bigButton popupButton"
+			class="inputField"
 			ng-model="storage.filterDisplay"
 			ng-click='popupModal("restFilters")'
 			required readonly
 		>
 	</div>
 
-	<div id="dailyFitTip">
-		<h3>Cardiello Fit Tip:</h3>
-		<p>An apple a day is a played out cliche.</p>
-    </div>
-
 	<!-- <button id="loginButton" class="existingUser actionButton" type="button" ng-hide="userLoggedIn()">Login</button> -->
-	<button id="searchRestaurants" class="actionButton actionRequired" ng-click='restListQuery()' type="button" ng-show="displayRestButton()">Find Restraunts</button>
+	<button id="searchRestaurants" class="actionButton" ng-click='restListQuery()' type="button" ng-show="showAction()">Find Restraunts</button>
 
 </div>
 

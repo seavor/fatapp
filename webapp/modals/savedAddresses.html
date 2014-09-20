@@ -1,8 +1,8 @@
 <div id="chooseAddress" class="popupMenu radioMenu" ng-controller="SavedAddressesCtrl">
 	<div class="popupBox clearfix">
 		<h5>Choose Address:</h5>
-		<ul class="dataItems" ng-repeat="address in addressList">
-			<li ng-click="chooseAddress(address.aid)">
+		<ul class="dataItems">
+			<li ng-click="chooseAddress(address.aid)" ng-repeat="address in addressList">
 				<label for="_{{address.addressName}}">{{address.addressName}}
 					<input id="_{{address.addressName}}" name="chooseAddressOption" value="{{address.addressName}}" type="radio" class="">
 				</label>

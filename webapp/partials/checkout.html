@@ -6,11 +6,15 @@
 	</div>
 </div>
 
+<div class="warningBox">
+	<p class="errorText">{{addressError}}</p>
+</div>
+
 <!-- insert enterAddress modal -->
 
 <h2 id="paymentHeader" class="mainHeader">Payment</h2>
 
-<form ng-submit="orderFood()">
+<form name="validateCheckout">
 
 	<div class="inputArea">
 		<ul class="inputItems">
@@ -18,13 +22,28 @@
 
 				<h5>Credit Card Info:</h5>
 				<li class="inputBox">
-					<input ng-model="customer.cardName" id="cardNameInput" name="cardNameInput" type="text" class="inputField" placeholder="Name on Card">
+					<input
+						id="cardNameInput"
+						class="inputField"
+						name="cardNameInput"
+						type="text"
+						ng-model="customer.cardName"
+						placeholder="Name on Card"
+						required>
 				</li>
 				<li class="inputBox">
-					<input ng-model="customer.cardNumber" id="cardNumberInput" name="cardNumberInput" type="text" class="inputField" placeholder="Card Number">
+					<input
+						id="cardNumberInput"
+						class="inputField"
+						name="cardNumberInput"
+						type="number"
+						ng-model="customer.cardNumber"
+						ng-pattern="/^[0-9]{16,16}$/"
+						placeholder="Card Number"
+						required>
 				</li>
 				<li class="inputBox tertiaryBox">
-					<select ng-model="customer.cardMonth" id="expmonth" name="expmonth" class="inputField">
+					<select id="expmonth" class="inputField" name="expmonth" ng-model="customer.cardMonth" required>
 						<option value="" disabled selected>MM</option>
 						<option value="01">01</option>
 						<option value="02">02</option>
@@ -41,32 +60,39 @@
 					</select>
 				</li>
 				<li class="inputBox tertiaryBox">
-					<select ng-model="customer.cardYear" name="expyear" class="inputField">
+					<select name="expyear" class="inputField" ng-model="customer.cardYear" required>
+						<option value="" disabled selected>YY</option>
 						<option
 							ng-repeat="i in yearRange"
 							ng-value="{{i}}"
-							ng-disabled="$index==0"
-							ng-selected="$index==0"
 						>{{i}}
 						</option>
 					</select>
 				</li>
 				<li class="inputBox tertiaryBox lastItem">
-					<input ng-model="customer.cvv" id="cvv" name="cvv" type="password" placeholder="CVV" class="inputField">
+					<input
+					id="cvc"
+					class="inputField"
+					name="cvc"
+					type="password"
+					ng-model="customer.cvc"
+					ng-pattern="/^[0-9]{3,4}$/"
+					placeholder="CVC"
+					required>
 				</li>
 
 				<h5>Billing Address:</h5>
 				<li class="inputBox">
-					<input ng-model="customer.billAddr" id="billingLine1Input" name="billingLine1" type="text" class="inputField" placeholder="Address Line 1">
+					<input ng-model="customer.billAddr" id="billingLine1Input" name="billingLine1" type="text" class="inputField" placeholder="Address Line 1" required>
 				</li>
 				<li class="inputBox">
 					<input ng-model="customer.billAddr2" id="billingLine2Input" name="billingLine2" type="text" class="inputField" placeholder="Address Line 2">
 				</li>
 				<li class="inputBox">
-					<input ng-model="customer.billCity" id="billingCityInput" name="billingCity" type="text" class="inputField" placeholder="City">
+					<input ng-model="customer.billCity" id="billingCityInput" name="billingCity" type="text" class="inputField" placeholder="City" required>
 				</li>
 				<li class="inputBox halfBox">
-					<select ng-model="customer.billState" id="billingStateInput" name="billingState" class="inputField">
+					<select ng-model="customer.billState" id="billingStateInput" name="billingState" class="inputField" required>
 						<option value="" disabled selected>State</option>
 						<option value="AL">Alabama</option>
 						<option value="AK">Alaska</option>
@@ -119,19 +145,18 @@
 						<option value="WV">West Virginia</option>
 						<option value="WI">Wisconsin</option>
 						<option value="WY">Wyoming</option>
-						<option value="AS">American Samoa</option>
-						<option value="GU">Guam</option>
-						<option value="MP">Northern Mariana Islands</option>
-						<option value="PR">Puerto Rico</option>
-						<option value="UM">United States Minor Outlying Islands</option>
-						<option value="VI">Virgin Islands</option>
-						<option value="AA">Armed Forces Americas</option>
-						<option value="AP">Armed Forces Pacific</option>
-						<option value="AE">Armed Forces Others</option>
 					</select>	
 				</li>
 				<li class="inputBox halfBox lastItem">
-					<input ng-model="customer.billZip" id="billZipcodeInput" name="billZipcode" type="number" class="inputField" placeholder="Zip Code">
+					<input
+						id="billZipcodeInput"
+						class="inputField"
+						name="billZipcode"
+						type="number"
+						ng-model="customer.billZip"
+						ng-pattern="/^[0-9]{5,5}$/"
+						placeholder="Zip Code"
+						required>
 				</li>
 				<li class="saveField">
 					<label for="saveCreditCard">Save this Card
@@ -143,31 +168,35 @@
 			<h5>Contact Info:</h5>
 
 			<li class="inputBox">
-				<input ng-model="customer.phone" id="phoneNumberInput" name="phonenumber" type="number" class="inputField" placeholder="Phone Number">
+				<input ng-model="customer.name" id="nameInput" name="name" type="text" class="inputField" placeholder="Name" required>
 			</li>
 			<li class="inputBox">
-				<input ng-model="customer.email" id="emailInput" name="email" type="email" class="inputField" placeholder="Email">
+				<input ng-model="customer.phone" id="phoneNumberInput" name="phonenumber" ng-pattern="/^[0-9]{10,10}$/" type="tel" class="inputField" placeholder="Phone" required>
+			</li>
+			<li class="inputBox">
+				<input ng-model="customer.email" id="emailInput" name="email" type="email" class="inputField" placeholder="Email" required>
 			</li>
 
 		</ul>
 	</div>
 
-	<div id="orderTotal" class="actionInfo">
-		<div class="itemPriceInfo">
-			<h6>Subtotal</h6>
-			<p>$22.97</p>
-		</div>
-		<div class="itemPriceInfo inputBox">
-			<input id="tipButton" class="popupButton" ng-model="customer.tip" placeholder="Give a tip?" ng-click="popupModal('tip')" readonly>
-		</div>
-		<div class="itemPriceInfo">
-			<h6>TOTAL</h6>
-			<p>$24.97</p>
-		</div>
-	</div>
-
-	<button id="purchase" class="actionButton actionRequired" type="submit" ng-show="allFieldsFilled">Send Me Food!</button>
-
 </form>
+
+<div id="orderTotal" class="actionInfo" ng-show="validateCheckout.$valid">
+	<div class="itemPriceInfo">
+		<h6>Subtotal</h6>
+		<p>${{storage.priceTotal}}</p>
+	</div>
+	<div class="itemPriceInfo">
+		<h6>Taxes/Fees</h6>
+		<p>${{fee}}</p>
+	</div>
+	<div class="itemPriceInfo">
+		<h6>TOTAL</h6>
+		<p>${{grandTotal}}</p>
+	</div>
+</div>
+
+<button id="purchase" class="actionButton" type="submit" ng-show="showAction()" ng-disabled="addressError || !validateCheckout.$valid" ng-click="orderFood()">{{checkoutButton}}</button>
 
 <div id="modalBox" ng-include src='"modals/"+url+".html"' ng-show="displayModal"></div>

@@ -26,6 +26,18 @@ function printR($arr){
     print_r($arr);
     echo '</pre>';
 };
+
+function getContext() {
+    //Set stream options
+    $opts = array(
+      'http' => array('ignore_errors' => true)
+    );
+
+    //Create the stream context
+    $context = stream_context_create($opts);
+
+    return $context;
+}
                 
 // Get Restaurant List (delivery zone)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -33,28 +45,43 @@ function printR($arr){
 $app->get('/rl/:zip/:city/:addr', function($zip, $city, $addr) {
 
     // Ordr.in Tree
-    $data = json_decode(file_get_contents(RESTHOST . 'dl/ASAP/' . urlencode($zip) . '/' . urlencode($city) . '/' . urlencode($addr) . '?_auth=1,' . APIKEY), true);
+    $reqUrl = RESTHOST . 'dl/ASAP/' . urlencode($zip) . '/' . urlencode($city) . '/' . urlencode($addr) . '?_auth=1,' . APIKEY;
 
-    // @TODO This is twice as slow as the Restraunt Details call -_- #dafuq
+    $ordrinRes = file_get_contents($reqUrl, false, getContext());
 
-    $db = openConnection();
+    if (strpos($http_response_header[0], "200")) {
+        // if a 200 is returned from ordr.in, proceed with incorporating the Jcore stuff
 
-    $query = "SELECT * FROM Restaurants WHERE rest_activated = 1";
-    $rests = mysqli_query($db, $query);
+        // need extra param to decode into assoc. arrays instead of objects
+        $data = json_decode($ordrinRes, true);
 
-    while ($row = mysqli_fetch_assoc($rests)) {
-        foreach ($data as $key => $value) {
-            if ($row['rest_id'] == $value['id']) {
-                $value['rating'] = $row['rest_rating'];
-                $value['filters'] = json_decode($row['filters']);
-                $restaurants[] = $value;
-    }   }   }
+        $db = openConnection();
 
-    mysqli_free_result($rests);
-    mysqli_close($db);
+        $query = "SELECT * FROM Restaurants WHERE rest_activated = 1";
+        $rests = mysqli_query($db, $query);
 
-    echo json_encode($restaurants);
+        $restaurants = [];
 
+        while ($row = mysqli_fetch_assoc($rests)) {
+            foreach ($data as $key => $value) {
+                if ($row['rest_id'] == $value['id']) {
+                    $value['rating'] = $row['rest_rating'];
+                    $value['filters'] = json_decode($row['filters']);
+                    $restaurants[] = $value;
+        }   }   }
+
+        if (count($restaurants) == 0 ) {
+            $restaurants['error'] = 'no restaurants found for this address';
+        }
+
+        mysqli_free_result($rests);
+        mysqli_close($db);
+
+        echo json_encode($restaurants);
+    } else {
+        //if ordr.in doesn't return 200, send back the ordrin error.
+        echo $ordrinRes;
+    }
 });
 
 // Get Restaurant Details (menu)
@@ -100,56 +127,72 @@ $app->get('/rd/:rid', function($rid) {
     
     }
 
-     // Ordr.in Tree
-    $data = json_decode(file_get_contents(RESTHOST . 'rd/' . urlencode($rid) . '?_auth=1,' . APIKEY), true);
+    $reqUrl = RESTHOST . 'rd/' . urlencode($rid) . '?_auth=1,' . APIKEY;
 
-    $newData = $data;
+    $ordrinRes = file_get_contents($reqUrl, false, getContext());
 
-    // put in meta-data about restaurant
-    $newData['filters'] = $jcore['filters'];
-    $newData['rating'] = $jcore['rest_rating'];
-    $newData['tip'] = $jcore['rest_tip'];
-    $newData['menu'] = $jcore['categories'];
+    if (strpos($http_response_header[0], "200")) {
+        // if a 200 is returned from ordr.in, proceed with incorporating the Jcore stuff
 
-    // @TODO add mino to restaurant menu
+        // need extra param to decode into assoc. arrays instead of objects
+        $data = json_decode($ordrinRes, true);
 
-    // Loop thru Menu Categories & Items in Jcore structure
-    foreach ($newData["menu"] as $catIdx => $cat) {
-        foreach ($newData["menu"][$catIdx]['items'] as $itmIdx => $itm) {
-            
-            //finding the right ordr.in item...
-            foreach ($data['menu'] as $oiCatIdx => $oiCat) {
-                foreach ($data['menu'][$oiCatIdx]['children'] as $oiItmIdx => $oiItm) {
-                    if( $oiItm['id'] == $itm['item_id']) {
-                        $itemToInsert = $oiItm;
-                        $itemToInsert['rating'] = $itm['item_rating'];
-                        
-                        // mark Jay's options as such
-                        if(array_key_exists('children', $itemToInsert)) {
-                            foreach ($itemToInsert['children'] as $iiOptIdx => $iiOpt) {
-                                //if an option has jay's choices...
-                                foreach ($itm['options'] as $jayOpt => $jayCh) {
-                                    if($jayOpt == $iiOpt['id']) {
-                                        foreach ($itemToInsert['children'][$iiOptIdx]['children'] as $iiChoiceIdx => $iiChoice) {
-                                            if(in_array($iiChoice['id'], $jayCh)) {
-                                                $itemToInsert['children'][$iiOptIdx]['children'][$iiChoiceIdx]['jay_choice'] = true;
-                        }   }   }   }   }   }
+        $newData = $data;
 
-                        break 2; // Break out back into $newData["menu"][$catIdx]['items']
+        // put in meta-data about restaurant
+        $newData['filters'] = $jcore['filters'];
+        $newData['rating'] = $jcore['rest_rating'];
+        $newData['tip'] = $jcore['rest_tip'];
+        $newData['menu'] = $jcore['categories'];
 
-            }   }   }
-            
-            // add the ordr.in data + rating + options
-            $newData["menu"][$catIdx]['children'][] = $itemToInsert;//appropraite ordr.in item
-            unset($newData['menu'][$catIdx]['items']);
-    }   }
+        // @TODO add mino to restaurant menu
 
-    mysqli_free_result($rest);
-    mysqli_free_result($cats);
-    mysqli_free_result($items);
-    mysqli_close($db);
 
-    echo json_encode($newData);
+        // Loop thru Menu Categories & Items in Jcore structure
+        foreach ($newData["menu"] as $catIdx => $cat) {
+            foreach ($newData["menu"][$catIdx]['items'] as $itmIdx => $itm) {
+
+                //finding the right ordr.in item...
+                foreach ($data['menu'] as $oiCatIdx => $oiCat) {
+                    if( isset($data['menu'][$oiCatIdx]['children']) ) {
+                        foreach ($data['menu'][$oiCatIdx]['children'] as $oiItmIdx => $oiItm) {
+                            if( $oiItm['id'] == $itm['item_id']) {
+                                $itemToInsert = $oiItm;
+                                $itemToInsert['rating'] = $itm['item_rating'];
+
+                                // mark Jay's options as such
+                                if( isset($itemToInsert['children']) ) {
+                                    foreach ($itemToInsert['children'] as $iiOptIdx => $iiOpt) {
+                                        //if an option has jay's choices...
+                                        if( isset($itm['options']) ) {
+                                            foreach ($itm['options'] as $jayOpt => $jayCh) {
+                                                if($jayOpt == $iiOpt['id']) {
+                                                    foreach ($itemToInsert['children'][$iiOptIdx]['children'] as $iiChoiceIdx => $iiChoice) {
+                                                        if(in_array($iiChoice['id'], $jayCh)) {
+                                                            $itemToInsert['children'][$iiOptIdx]['children'][$iiChoiceIdx]['jay_choice'] = true;
+                                }   }   }   }   }   }   }
+
+                                break 2; // Break out back into $newData["menu"][$catIdx]['items'] 
+
+                }   }   }   }
+
+                // add the ordr.in data + rating + options
+                $newData["menu"][$catIdx]['children'][] = $itemToInsert;//appropraite ordr.in item
+                unset($newData['menu'][$catIdx]['items']);
+        }   }
+
+        mysqli_free_result($rest);
+        mysqli_free_result($cats);
+        mysqli_free_result($items);
+        mysqli_close($db);
+
+        echo json_encode($newData);
+
+    } else {
+        //if ordr.in doesn't return 200, send back the ordrin error.
+        echo $ordrinRes;
+    }
+
 
 });
 
@@ -170,10 +213,16 @@ $app->get('/fee/:rid/:subtotal/:tip/:datetime/:zip/:city/:addr', function($rid, 
         urlencode($addr).'/'.
         '?_auth=1,'.APIKEY;
 
-    $data = file_get_contents($reqUrl);
+    $ordrinRes = file_get_contents($reqUrl, false, getContext());
 
-    echo $data;
+    if (strpos($http_response_header[0], "200")) {
+        // if a 200 is returned from ordr.in, proceed with incorporating the Jcore stuff
 
+        echo $ordrinRes;
+    } else {
+        //if ordr.in doesn't return 200, send back the ordrin error.
+        echo $ordrinRes;
+    }
 });
 
 // Post Order
@@ -190,7 +239,7 @@ $app->post('/order/:rid', function($rid) use ($app) {
         'tray'            => $parsed->tray,
         'tip'             => $parsed->tip,
         'first_name'      => $parsed->first_name,
-        'last_name'       => $parsed->first_name,
+        'last_name'       => $parsed->last_name,
         'delivery_date'   => $parsed->delivery_date,
         'phone'           => $parsed->phone,
         'addr'            => $parsed->addr,
@@ -200,7 +249,7 @@ $app->post('/order/:rid', function($rid) use ($app) {
         'zip'             => $parsed->zip,
         'card_name'       => $parsed->card_name,
         'card_number'     => $parsed->card_number,
-        'card_cvc'        => $parsed->cvv,
+        'card_cvc'        => $parsed->card_cvc,
         'card_expiry'     => $parsed->card_expiry,
         'card_bill_addr'  => $parsed->card_bill_addr,
         'card_bill_addr2' => $parsed->card_bill_addr2,

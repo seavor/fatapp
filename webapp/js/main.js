@@ -1,6 +1,8 @@
 // Angular Setup
 ////////////////////////////////////////////////////////////////////////
 
+var siteURL = /* 'http://jay.craftinc.co/'; */ 'http://localhost:8888/backend/';
+
 // Declare App Module
 var app = angular.module('app', ['ngRoute', 'ngAnimate']);
 
@@ -41,6 +43,32 @@ app.config(['$routeProvider',// '$locationProvider',
 
 ]);
 
+// Ordr.in API Calls
+app.factory('API', ['$http', function($http){
+	return {
+		'closingTime' : function(){
+
+						},
+		'checkAddress' : function(){
+
+						},
+		'checkAvailability' : function(){
+
+						},
+		'deffer' : function(url){
+			// Make Fee call on pageLoad for stored deliveryAddress
+			// $scope.showLoader();
+			// $scope.addressError = '';
+			console.log(url);
+			return $http.get( url );
+				
+		}
+	};
+
+
+
+}]);
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,6 +76,12 @@ app.config(['$routeProvider',// '$locationProvider',
 	////////////////////////////////////////////////////////////////////
 	
 	app.controller('AppCtrl', function($scope, $http, $location, $timeout, ControllerStorage){
+		
+		$scope.showHeader = true;
+
+		// Set HTML Window Height via Device Height
+		// var deviceHeight = window.outerHeight;
+		// document.getElementById("deviceScreen").style.minHeight = deviceHeight;
 
 		// Simulate User Loggin Status
 		$scope.userLoggedIn = function(){
@@ -68,10 +102,27 @@ app.config(['$routeProvider',// '$locationProvider',
 		////////////////////////////////////////////////////////////////
 
 		// Initialize Modal Variables
+		$scope.pageTitle = '';
 		$scope.displayModal = false;
 		$scope.displayLoader = false;
 		$scope.displayError = false;
 		$scope.url = 'null';
+
+		$scope.actionState = false;
+		$scope.showAction = function() {
+			return $scope.actionState;
+		};
+
+		$scope.changeActionButton = function(state) {
+			
+			// Flip Values of display, or change via param
+			if (typeof state != 'undefined') { $scope.actionState = state; }
+			else { $scope.actionState = !$scope.actionState; }
+
+			// Add Padding class when actionButton displayed
+			if ($scope.actionState) { $("#appContent").addClass('withAction'); }
+			else { $("#appContent").removeClass('withAction'); }
+		};
 
 		$scope.popupModal = function(popup, param){
 			$scope.storage.popupParam = param;
@@ -111,8 +162,6 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.errorMsg = $scope.storage.errorMsg;
 		}); // $scope.errorMsg = ''; // Default
 
-
-
 		// Storage & Display Controls
 		////////////////////////////////////////////////////////////////
 
@@ -123,7 +172,7 @@ app.config(['$routeProvider',// '$locationProvider',
 			var fil = '';
 			return JSON.parse($scope.storage.filter, function(k, v){
 				if ( v ) { fil += (k.charAt(0).toUpperCase() + k.slice(1)) + ', '; }
-				return fil.substring(0, fil.length - 4) + ' Menus';
+				return 'Filter: ' + fil.substring(0, fil.length - 4) + ' Menus';
 			});
 		};
 
@@ -136,13 +185,12 @@ app.config(['$routeProvider',// '$locationProvider',
 			// Console Log remainingStorageSpace/totalStorageSpace
 			var limit = 1024 * 1024 * 5; // 5 MB
  			var remSpace = limit - unescape(encodeURIComponent(JSON.stringify($scope.storage))).length;
- 			console.log(remSpace+'/'+limit);
+ 			console.log('Storage: '+remSpace+'/'+limit);
 		};
 
 		$scope.findYearRange = function() {
-            var currentYear = new Date().getFullYear(), years = ['YY'];
+            var currentYear = new Date().getFullYear(), years = [];
             var endYear = currentYear + 20;
-            console.log(currentYear);
 
             while ( currentYear < endYear ) {
                     years.push(currentYear++);
@@ -153,12 +201,18 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	});
 
+	app.controller('HeaderCtrl', function($scope, $http, $location, $timeout, ControllerStorage){
+
+		
+
+	});
+
     // Modal Controllers
 	////////////////////////////////////////////////////////////////////
 	app.controller('SavedAddressesCtrl', function($scope, $http, $location){
 
 		$scope.addressList = [
-			// @TODO ajax call for address info (aid)
+			// @TODO ajax call for address info (aid) (run this onload in background)
 		    {"aid":"001", "addressName":"Chinatown", "addressLine":"392 Broadway", "city":"New York", "state":"NY", "zipcode":"10013"}, 
 		    {"aid":"002", "addressName":"Jeffries", "addressLine":"520 Madison Ave", "city":"New York", "state":"NY", "zipcode":"10022"}, 
 		    {"aid":"003", "addressName":"Midtown", "addressLine":"1480 Broadway", "city":"New York", "state":"NY", "zipcode":"10036"}
@@ -174,24 +228,21 @@ app.config(['$routeProvider',// '$locationProvider',
 			});
 		};
 
-		// @TODO Save Address when Checkbox Selected
-		$scope.saveAddress = function(){
-
-		};
-
 	});
 
 	app.controller('EnterAddressCtrl', function($scope, $http){
 
 		// need this initialization, new address isn't picked up otherwise!
 		$scope.addrForm = {};
+		$scope.cantSave = true;
 
 		// Store New Address
 		$scope.storeAddress = function() {
 			$scope.storage.deliveryAddress = JSON.stringify($scope.addrForm);
-			// TODO: AJAX save store if user logged in & Checked Save
 			$scope.storage.deliveryAddressDisplay = $scope.addrForm.addressLine + ', ' + $scope.addrForm.city + ', ' + $scope.addrForm.zipcode;
 			$scope.closeModal();
+			// TODO: AJAX save store if user logged in & Checked Save
+			if ($scope.storeAddress.saveAddress) { console.log('saved'); }
 		};
 
 	});
@@ -227,7 +278,7 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.filterSelection = function(){
 			$scope.storage.filter = JSON.stringify($scope.filterForm);
 			$scope.closeModal();
-			if ($scope.filterForm.all) { $scope.storage.filterDisplay = "All Menus"; }
+			if ($scope.filterForm.all) { $scope.storage.filterDisplay = "Filter: All Menus"; }
 			else { $scope.storage.filterDisplay = $scope.formattedFilter(); }
 		};
 
@@ -241,16 +292,55 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('OptionsCtrl', function($scope){
 
+    	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+		// Initialize Popup Variables
+		$scope.option = JSON.parse($scope.storage.activeOption); console.dir($scope.option);
+		$scope.chosenOptions = {}; $scope.chosenRadio = '';
 
-		$scope.$watch('storage.activeOption', function() {
-			$scope.option = JSON.parse($scope.storage.activeOption);
+		// Get List of Selected IDs, Default for Checkboxes
+		angular.forEach($scope.option.choices, function(choice, id) {
+			if ($scope.option.choices[id].selected == true) {
+				$scope.chosenOptions[id] = true;
+			}
 		});
 
-		// Return if Radio Button
-		$scope.isType = function(min, max){
-			if (min == 1 && max == 1) { return 'radio'; }
-			else { return 'checkbox'; }
+		// If Option Modal is a Radio List
+		if ($scope.option.min == $scope.option.max == 1) {
+			// Assign Selected Choice to ngModel Variable
+			if ($scope.chosenOptions.length != 0) {
+				angular.forEach($scope.chosenOptions, function(option, id) {
+					$scope.chosenRadio = id;
+				});	
+			}
+		} 
+		
+    	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		$scope.storeOptions = function() {	
+
+			// If a Radio is Being Stored
+			if ($scope.option.min == $scope.option.max == 1) {
+				// Reset Radio Options to False
+				angular.forEach($scope.option.choices, function(choice, id) {
+					$scope.option.choices[id].selected = false;
+				});
+				// Set New Radio Option to True
+				$scope.option.choices[$scope.chosenRadio].selected = true;
+			// If a Checkbox List is Being Stored
+			} else {
+				angular.forEach($scope.chosenOptions, function(choice, id) {
+					// If choice is not set to false (checked then unchecked)
+					if (choice) { $scope.option.choices[id].selected = true; }
+					else { $scope.option.choices[id].selected = false; };
+				});
+			}
+
+			// Merge Updated Option Object back into Item Object
+			$scope.item.extras[$scope.option.id] = $scope.option;
+			$scope.updatePrice();
+			$scope.closeModal();
+
 		};
 
 	});
@@ -262,10 +352,9 @@ app.config(['$routeProvider',// '$locationProvider',
 		// Find the Targeted Item in the Tray and Set Variables for EditOption()
 		tray.forEach(function(v, i){
 			if (i == $scope.storage.popupParam) {
-				$scope.name = v.item.name;
+				$scope.name = v.name;
 				$scope.iidx = i;
 				$scope.item = v;
-
 			}
 		});
 
@@ -278,6 +367,11 @@ app.config(['$routeProvider',// '$locationProvider',
 					$scope.closeModal();
 				}
 			});
+			
+			if (tray.length == 0) {
+				$scope.storage.removeItem('tray');
+				$location.path('/menu');
+			}
 		};
 
 	});
@@ -288,14 +382,17 @@ app.config(['$routeProvider',// '$locationProvider',
 		$scope.emptyTrayPrompt = function(bool){
 			if (bool) {
 				$scope.storage.orderRest = $scope.storage.activeRest;
-				$scope.closeModal();
-				$scope.storage.removeItem('menu');
 				$scope.storage.removeItem('tray');
-				$scope.addItem();
+				$scope.closeModal();
+				$scope.addItem(); // Add New Item after Emptying tray (function from ItemCtrl)
 			} else {
 				$scope.closeModal();
 			}
 		};
+
+	});
+
+	app.controller('TipCtrl', function($scope, $location){
 
 	});
 
@@ -306,24 +403,21 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('SearchCtrl', function($scope, $http, $location){
 
+		$scope.$parent.pageTitle = 'Fat App';
+		$scope.$parent.showHeader = false;
+
 		$scope.storage.clear();
 
 		// Initialize Filter Display/Checkbox/Storage
 		$scope.filterForm = { "all" : true };
-		$scope.storage.filterDisplay = "All Menus";
+		$scope.storage.filterDisplay = "Filter: All Menus";
 		$scope.storage.filter = JSON.stringify($scope.filterForm);
 
 		// Reveal 'Find Restaurants' button upon Address Selection
 		$scope.$watch('storage.deliveryAddress', function() {
-			if ($scope.storage.deliveryAddress) { $scope.storage.findRestButtonState = true; }
-			else { $scope.storage.findRestButtonState = false; }
+			if ($scope.storage.deliveryAddress) { $scope.changeActionButton(true); }
+			else { $scope.changeActionButton(false); }
 		});
-
-		$scope.displayRestButton = function(){
-			// Change this to check against storage of search address
-			var state = $scope.storage.findRestButtonState;
-			return state;
-		};
 
 		// Find restaurants @TODO
 		$scope.restListQuery = function(){
@@ -332,11 +426,16 @@ app.config(['$routeProvider',// '$locationProvider',
 
 			var address = JSON.parse($scope.storage.deliveryAddress);
 
-			var reqUrl = 'http://jay.craftinc.co/Slim/rl/' + address.zipcode + '/' + address.city + '/' + address.addressLine;
+			var reqUrl = siteURL + 'Slim/rl/' + address.zipcode + '/' + address.city + '/' + address.addressLine;
 			$scope.storage.reqUrl = reqUrl;
 
 			$http.get( reqUrl )
 				.success( function( data, status, header, config ) {
+					if (data.error) {
+						console.log(data.error);
+						$scope.hideLoader();
+						return;
+					};
 					$scope.storage.restaurantList = JSON.stringify(data);
 					$scope.storage.newSearch = true;
 					$location.path('/restaurants');
@@ -354,20 +453,23 @@ app.config(['$routeProvider',// '$locationProvider',
 
 	app.controller('RestaurantsCtrl', function($scope, $http, $location){
 
+		$scope.$parent.pageTitle = 'Restaurants';
+		$scope.$parent.showHeader = true;
+
 		// Check if not a newSearch, refresh restaurantList if so
 		if ($scope.storage.newSearch != 'true') {
-			$scope.showLoader();
-			var promise = $http.get( $scope.storage.reqUrl )
-				.success( function( data, status, header, config ) {
-					$scope.restaurantList = data;
-					$scope.hideLoader();
-				})
-				.error( function( data, status, header, config ) {
-					console.log('Invalid Address: ', data);
-					$scope.hideLoader();
-					// $scope.storage.errorMsg = 'Invalid Address';
-					// $scope.flashError();
-				});
+			// $scope.showLoader();
+			// var promise = $http.get( $scope.storage.reqUrl )
+			// 	.success( function( data, status, header, config ) {
+			// 		$scope.restaurantList = data;
+			// 		$scope.hideLoader();
+			// 	})
+			// 	.error( function( data, status, header, config ) {
+			// 		console.log('Invalid Address: ', data);
+			// 		$scope.hideLoader();
+			// 		// $scope.storage.errorMsg = 'Invalid Address';
+			// 		// $scope.flashError();
+			// 	});
 		// Otherwise, show page
 		} else { $scope.hideLoader(); };
 
@@ -395,16 +497,17 @@ app.config(['$routeProvider',// '$locationProvider',
 		};
 
 
-		$scope.viewMenu = function(rid){
+		$scope.viewMenu = function(rid, mino){
 			$scope.newRest = rid;
 
 			// Get Menu data if not set or Restaurant Changed
 			if ($scope.storage.activeRest != $scope.newRest) {
 				$scope.showLoader();
-				$http.get( 'http://jay.craftinc.co/Slim/rd/' + $scope.newRest )
+				$http.get( siteURL + 'Slim/rd/' + $scope.newRest )
 					.success( function( data, status, header, config ) {
 						$scope.storage.menu = JSON.stringify(data);
 						$scope.storage.activeRest = $scope.newRest;
+						$scope.storage.mino = mino;
 						$scope.storageSpace();
 						$location.path('/menu');
 					})
@@ -419,84 +522,83 @@ app.config(['$routeProvider',// '$locationProvider',
 		
 	});
 
-	app.controller('MenuCtrl', function($scope, $location){
+	app.controller('MenuCtrl', function($scope, API, $timeout, $http, $location){
 
-		//$scope.getSubtotal = function() {
-		$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
-		$scope.price = 0;
-
-		angular.forEach($scope.tray, function(obj, trayItemKey) {
-			$scope.price += parseFloat(obj.price);
-		});
-
-		$scope.price = $scope.price.toFixed(2);
-		//};
-
-		// Get Menu data if not set or Restaurant Changed
-		if (!$scope.storage.menu || $scope.storage.activeRest != $scope.storage.newRest) {
-			$scope.showLoader();
-			$http.get( 'http://jay.craftinc.co/Slim/rd/' + $scope.storage.newRest )
-				.success( function( data, status, header, config ) {
-					$scope.storage.menu = JSON.stringify(data);
-					$scope.hideLoader();
-					$scope.storageSpace();
-				})
-				.error( function( data, status, header, config ) {
-					// lol
-					console.log(status+'damn'+$scope.storage.newRest);
-					$scope.hideLoader();
-					$location.path('/blank');
-				});
-		}
-
-		// Update activeRest to newRest
-		$scope.storage.activeRest = $scope.storage.newRest;
+		$scope.$parent.pageTitle = 'Menu';
 
 		$scope.hideLoader();
-					
-		// @TODO make fee call on restaurant list page?
-		// @TODO always make fee call when reaching this page
-		var address = JSON.parse($scope.storage.deliveryAddress);
-		var feeUrl = 'http://jay.craftinc.co/Slim/fee/' 
-			+ $scope.storage.activeRest + '/'
-			+ $scope.price + '/'
-			+  '0/'
-			+ 'ASAP/' // default for ASAP delivery for v1
-			+ address.zipcode + '/'
-			+ address.city + '/'
-			+ address.addressLine;
-		$http.get( feeUrl )
-			.success( function( data, status, header, config ) {
-				// save gotten data (to then display it)
-				console.log(data);
-			})
-			.error( function( data, status, header, config ) {
-				console.log(status);
-			});
-
 
 		$scope.menu = JSON.parse($scope.storage.menu);
-		$scope.menu.mino = '15.00';
+		$scope.menu.mino = $scope.storage.mino;
 
 		// Menu Accordion Logic
 		$scope.mainTip = true;
 
+
+
+
+
+
+
+
+		$scope.setHeight = function(cid) {
+			// First, get Div array
+			var height = 0;
+			var section = $('.catItems[data-item='+cid+']')[0];
+			
+			$(section).each(function(k, v){
+				$(v.children).each(function(index, piece){
+					height += piece.offsetHeight;
+				});
+			});
+			
+			$('.catItems[data-item='+cid+']').css('max-height', height);
+		};
+
 		$scope.accordionSelect = function(cid){
 			// If Expanded Accordion is selected again, close all accordions
-			if ($scope.accordionShow == cid) { $scope.accordionShow = -1; }
-			// Else Expand Selected Accordion
-			else { $scope.accordionShow = cid; }
+			if ($scope.selectedAccordion == cid) {
+				$('.catItems[data-item='+cid+']').css('max-height', 0);
+				$('#menuTip').css('max-height', $('#menuTip p').outerHeight());
+				$scope.selectedAccordion = -1;
+			}
 
-			// If Accordion is open, close Main Tip
-			if ($scope.accordionShow > 0) { $scope.mainTip = false; }
-			// Otherwise, Show main tip
-			else { $scope.mainTip = true; }
+
+			// Else Expand Selected Accordion
+			else {
+				// Close Open Panels
+				$('.catItems').css('max-height', '0px');
+				$('#menuTip').css('max-height', '0px');
+				$scope.selectedAccordion = cid;
+
+				$scope.setHeight(cid);
+			}
+
 		};
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		$scope.viewItem = function(iid){
 			$scope.storage.activeItem = iid;
 			$location.path('/item');
 		};
+
+		// Reveal 'Review Order' button upon Item Addition to Tray
+		$scope.$watch('storage.tray', function() {
+			if ($scope.storage.tray) { $scope.changeActionButton(true); }
+			else { $scope.changeActionButton(false); }
+		});
 
 	    $scope.reviewOrder = function(){
 	    	$location.path('/review');
@@ -505,215 +607,138 @@ app.config(['$routeProvider',// '$locationProvider',
 	});
 
 	app.controller('ItemCtrl', function($scope, $location){
+		
+		$scope.$parent.pageTitle = 'Add to Order';
 
-		$scope.itemOrderable = true;
+    	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Initialize Page View
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		// @TODO disable add item to tray (css color-fade, ng-click disabled)
-		if ( false ) { // item.is_delivering != 1 || restaurant.not_deliverying == 1 
-			$scope.itemOrderable = false;
-		};
-
-		// method to display names of options chosen
-		$scope.displayNames = function(oid) {
-
-			var currentItem = JSON.parse($scope.storage.currentItem);
-
-			$scope.optionsDisp[oid] = '';
-
-    		for( var opt in currentItem ) {
-    			if (currentItem.hasOwnProperty(opt)) {
-		    		if( currentItem[opt] && opt.search(oid) !== -1 ) {
-		    			$scope.optionsDisp[oid] += JSON.parse(currentItem[opt]).name + ', ';
-		    		}
-		    	}
-	    	}
-
-	    	$scope.optionsDisp[oid].substring(0, $scope.optionsDisp[oid].length - 2);
-		}
-
-		$scope.menu = JSON.parse($scope.storage.menu);
-
-		$scope.optionData = {};
-		$scope.optionsDisp = {};
-		$scope.orderRadio = [];
-		$scope.optionErrMsg = '';
+		$scope.menu = JSON.parse($scope.storage.menu);// Set Quantity Limit ( @TODO try to move to quantity controller)
+	    $scope.amountRange = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 		// if we are editing an item, set that item ID to be the active item ID
-		if( $scope.storage.editItem ) {
-			$scope.storage.activeItem = $scope.storage.editItem;
-		}
+		if( $scope.storage.editItem ) { $scope.storage.activeItem = $scope.storage.editItem; }
+		$scope.orderButton = $scope.storage.editItemIndex ? 'Edit Item' : 'Add to Order';
 
-		// get the item data from the stored item ID & menu data
-		for( var category in $scope.menu.menu ) {
+		// Extract Active Item out of the Menu
+		for( var category in $scope.menu.menu ) { 
 			for( var item in $scope.menu.menu[category].children ) {
 				if( $scope.menu.menu[category].children[item].id === $scope.storage.activeItem ) {
-					$scope.item = $scope.menu.menu[category].children[item];
-				}
-			}
-		}
+					$scope.itemObj = $scope.menu.menu[category].children[item];
+		}	}	}
 
-		$scope.extraPrice = '0.00';
-		$scope.totalPrice = $scope.item.price;
-		$scope.$watch('storage.currentItem', function() {
-
-			$scope.extraPrice = 0;
-			var currentItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
-
-			// iterate over selected options and add their prices to extraPrice
-			for(var opt in currentItem) {
-				if( currentItem.hasOwnProperty(opt) ) {
-					if(currentItem[ opt ]) {
-						$scope.extraPrice += parseFloat(JSON.parse(currentItem[opt]).price);
-					}
-				}
-			}
-
-			$scope.totalPrice = (parseFloat($scope.item.price) + $scope.extraPrice).toFixed(2);
-			$scope.extraPrice = $scope.extraPrice.toFixed(2);
-
-		});
-
-		// if editing item, recreate the storage.currentItem (w/ all chosen options)
-		if( $scope.storage.editItem ) {
-			var cids = JSON.parse($scope.storage.editItemCids);
-
-			var currentItem = {};
-
-			var oids = [];
-
-			for( var choiceId = 0; choiceId < cids.length; choiceId++ ) {
-				for(var optCat = 0; optCat < $scope.item.children.length; optCat++ ) {
-					for(var opt = 0; opt < $scope.item.children[optCat].children.length; opt++ ) {
-						var option = $scope.item.children[optCat].children[opt];
-
-						if( cids[choiceId] === option.id ) {
-							oids.push($scope.item.children[optCat].id);
-							currentItem[ $scope.item.children[optCat].id + '/' + option.id ] = JSON.stringify(option);
-						}
-					}
-				}
-			}
-
-			$scope.storage.currentItem = JSON.stringify( currentItem );
-
-			for(var oid = 0; oid < oids.length; oid ++) {
-				$scope.displayNames(oids[oid]);
-			}
-
-		}
-
-	    $scope.optionPopup = function(option){
-	    	// if radio, JSON.parse 2 levels deep (is this rly necessary?)
-	    	// @TODO see if JSON.parse 2 lvls deep should be done
-			if( option.min_child_select == option.max_child_select == 1 ) {
-
-				var currentItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
-
-				for( var opt in currentItem ) {
-				 	if( currentItem.hasOwnProperty(opt) ) {
-						if( currentItem[opt] ) {
-				 			$scope.optionData[opt] = JSON.parse(currentItem[opt]);
-				}	}	}
-
-				$scope.optionData = currentItem;
-
-			} else { // if checkbox, just parse.
-				$scope.optionData = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
-			}
-
-	    	$scope.storage.activeOption = JSON.stringify(option);
-	    	$scope.popupModal('options');
-	    };
-
-
-	    // hack necessary to make sure radio buttons work: send the last clicked
-	    // ratio button key to the orderRadio array
-		$scope.checkRadio = function(min, max, option, choice){
-			if (min == max == 1) {
-				$scope.orderRadio.push(option.id + '/' + choice.id);
-			};
+		// Init Item Obj unless editItemObj Exists
+		$scope.item = $scope.storage.editItemObj ? JSON.parse($scope.storage.editItemObj) : {
+			'id' : $scope.itemObj.id,
+			'name' : $scope.itemObj.name,
+			'descrip' : $scope.itemObj.descrip,
+			'price' : $scope.itemObj.price,
+			'extra_price' : '0.00',
+			'amount' : 1,
+			'is_orderable' : $scope.itemObj.is_orderable,
+			'edit_idx' : null,
+			'extras' : {}
 		};
 
+		// Initialize Items Object w/ Extras & their Choices
+		if (!$scope.storage.editItemObj) {
+			var extras = $scope.itemObj.children ? $scope.itemObj.children : [];
+			// For All Options of the Item
+			for(var option = 0; option < extras.length; option++ ) {
+				var optionId = extras[option].id;
+				// Set Each Extra's Min/Max Value
+				$scope.item.extras[ optionId ] = {
+					'id' : extras[option].id,
+					'name' : extras[option].name,
+					'min' : extras[option].min_child_select,
+					'max' : extras[option].max_child_select,
+					'choices' : {}
+				};
 
+				// For All Choices of the Item
+				if (extras[option].children) {
+					for(var choice = 0; choice < extras[option].children.length; choice++ ) {
+						var choiceId = extras[option].children[choice].id;
+						// Fill Item Object w/ values from Menu Obj
+						$scope.item.extras[optionId].choices[choiceId] = {
+							'id' : extras[option].children[choice].id,
+							'name' : extras[option].children[choice].name,
+							'price' : extras[option].children[choice].price,
+							'descrip' : extras[option].children[choice].descrip,
+							'selected' : extras[option].children[choice].jay_choice,
+							'jayChoice' : extras[option].children[choice].jay_choice
+						};
+					} // Remove Choices Obj from array if empty
+				} else { delete $scope.item.extras[optionId].choices; }
+			} // unset extras from the Item Object if none
+			if (!extras) { delete $scope.item['extras']; }
+		// Set Edit Item Objects Tray Index if Exists
+		} else { $scope.item.edit_idx = $scope.storage.editItemIndex; }
 
-	    $scope.storeOptions = function(min, max, optionId) {
+		// Update Total Price on change to Item Object's extra_price
+		$scope.$watch('item.extra_price', function() {
+			console.log('watched');
+			$scope.totalPrice = (parseFloat($scope.item.price) + parseFloat($scope.item.extra_price)).toFixed(2);
+		});
 
-	    	// if radio, put in the appropriate optionData from the last orderRadio elmnt
-	    	if(min == max == 1) {
-	    		var lastSelectedKey = $scope.orderRadio[ $scope.orderRadio.length -1 ];
-	    		var newOptionData = {};
-	    		newOptionData[ lastSelectedKey ] = JSON.stringify($scope.optionData[ lastSelectedKey ]);
-	    		$scope.optionData = newOptionData;
-	    	}
+    	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	    	// get # of chosen options
-	    	var selectedNum = 0;
-	    	for( var opt in $scope.optionData ) {
-				if ($scope.optionData.hasOwnProperty(opt)) {
-					if( $scope.optionData[opt] ) {
-						selectedNum += 1;
-					}
-	    		}
-	    	}
+		// Function to Update Item Object's extra_price
+		$scope.updatePrice = function(){
+			var price = 0;
+			angular.forEach($scope.item.extras, function(option, id) {
+				angular.forEach(option.choices, function(choice, id) {
+					if (choice.selected == true) {
+						price += parseFloat(choice.price);
+					};
+				});
+			});
+			$scope.item.extra_price = price.toFixed(2);
+		};
 
-	    	// min/max number checking
-	    	if( selectedNum < min ) { $scope.optionErrMsg = 'Need at least ' + min + ' options selected'; }
-	    	else if ( selectedNum > max ) { $scope.optionErrMsg = 'Need at most ' + max + ' options selected'; }
-	    	else { // put in the names of the selected options
-	    		var optOnly = opt.split('/')[0];
+		$scope.updatePrice();
 
-	    		var combined = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
+    	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Display Option Popup
+    	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	    		// remove old options if radio
-	    		if(min == max == 1) {
-	    			for( var opt in combined ) {
-	    				if( combined.hasOwnProperty(opt) ) {
-	    					if( opt.search(optOnly) !== -1 ) {
-	    						combined[ opt ] = false;
-	    					}
-	    				}
-	    			}
-	    		}
+	    $scope.optionPopup = function(option){
 
-	    		for(var opt in $scope.optionData) {
-	    			if( $scope.optionData.hasOwnProperty(opt)) {
-	    				combined[ opt ] = $scope.optionData[opt];
-	    			}
-	    		}
+	    	// set the type of select depending on the child_selects
+			if( $scope.item.extras[option].min == 1 && $scope.item.extras[option].max == 1 ) { $scope.isType = 'radio'; } 
+			else { $scope.isType = 'checkbox'; }
 
-	    		$scope.storage.currentItem = JSON.stringify(combined);
+			// Initialize and Store activeOption Object
+	    	$scope.storage.activeOption = JSON.stringify($scope.item.extras[option]);
 
-	    		// display names
-	    		$scope.displayNames(optOnly);
-
-		    	// clear stuff
-		    	$scope.optionData = {};
-		    	$scope.orderRadio = [];
-	    		$scope.optionErrMsg = '';
-	    		$scope.closeModal();
-	    	}
+	    	$scope.popupModal($scope.isType);
 
 	    };
 
-	    $scope.amountRange = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-	    $scope.amount = 1;
+	    $scope.checkRequirements = function(){
 
-	  //   $scope.checkForTray = function(view, dest){
-	  //   	// If Tray Exists, and about to order from new Restaurant
-			// if ($scope.storage.tray && $scope.storage.activeRest != $scope.storage.orderRest) {
-			// 	$scope.popupModal('emptyTray');
-			// } else {
-			// 	// Add item to new tray
-			// 	if (view == 'modal' {
-			// 		$scope.popupModal(dest);
-			// 	};
-			// };
-	  //   };
+	    	// check to make sure all necessary options have been selected
+	    	var notEnough = false;
+	    	angular.forEach($scope.item.extras, function(choices, id) {
+	    		var selectedCounter = 0;
+		    	angular.forEach(choices.choices, function(choice, id) {
+					if (choice.selected == true) { selectedCounter++; }
+				});
+
+				if (selectedCounter < choices.min) {
+					notEnough = true;
+					console.log('need at least ' + choices.min + ' choices for ' + choices.name);
+				} 
+			});	
+	    	// If any items have been found to need selections, return
+			if( notEnough ) { $scope.closeModal(); return; }
+			else { $scope.popupModal('quantity'); }
+
+	    };
 
 	    $scope.addItem = function() {
 
-	    	// check to make sure all necessary options have been selected
-	    	// well, i actually need to revisit the structure to get a grasp on this.
 
 	    	// orderRest exists only if there's a tray
 	    	if ($scope.storage.orderRest && $scope.storage.activeRest != $scope.storage.orderRest) {
@@ -722,135 +747,196 @@ app.config(['$routeProvider',// '$locationProvider',
 				return;
 			}
 
+			// Set Active Restaurant and Init Tray
 	    	$scope.storage.orderRest = $scope.storage.activeRest;
-
-	    	var currItem = $scope.storage.currentItem ? JSON.parse($scope.storage.currentItem) : {};
-	    	var cids = [];
-
-	    	for(var op in currItem) {
-	    		if (currItem.hasOwnProperty(op)) {
-					if( currItem[op] ) {
-						cids.push(JSON.parse(currItem[op]).id);
-			}	}	}
-
-	    	var newItem = {
-				iid : $scope.storage.activeItem,
-				amount: this.amount,
-				cid: cids,
-				item : $scope.item,
-				price : $scope.totalPrice
-	    	};
-
-
 	    	var tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : [];
 
-	    	if( $scope.storage.editItem ) { tray[ $scope.storage.editItemIndex ] = newItem; }
-	    	else { tray.push(newItem); }
+	    	if( $scope.storage.editItem ) { tray[$scope.item.edit_idx] = $scope.item; }
+	    	else { tray.push($scope.item); }
 	    	
-
 	    	$scope.storage.tray = JSON.stringify(tray);
-	    	$scope.storage.currentItem = '';
-
 	    	$scope.closeModal();
 
 	    	$location.path( $scope.storage.editItem ? '/review' : '/menu' );
 
-
 	    };
-
-	    $scope.orderButton = $scope.storage.editItem ? 'Edit Item' : 'Add to Order';
 
 	});
 
-	app.controller('ReviewCtrl', function($scope, $location){
+	app.controller('ReviewCtrl', function($scope, API, $location, $http, $q){
 
-		$scope.getSubtotal = function() {
-			$scope.price = 0;
-			angular.forEach($scope.tray, function(obj, trayItemKey) {
-				$scope.price += parseFloat(obj.price);
-			});
+		$scope.$parent.pageTitle = 'Review Order';
+		$scope.reviewButton = 'Proceed to Checkout';
+		$scope.menu = JSON.parse($scope.storage.menu);
 
-			$scope.price = $scope.price.toFixed(2);
-		}
+		$scope.changeActionButton(true);
 
+		$scope.storage.removeItem('editItem');
+		$scope.storage.removeItem('editItemObj');
+		$scope.storage.removeItem('editItemIndex');
 		$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
 
-		$scope.$watch('storage.tray', function() {
-			$scope.tray = $scope.storage.tray ? JSON.parse($scope.storage.tray) : $scope.clearStorage();
-
-			$scope.getSubtotal();
-			$scope.updateDisplay();
-			// @TODO : make Fee call
-			$scope.taxes = '3.50';
-
-			$scope.priceTotal = (parseFloat($scope.price) + parseFloat($scope.taxes) ).toFixed(2);
-
-		});
-
-
-		$scope.optionsDisp = [];
-
-		// if we're on the review page, we don't need the marker for an item being edited any longer
-		$scope.storage.removeItem('editItem');
-
-
-		// Filter Out and Add Selected Options to optionDisplay object
-		$scope.updateDisplay = function(){
-			for(var iidx = 0; iidx < $scope.tray.length; iidx++ ) {
-				var item = $scope.tray[iidx];
-				$scope.optionsDisp[ iidx ] = '';
-				for(var cid = 0; cid < item.cid.length; cid++ ) {
-					for(var optCat = 0; optCat < item.item.children.length; optCat++ ) {
-						for(var opt = 0; opt < item.item.children[optCat].children.length; opt++ ) {
-							var option = item.item.children[optCat].children[opt]
-							if( option.id === item.cid[cid] ) {
-								$scope.optionsDisp[ iidx ] += option.name + ', ';
-			}	}	}	}	} 
-		};
-
-
 		$scope.editOption = function(item, iidx){
-
-			$scope.storage.editItem = item.iid;
-			$scope.storage.editItemCids = JSON.stringify(item.cid);
+			$scope.storage.editItem = item.id;
+			$scope.storage.editItemObj = JSON.stringify(item);
 			$scope.storage.editItemIndex = iidx;
 			$scope.closeModal();
 			$location.path('/item');
 		};
 
-		$scope.fee = true;
+		$scope.addTip = function(num, custom){
+			var isCustom = custom || false;
+			// If new tip amount is selected
+			if (num != $scope.tipAdded) {
+				// If custom tip amount has been entered
+				if (isCustom == true) {
+					if (num > 0) {
+
+						$scope.tipAdded = 'other';
+						$scope.storage.tip = parseFloat(num).toFixed(2);
+					// If 0 added, deselect
+					} else { $scope.tipAdded = 0; $scope.storage.tip = parseFloat(0).toFixed(2); }
+				// If a percentage tip amount has been chosen
+				} else {
+					$scope.tipAdded = num;
+					$scope.storage.tip = parseFloat($scope.subTotal * (num / 100)).toFixed(2);  // subTotal not yet set??
+					console.log($scope.subTotal);
+
+				}
+			// Deselect if tip amount button reselected
+			} else {
+				$scope.tipAdded = 0;
+				$scope.storage.tip = '0.00';
+			}
+
+
+			$scope.closeModal();
+		};
+
+		$scope.feeCall = function(){
+
+			var address = JSON.parse($scope.storage.deliveryAddress);
+			var feeUrl = 'Slim/fee/' 
+				+ $scope.storage.activeRest + '/'
+				+ $scope.subTotal + '/'
+				+  ($scope.storage.tip || 0) + '/'
+				+ 'ASAP/'
+				+ address.zipcode + '/'
+				+ address.city + '/'
+				+ address.addressLine;
+
+			feeUrl = siteURL + encodeURI(feeUrl);
+
+			var deferred = $q.defer();
+			deferred.resolve($http.get(feeUrl));
+
+			return deferred.promise;
+
+		};
+
+		$scope.getSubTotal = function() {
+			var price = 0; // Calc SubTotal
+			angular.forEach($scope.tray, function(item, trayIdx) {
+				price += (parseFloat(item.price) * item.amount);
+			});
+
+			// Set SubTotal
+			$scope.subTotal = price.toFixed(2);
+			$scope.priceTotal = parseFloat(parseFloat($scope.subTotal) + (parseFloat($scope.taxes) || 0) + (parseFloat($scope.storage.tip) || 0)).toFixed(2);
+
+			// Determine if Minimum Order is met
+			if (parseFloat($scope.subTotal) >= parseFloat($scope.storage.mino)) { $scope.minimum = true; $scope.reviewButton = 'Proceed to Checkout'; }
+			else {$scope.minimum = false; $scope.minimumError = 'Minimum order not met.'; };
+		};
+
+		$scope.getSubTotal();
+
+		$scope.getTotal = function(){
+			// Gets SubTotal, Adds Taxes/Fees and Tip
+			$scope.getSubTotal();
+
+			// Ajax Delivery Fee and Update values on return
+			$scope.calcFeeLoader = true;
+			var promise = $scope.feeCall();
+			promise.then(function(data){
+				console.log('returned');
+				if (data.status == 200) {
+					var details = data.data;
+					$scope.taxes = parseFloat(parseFloat(details.fee) + parseFloat(details.tax)).toFixed(2);
+					$scope.calcFeeLoader = false;
+					// Set Tip & Price Total
+					$scope.priceTotal = parseFloat(parseFloat($scope.subTotal) + (parseFloat($scope.taxes) || 0) + (parseFloat($scope.storage.tip) || 0)).toFixed(2);
+				} else {
+					// oops error
+					$scope.calcFeeLoader = false;
+					console.log(data);
+				}
+			});
+
+		};
+
+
+		$scope.storage.tip = parseFloat(0).toFixed(2);
+		
+		// Set default Tip
+		$scope.addTip(10);
 
 		$scope.proceedToCheckout = function(){
+			$scope.storage.priceTotal = $scope.priceTotal;
 			$location.path('/checkout');
 		};
+		
+		// Update Tray & Display when Item Removed
+		$scope.$watch('storage.tray', function(){
+			if ($scope.storage.tray) {
+				$scope.tray = JSON.parse($scope.storage.tray);
+				$scope.getTotal();
+			}
+		});
+
+		// Watch for New Tip
+		$scope.$watch('storage.tip', function() {
+			$scope.tip = $scope.storage.tip || '0.00';
+			$scope.getTotal();
+		});
 
 	});
 
 	app.controller('CheckoutCtrl', function($scope, $http, $location){
 
-		$scope.customer = {};
-		$scope.orderObject = {};
+		$scope.$parent.pageTitle = 'Checkout';
+
+		$scope.changeActionButton(true);
+
+		// Set Defaults
+		$scope.customer = {}; // Form Field ngModel
+		$scope.orderObject = {}; // Object Passed into Post request
+    	$scope.grandTotal = $scope.storage.priceTotal; // Init grandTotal to order's priceTotal
     	$scope.yearRange = $scope.findYearRange();
+    	$scope.fee = '0.00';
 
-    	// @TODO validate form fields
-		$scope.allFieldsFilled = true;
-
-		// Keep Filtered Display Updated
+		// Keep deliveryAddress Object Updated & make new Fee call
 		$scope.$watch('storage.deliveryAddress', function() {
 			if ($scope.storage.deliveryAddress) {
 				$scope.deliveryAddress = JSON.parse($scope.storage.deliveryAddress);
 				$scope.addressDisplay = $scope.storage.deliveryAddressDisplay;
 				$scope.addressName = $scope.deliveryAddress.addressName;
-			} else {
+				// Make New Fee Call for Address Change
+				feeUrl = siteURL + 'Slim/fee/' 
+					+ $scope.storage.activeRest + '/'
+					+ $scope.price + '/'
+					+  $scope.storage.tip + '/'
+					+ 'ASAP/'
+					+ $scope.deliveryAddress.zipcode + '/'
+					+ $scope.deliveryAddress.city + '/'
+					+ $scope.deliveryAddress.addressLine;
+
+				// $scope.checkAddress(feeUrl);
+			} else { // If no deliveryAddress has been selected
 				$scope.addressName = 'Please Select';
 				$scope.addressDisplay = ':(';
 			};
 		});
-
-		$scope.updateTip = function(){
-			$scope.customer.tip = $scope.customer.tipUpdate;
-			$scope.closeModal();
-		};
 
 		$scope.orderFood = function() {
 
@@ -859,9 +945,13 @@ app.config(['$routeProvider',// '$locationProvider',
 			var tray = '';
 			// Format Tray Object to proper string
 			angular.forEach(JSON.parse($scope.storage.tray), function(item, key) {
-				tray += '+' + item.iid + '/' + item.amount;
-				angular.forEach(item.cid, function(option, index) {
-					tray += ',' + option;
+				tray += '+' + item.id + '/' + item.amount;
+				angular.forEach(item.extras, function(option, index) {
+					angular.forEach(option.choices, function(choice, idx) {
+						if (choice.selected) {
+							tray += ',' + choice.id;
+						}
+					});
 				});
 			});
 			// Remove leading '+'
@@ -871,9 +961,9 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.orderObject.rid = $scope.storage.orderRest;
 			$scope.orderObject.em = $scope.customer.email;
 			$scope.orderObject.tray = tray;
-			$scope.orderObject.tip = $scope.customer.tip || 0;
-			$scope.orderObject.first_name = 'Jeremy';
-			$scope.orderObject.last_name = 'Letto';
+			$scope.orderObject.tip = $scope.storage.tip || 0;
+			$scope.orderObject.first_name = $scope.customer.name.substr(0, $scope.customer.name.indexOf(' '));
+			$scope.orderObject.last_name = $scope.customer.name.substr($scope.customer.name.indexOf(' ')+1);;
 			$scope.orderObject.delivery_date = 'ASAP';
 			$scope.orderObject.phone = $scope.customer.phone;
 			$scope.orderObject.addr = $scope.deliveryAddress.addressLine;
@@ -884,7 +974,7 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.orderObject.card_name = $scope.customer.cardName;
 			$scope.orderObject.card_number = $scope.customer.cardNumber;
 			$scope.orderObject.card_expiry = $scope.customer.cardMonth + '/' + $scope.customer.cardYear;
-			$scope.orderObject.cvv = $scope.customer.cvv;
+			$scope.orderObject.card_cvc = $scope.customer.cvc;
 			$scope.orderObject.card_bill_addr = $scope.customer.billAddr;
 			$scope.orderObject.card_bill_addr2 = $scope.customer.billAddr2 || '';
 			$scope.orderObject.card_bill_city = $scope.customer.billCity;
@@ -892,54 +982,55 @@ app.config(['$routeProvider',// '$locationProvider',
 			$scope.orderObject.card_bill_zip = $scope.customer.billZip;
 			$scope.orderObject.card_bill_phone = $scope.customer.phone; // not asked for
 
+			console.log($scope.orderObject);
+
 			// Save Credit Card if checkbox selected
-			if ($scope.orderObject.saveCard == true) {
+			if ($scope.customer.saveCard == true) {
 				console.log('saveCard!');
 			};
 
-			var reqURL = 'http://jay.craftinc.co/Slim/order/'+$scope.storage.orderRest	;
+			var reqURL = siteURL + 'Slim/order/'+$scope.orderObject.rid	;
 
 			$http.post( reqURL, $scope.orderObject )
 				.success( function( data, status, header, config ) {
 					$scope.hideLoader();
 					if (data.msg == 'Success') {
+						console.log(data);
 						$scope.storage.receipt = JSON.stringify(data.custserv);
 						$location.path('/receipt');
 					} else {
 						// Show Error Msg
-						$scope.hideLoader();
-						console.log(data);
+						$scope.hideLoader(); // Instead, hideLoader() thru another feeCall() ???
+						console.log('Ordr.in\'s Fault: '+data);
 					};
-					
 				})
-			.error( function( data, status, header, config ) {
-				// Show Error Msg
-				$scope.hideLoader();
-				console.log('JCORE Backend failed:', data);
-			});
-
-		};
+				.error( function( data, status, header, config ) {
+					// Show Error Msg
+					$scope.hideLoader();
+					console.log('JCORE Backend failed:', data);
+				});
+			};
 
 	});
 
 	app.controller('ReceiptCtrl', function($scope, $location){
 
+		$scope.$parent.pageTitle = 'Receipt';
+
 		$scope.hideLoader();
 
-		$scope.restDetails = JSON.parse($scope.storage.menu);
+		$scope.menu = JSON.parse($scope.storage.menu);
+		$scope.tray = JSON.parse($scope.storage.tray);
+		console.log($scope.tray);
+		// var receipt = JSON.parse($scope.storage.receipt);
 
 		// Define Model Variables
-		$scope.est = '12:00pm'; // will be a geo-function
-		$scope.restName = $scope.restDetails.name;
-		$scope.distance = '0.3'; // also a geo-function
+		$scope.est = '12:00pm'; // currentTime + receipt.time
+		$scope.distance = '0.3'; // geo-function
 
-		$scope.itemName = 'itemName';
-		$scope.itemPrice = '8.99';
-		$scope.itemAmount = '2';
-
-		$scope.subtotal = '16.98';
-		$scope.tip = '2.00';
-		$scope.total = '18.98';
+		$scope.subtotal = $scope.storage.priceTotal;
+		$scope.fee = $scope.storage.fee;
+		$scope.total = $scope.storage.grandTotal;
 
 
 	});

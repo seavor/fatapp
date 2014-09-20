@@ -1,0 +1,8 @@
+web1:
+  name: front-end
+  document_root: webapp/
+
+web2:
+  name: api
+  document_root: backend/Slim/
+  php_version: 5.4.28

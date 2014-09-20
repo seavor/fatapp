@@ -3,16 +3,16 @@
 <p class="centerSubheader">Estimated time of Delivery: {{est}}</p>
 
 <div class="restaurantListingItem restaurantHead clearfix">
-	<h5>{{restName}}</h5>
+	<h5>{{menu.name}}</h5>
 	<p class="distanceAway">{{distance}}m</p>
 </div>
 
 <h2 id="yourOrder" class="mainHeader underLine">Your Order:</h2>
 
-<div class="itemReview clearfix">
-	<h6>{{itemName}}</h6>
-	<p class="itemTotal">${{itemPrice}}</p>
-	<p class="itemAmount">x {{itemAmount}}</p>
+<div class="itemReview clearfix" ng-repeat="item in tray">
+	<h6>{{item.name}}</h6>
+	<p class="itemTotal">{{item.price * item.amount | currency}}</p>
+	<p class="itemAmount">x {{item.amount}}</p>
 </div>
 
 <div id="orderReceiptAmount" class="actionInfo">
@@ -21,8 +21,8 @@
 		<p>${{subtotal}}</p>
 	</div>
 	<div class="itemPriceInfo">
-		<h6>Tip</h6>
-		<p>${{tip}}</p>
+		<h6>Taxes/Fees</h6>
+		<p>${{fee}}</p>
 	</div>
 	<div class="itemPriceInfo">
 		<h6>TOTAL</h6>

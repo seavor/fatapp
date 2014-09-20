@@ -1,13 +1,12 @@
-<html ng-app="app">
+<html id="deviceScreen" ng-app="app">
 
 	<head>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 		<meta name="description" content="Eat Healthy, Be Healthy">
 		<title>Fat App</title>
 		<link rel="icon" href="images/header/favicon.png" sizes="16x16" type="image/png">
-		<link rel="stylesheet" type="text/css" href="css/normalize.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
 		<script type="text/javascript" src="js/angular.min.js"></script>
 		<script type="text/javascript" src="js/angular-route.min.js"></script>
@@ -21,8 +20,48 @@
 	</head>
 
 <body ng-controller='AppCtrl'>
-	<div id="appContent" ng-view></div>
+
+
+
+
+
+
+
+
+
+	
+
+	<div id="appWrapper">
+		<div id="appHeader" ng-controller="HeaderCtrl" ng-if="showHeader">
+
+		<!-- Left-handed nav button -->
+		<div id="navButton" ng-click="navButton()"></div>
+		<!-- Menubar Page Title -->
+		<div id="pageHeading"><h1>{{pageTitle}}</h1></div>
+		<!-- Hamburger Button -->
+		<div id="menuButton">
+			<span></span><span></span><span></span>
+		</div>
+		<!-- Menu -->
+		<div id="navItems" class="slideMenu">
+			<ul>
+				<li>
+					<a href="#">My Account</a>
+				</li>
+			</ul>
+		</div>
+
+	</div>
+		<div id="appContent" ng-view></div>
+	</div>
+
+
+
+
+
+
 	<div id="loading" ng-show="displayLoader"></div>
 	<div id="errorMsg" ng-show="displayError">{{errorMsg}}</div>
+	<script src="http://localhost:35729/livereload.js"></script> <!-- Grunt livereload command -->
 </body>
 </html>
