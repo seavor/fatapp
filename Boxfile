@@ -5,4 +5,5 @@ web1:
 web2:
   name: api
   document_root: backend/Slim/
-  php_version: 5.4.28
+  php_version: 5.4.14
+  php_display_errors: "1"
